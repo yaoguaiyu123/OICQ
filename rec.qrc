@@ -1,0 +1,47 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icon/chat_black.png</file>
+        <file>icon/chat_blue.png</file>
+        <file>icon/liebiao_black.png</file>
+        <file>icon/liebiao_blue.png</file>
+        <file>icon/person_black.png</file>
+        <file>icon/person_blue.png</file>
+        <file>icon/qqKongjian_black.png</file>
+        <file>icon/qqKongjian_blue.png</file>
+        <file>icon/qqPingdao_black.png</file>
+        <file>icon/qqPingdao_blue.png</file>
+        <file>icon/qqShiping_black.png</file>
+        <file>icon/qqShiping_blue.png</file>
+        <file>icon/shezhi_black.png</file>
+        <file>icon/shezhi_blue.png</file>
+        <file>icon/shoucang_black.png</file>
+        <file>icon/shoucang_blue.png</file>
+        <file>icon/wendang_black.png</file>
+        <file>icon/wendang_blue.png</file>
+        <file>icon/wenjian_black.png</file>
+        <file>icon/wenjian_blue.png</file>
+        <file>icon/youjian_black.png</file>
+        <file>icon/youjian_blue.png</file>
+        <file>icon/jia.png</file>
+        <file>icon/sousuo.png</file>
+        <file>image/default_head.png</file>  
+        <file>image/back.png</file>  
+        <file>icon/jia1.png</file>
+        <file>icon/more.png</file>
+        <file>icon/jiandao_black.png</file>
+        <file>icon/jiandao_blue.png</file>
+        <file>icon/biaoqing_black.png</file>
+        <file>icon/biaoqing_blue.png</file>
+        <file>icon/tupian_black.png</file>
+        <file>icon/tupian_blue.png</file>
+        <file>icon/chatgpt.png</file>
+        <file>icon/close.png</file>
+        <file>icon/close_w.png</file>
+        <file>icon/minimize.png</file>
+        <file>icon/maximize.png</file>
+        <file>icon/maximize_1.png</file>
+        <file>icon/appicon.png</file>
+        <file>icon/success.png</file>
+        <file>icon/fail.png</file>
+    </qresource>
+</RCC>
