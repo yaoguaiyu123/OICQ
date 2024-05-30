@@ -15,7 +15,8 @@ class TextDocumentHandler : public QObject {
     Q_PROPERTY_AUTO(int, cursorPosition)  //当前光标位置
 public:
     TextDocumentHandler(QObject* parent = nullptr);
-    Q_INVOKABLE void insertImage(QString,int);
+    Q_INVOKABLE void insertImage(QString);
+    void insertText(QString);
     Q_INVOKABLE void textContent();
     Q_INVOKABLE void parseMarkDown(QString content);
 

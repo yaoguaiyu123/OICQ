@@ -19,7 +19,6 @@ void processImages(QString content, QList<QImage>& imageList)
             // 是一个图片
             i = i + 9;
             if (content.mid(i, 9) == "file:////") {
-                qDebug() << "file4类型的图片";
                 i = i + 9;
                 QString url = "/";
                 while (content[i] != ')' && i < content.length()) {
@@ -28,11 +27,6 @@ void processImages(QString content, QList<QImage>& imageList)
                 }
                 QImage image(url);
                 imageList.append(image);
-            } else if (content.mid(i, 8) == "file:///") {
-                qDebug() << "file3类型的图片";
-                i = i + 8;
-                QString url = "/";
-
             }
         }
     }
@@ -106,15 +100,8 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                                 dir.mkpath(dateFolder);
                             }
                             if (!images.at(noCount).save(url)) {
-                                qDebug() << "图片保存失败  " << dateFolder << " " << url;
                                 return;
-                            }else{
-                                qDebug() << "图片保存成功  " << dateFolder << " " << url;
                             }
-                        } else if (message.mid(i, 8) == "file:///") {
-                            qDebug() << "file3类型的图片";
-                            i = i + 8;
-                            QString url = "/";
                         }
                         ++noCount;   //图片+1
                     }

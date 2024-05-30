@@ -17,14 +17,15 @@ TextDocumentHandler::TextDocumentHandler(QObject* parent)
 }
 
 // 插入图片
-void TextDocumentHandler::insertImage(QString url, int type)
+void TextDocumentHandler::insertImage(QString url)
 {
     if (!m_textDocument) {
         return;
     }
     QImage image(url);
     if (image.isNull()) {
-        qDebug() << "图片加载失败";
+        //TODO 说明这是一段文字,要insert文字
+        qDebug() << "疑似粘贴图片但加载失败";
         return;
     }
     int updateWidth = image.width();
@@ -55,14 +56,17 @@ void TextDocumentHandler::insertImage(QString url, int type)
     QTextImageFormat imageFormat;
     imageFormat.setWidth(image.width());
     imageFormat.setHeight(image.height());
-    if (type == 4) {
-        imageFormat.setName("file:///" + newImagePath);
-    } else if (type == 3) {
-        imageFormat.setName("file://" + newImagePath);
-    }
+    imageFormat.setName("file:///" + newImagePath);
     cursor.insertImage(imageFormat);
 }
 
+
+void TextDocumentHandler::insertText(QString content){
+    QTextDocument* doc = m_textDocument->textDocument();
+    QTextCursor cursor(doc);
+    cursor.setPosition(m_cursorPosition);
+    cursor.insertText(content);
+}
 
 void TextDocumentHandler::textContent()
 {
@@ -74,28 +78,42 @@ void TextDocumentHandler::textContent()
 void TextDocumentHandler::parseMarkDown(QString content)
 {
     qDebug() << content;
+    // qDebug() << "dddddd";
     for (qint32 i = 0; i < content.length(); ++i) {
+        qDebug() << content.mid(i, 8);
         if (content.mid(i, 9) == "![image](") {
-            // 是一个图片
+            // 是一个图片(可识别的图片)
             i = i + 9;
             if (content.mid(i, 9) == "file:////") {
-                qDebug() << "file4类型的图片";
                 i = i + 9;
                 QString url = "/";
                 while (content[i] != ')' && i < content.length()) {
                     url += content[i];
                     ++i;
                 }
-                insertImage(url , 4);
+                insertImage(url);
                 ++i;   //跳过自带的\n
-            } else if (content.mid(i, 8) == "file:///") {
-                qDebug() << "file3类型的图片";
-                i = i + 8;
-                QString url = "/";
-
             }
+
+        } else if (content.mid(i, 8) == "file:///") {
+            // 是一个文件
+            qDebug() << "是一个文件";
+            i = i + 8;
+            QString url = "/";
+            while (content[i] != '\n' && i < content.length()) {
+                url += content[i];
+                ++i;
+            }
+            // 如果是图片文件就插入
+            QImage image(url);
+            if (!image.isNull()) {
+                insertImage(url);
+            } else {
+                insertText("file://" + url);
+            }
+            ++i;
         }else{
-            //不是图片
+            // 普通文字
             QTextDocument* doc = m_textDocument->textDocument();
             QTextCursor cursor(doc);
             cursor.setPosition(m_cursorPosition);
