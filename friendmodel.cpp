@@ -237,7 +237,7 @@ void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
 
 //发送消息
 void FriendModel::sendMessage(QString message,int index,int type){
-
+    qDebug() << "###############    " << message << " " << type;
     if (type == PrivateMessage) {
         QList<QImage> imageList;
         processImages(message, imageList);  //获取所有图片
@@ -254,7 +254,18 @@ void FriendModel::sendMessage(QString message,int index,int type){
         } else {
             m_tcpsocket->packingMessage(JsonObjectToString(obj), PrivateMessage, imageList);
         }
+    }else if(type == FileMessage){
+        beginResetModel();
+        _messageModel->addMessage(message, "sendfile", index);
+        endResetModel();
+        // 发送消息到socket（先得到friendId）
+        qint64 userId = _allData->friends.at(index).userid;
+        QJsonObject obj;
+        obj.insert("to", userId);
+        obj.insert("message", message);
+        m_tcpsocket->packingMessage(JsonObjectToString(obj), FileMessage);
     }
+
 }
 
 // 更新头像

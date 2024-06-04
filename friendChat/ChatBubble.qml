@@ -4,8 +4,8 @@ import QtQuick.Layouts
 
 Rectangle{
     id:container
-    width: chatText.width + 16
-    height: chatText.height + 12
+    implicitWidth: chatText.width + 16
+    implicitHeight: chatText.height + 12
     color: type === "send" ? "#0099ff" : "white"
     radius: 8
     TextArea{
@@ -13,7 +13,7 @@ Rectangle{
         anchors.centerIn: parent
         color: type === "send" ? "white" : "black"
         textFormat: TextArea.MarkdownText
-        text:  msg
+        text: msg
         wrapMode: TextArea.WrapAnywhere  //自动换行
         // lineHeight: 1.3
         font.pixelSize: 14

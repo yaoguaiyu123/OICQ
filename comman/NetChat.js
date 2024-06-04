@@ -1,6 +1,6 @@
 const MSG_TYPE = {
     PrivateMessage: 0,
-    GroupMessage: 1,
+    FileMessage: 1,
     AddFriend: 2,
     Login: 3
 }  //使用对象模拟枚举

@@ -43,5 +43,6 @@
         <file>icon/appicon.png</file>
         <file>icon/success.png</file>
         <file>icon/fail.png</file>
+        <file>image/download.png</file>
     </qresource>
 </RCC>

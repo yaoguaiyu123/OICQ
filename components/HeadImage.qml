@@ -8,6 +8,8 @@ Rectangle {
     radius: imageRadius
     property var headUrl
     property var imageRadius: 5
+    implicitWidth: 36
+    implicitHeight: 36
     //定义一个图像元素
     Image {
         id: _image

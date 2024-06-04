@@ -80,9 +80,12 @@ Rectangle {
             height: 200
             onSend:(text)=>{
                 // 发送消息的逻辑
-                console.log(listIndex)
-                FriendModel.sendMessage(text,listIndex,NetChat.PrivateMessage)
+                FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.PrivateMessage)
                 //发送的时候也需要更新窗口滚动
+                listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
+            }
+            onSendFile: (text)=>{
+                FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.FileMessage)
                 listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
             }
         }

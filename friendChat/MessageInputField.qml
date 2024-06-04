@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import "../components" as MyComponent
 import CustomComponents
+import QtQuick.Dialogs
 
 Rectangle {
     id: container
@@ -10,7 +11,7 @@ Rectangle {
     Layout.fillWidth: true
     color: "#f2f2f2"
     signal send(string text)   //自定义信号
-
+    signal sendFile(string text)   //自定义信号
     Row{
         x: 8
         spacing: 8
@@ -31,6 +32,20 @@ Rectangle {
             height: 32
             imagePath: "qrc:/icon/wenjian_black.png"
             hoveredImagePath: "qrc:/icon/wenjian_blue.png"
+            onClicked: {
+                fileDialog.open()
+            }
+            FileDialog {
+                id: fileDialog
+                title: "选择文件"
+                fileMode: FileDialog.OpenFiles
+                acceptLabel: "Open"
+                rejectLabel: "Cancel"
+                onAccepted: {
+                    // console.log("用户选择的文件: " + fileDialog.selectedFile)
+                    sendFile(fileDialog.selectedFile)
+                }
+            }
         }
         MyComponent.IconButton{
             width: 32

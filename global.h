@@ -9,7 +9,7 @@
 
 enum MSG_TYPE {
     PrivateMessage,
-    GroupMessage,
+    FileMessage,
     AddFriend,
     Login,
     FriendList,

@@ -45,6 +45,7 @@ qt_add_qml_module(appqqV1
     QML_FILES friendChat/FriendsGroupMenu.qml
     QML_FILES friendChat/FriendsGroupPopup.qml
     QML_FILES friendChat/FriendAddWindow.qml
+    QML_FILES friendChat/ChatFile.qml
     SOURCES friendrequestmodel.h friendrequestmodel.cpp
 )
 
