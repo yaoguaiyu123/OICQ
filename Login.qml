@@ -77,6 +77,19 @@ Item{
 
     }
 
+    MyComponent.BackIconButton{
+        anchors.right: parent.right
+        anchors.top: parent.top
+        imagePath: "qrc:/icon/close.png"
+        imageHoverPath: "qrc:/icon/close_w.png"
+        backColor: "#00000000"
+        backHoverColor: "#cc4444"
+        imageHeight: 15
+        imageWidth: 15
+        userButton.onClicked: {
+            Qt.quit()  //关闭应用
+        }
+    }
 
     Column{
         width: 200

@@ -161,7 +161,6 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             for (int i = 0; i < _allData->friends.length(); ++i) {
                 if (_allData->friends.at(i).userid == from) {
                     beginResetModel();
-                    qDebug() << filename << " 接收到的********************************************* " << filesize;
                     _messageModel->addMessage("[文件] " + filename , "recvfile", filename, filesize, i);
                     endResetModel();
                     j = i;

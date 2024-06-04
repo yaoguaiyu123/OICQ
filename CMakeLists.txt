@@ -47,6 +47,8 @@ qt_add_qml_module(appqqV1
     QML_FILES friendChat/FriendAddWindow.qml
     QML_FILES friendChat/ChatFile.qml
     SOURCES friendrequestmodel.h friendrequestmodel.cpp
+    SOURCES window/framelesswindow.h window/framelesswindow.cpp
+    QML_FILES components/WindowBorder.qml
 )
 
 target_compile_features(appqqV1 PRIVATE cxx_std_20)

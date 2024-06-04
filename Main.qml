@@ -7,6 +7,7 @@ import QtQuick.Controls
 import QtQuick.Window
 import "./components" as MyComponent
 import CustomModels
+import CustomWindows
 // import FluentUI
 
 //大体的布局就是左边一个菜单栏
@@ -16,9 +17,9 @@ import CustomModels
 //右边中间是ListView实现的聊天窗口
 //右边下面是输入窗口
 
-ApplicationWindow {
+FramelessWindow {
     id:rootWindow
-    width: 350
+    width: 325
     height: 450
     // width: 1100
     // height: 710
@@ -26,7 +27,6 @@ ApplicationWindow {
     title: qsTr("qqClient")
     // minimumHeight: 530
     // minimumWidth: 840
-
 
     Loader {
         id: loader
@@ -81,32 +81,14 @@ ApplicationWindow {
 }
 
 
-
-// Window{
-//     id:widow
+// FramelessWindow {
+//     id: root
+//     visible: true
 //     width: 640
 //     height: 480
-//     visible: true
-//     TextArea{
-//         id:area
-//         width: 600
-//         height: 300
-//         textFormat: TextArea.RichText
-//     }
-//     Row{
-//         y: 320
-//         Button{
-//             text: "设置text"
-//             onClicked: {
-//                 area.text = "abc"
-//             }
-//         }
-//         Button{
-//             text: "获取text"
-//             onClicked: {
-//                 // console.log("ddd")
-//                 console.log(area.text)
-//             }
-//         }
-//     }
+//     minimumWidth: 480
+//     minimumHeight: 320
+//     color: "white"
+//     title: qsTr("Hello World")
+
 // }

@@ -5,8 +5,8 @@ import QtQuick
 
 Rectangle {
     id:button
-    width: 40
-    height: 30
+    implicitWidth: 40
+    implicitHeight: 30
     property string backColor: "#f2f2f2"
     property string backHoverColor: "#dfdfdf"
     property string imagePath: ""

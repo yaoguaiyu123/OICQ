@@ -10,33 +10,46 @@ Rectangle {
     property int currentIndex: 0
     property var components: ["friendChat/FriendChatWindow.qml",
                               "friendChat/FriendAddWindow.qml"]
-    // 行布局
-    RowLayout{
-        id:mainLayout
+
+    ColumnLayout{
         anchors.fill: parent
-        SideMenuBar{
-            onMenuBtnClicked:(index)=>{
-                if(index <= 1){
-                    currentIndex = index
-                    windowloader.source = components[currentIndex]
-                }
-            }
-            onHeadPopupOpen: {
-                headPopup.open()
-            }
+        spacing: 0
+        MyComponent.WindowBorder{
+            Layout.preferredHeight: 50
+            Layout.fillWidth: true
         }
 
-        Loader {
-            id:windowloader
-            active: true
+        // 行布局
+        RowLayout{
+            id:mainLayout
             Layout.fillHeight: true
             Layout.fillWidth: true
-            source:components[currentIndex]
-        }
+            SideMenuBar{
+                onMenuBtnClicked:(index)=>{
+                    if(index <= 1){
+                        currentIndex = index
+                        windowloader.source = components[currentIndex]
+                    }
+                }
+                onHeadPopupOpen: {
+                    headPopup.open()
+                }
+            }
 
-        MyComponent.HeadUpLoadPopup{
-            id:headPopup
-            anchors.centerIn:parent
+            Loader {
+                id:windowloader
+                active: true
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                source:components[currentIndex]
+            }
+
+            MyComponent.HeadUpLoadPopup{
+                id:headPopup
+                anchors.centerIn:parent
+            }
         }
     }
+
+
 }

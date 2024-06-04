@@ -6,8 +6,8 @@ import QtQuick.Controls
 
 Button {
     id: button
-    width: 50
-    height: 50
+    implicitWidth: 50
+    implicitHeight: 50
     property string imagePath: ""
     property string backColor: "#f2f2f2"
     property string hoveredImagePath: imagePath
