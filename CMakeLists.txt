@@ -33,6 +33,7 @@ qt_add_qml_module(appqqV1
     SOURCES network/postsend.h
     QML_FILES Login.qml
     SOURCES network/tcpsocket.h network/tcpsocket.cpp
+    SOURCES network/fileclient.h network/fileclient.cpp
     QML_FILES comman/NetChat.js
     SOURCES global.h
     SOURCES friendmodel.h friendmodel.cpp

@@ -18,11 +18,11 @@ Item{
         gradient: Gradient {
             GradientStop {
                position: 0.0
-               color: "#5eb5be"
+               color: "#9e37ca"
             }
             GradientStop {
-               position: 0.3
-               color: "#aef5fe"
+               position: 0.2
+               color: "#7ecafe"
             }
             GradientStop {
                position: 0.5

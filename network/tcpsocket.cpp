@@ -8,13 +8,14 @@ QString ServerIP = "127.0.0.1";
 int PORT = 8080;
 }
 
+
 TcpSocket::TcpSocket(QObject* parent)
     : QTcpSocket { parent } ,
     m_hostAddress(new QHostAddress())
 {
     connect(this, &TcpSocket::readyRead, this, &TcpSocket::on_ready_read);
     m_hostAddress->setAddress(ServerIP);
-    m_sendbuf = new uchar[16 * 1024 * 1024];
+    m_sendbuf = new uchar[32 * 1024 * 1024];
 }
 
 
@@ -108,6 +109,7 @@ void TcpSocket::connectToServer(){
 //发送数据的函数
 /**
  1个字节的开头 $
+ 4个字节的包大小(大端格式)
  2个字节的 msg_type(大端格式)
  8个字节的 userid(大端格式)
  4个字节的 len(大端格式)
@@ -124,8 +126,9 @@ void TcpSocket::sendMessage(MESG* send)
         return;
     }
 
-    quint64 bytestowrite = 0;
+    quint32 bytestowrite = 0;
     m_sendbuf[bytestowrite++] = '$'; // 开头
+    bytestowrite += 4;  //为包大小预留空间
     qToBigEndian<quint16>(send->msg_type, m_sendbuf + bytestowrite); // quint16 决定了存入两个字节的数据
     bytestowrite += 2;
     qToBigEndian<quint64>(m_userId, m_sendbuf + bytestowrite);
@@ -148,6 +151,9 @@ void TcpSocket::sendMessage(MESG* send)
     }
 
     m_sendbuf[bytestowrite++] = '#'; // 结尾
+    qToBigEndian<quint32>(bytestowrite, m_sendbuf + 1);   //包大小
+
+
 
     qDebug() << "写入:" << bytestowrite << " " << send->len;
     qint64 hastowrite = bytestowrite;
@@ -178,7 +184,6 @@ void TcpSocket::sendMessage(MESG* send)
 void TcpSocket::on_ready_read()
 {
     qDebug() << "开始读取数据";
-
     while (bytesAvailable() > 0) {
         int aliasSize = bytesAvailable();
         QByteArray datagram;
@@ -186,46 +191,46 @@ void TcpSocket::on_ready_read()
         read(datagram.data(), aliasSize); // 读取数据
 
         qDebug() << aliasSize << "    这是我接收的数据的总数";
-
-        if (datagram.at(0) == '$') {
-            // 读到开头
-            m_recvbuf.append(datagram);   //append会自动扩容
-            // qDebug() << "读到开头";
-        } else {
-            m_recvbuf.append(datagram);
-        }
-
-        if (datagram.at(aliasSize - 1) == '#') {
-            // qDebug() << "读到结尾";
-            break;
-        } else {
-            return;
-        }
+        m_recvbuf.append(reinterpret_cast<const uchar*>(datagram.data()), aliasSize);
+        parsePackage(); // 解析包
     }
+}
 
-    //解析数据包
-    int pos = 0;
-    char beginC = m_recvbuf.at(pos++);
+// 对包进行解析
+void TcpSocket::parsePackage()
+{
+    if (m_recvbuf.capacity - m_recvbuf.availableSpaceSize() < 15) {
+        return; // 小于最小包长直接退出
+    }
+    qint32 pos = 0;
+    uchar beginC = m_recvbuf.buffer[m_recvbuf.beginIndex + pos];
+    ++pos;
     if (beginC != '$') {
         qDebug() << "开头错误 " << beginC;
         return;
     }
-    quint16 msgType = qFromBigEndian<quint16>(reinterpret_cast<const uchar*>(m_recvbuf.constData() + pos));
+    quint32 packageSize = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(m_recvbuf.buffer + m_recvbuf.beginIndex + pos));
+    if (m_recvbuf.dataSize() < packageSize) {
+        return; // 小于包的长度直接退出
+    }
+    pos += sizeof(quint32); // 包大小
+    quint16 msgType = qFromBigEndian<quint16>(reinterpret_cast<const uchar*>(m_recvbuf.buffer + m_recvbuf.beginIndex + pos));
     pos += sizeof(quint16); // 消息类型
-    quint64 userId = qFromBigEndian<quint64>(reinterpret_cast<const uchar*>(m_recvbuf.constData() + pos));
+    quint64 userId = qFromBigEndian<quint64>(reinterpret_cast<const uchar*>(m_recvbuf.buffer + m_recvbuf.beginIndex + pos));
     pos += sizeof(quint64); // id
-    quint32 msgLen = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(m_recvbuf.constData() + pos));
+    quint32 msgLen = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(m_recvbuf.buffer + m_recvbuf.beginIndex + pos));
     pos += sizeof(quint32); // json长度
-    QByteArray msgData = m_recvbuf.mid(pos, msgLen);
+    QByteArray msgData(reinterpret_cast<char*>(m_recvbuf.buffer + m_recvbuf.beginIndex + pos), msgLen);
     pos += msgLen; // json
-    quint32 imgCount = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(m_recvbuf.constData() + pos));
+    quint32 imgCount = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(m_recvbuf.buffer + m_recvbuf.beginIndex + pos));
     pos += sizeof(quint32); // 读取图片数量
+
     // 读取图片存储到images
     QList<QImage> images;
     for (quint32 i = 0; i < imgCount; ++i) {
-        quint32 imgSize = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(m_recvbuf.constData() + pos));
+        quint32 imgSize = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(m_recvbuf.buffer + m_recvbuf.beginIndex + pos));
         pos += sizeof(quint32);
-        QByteArray imgData = m_recvbuf.mid(pos, imgSize);
+        QByteArray imgData(reinterpret_cast<char*>(m_recvbuf.buffer + m_recvbuf.beginIndex + pos), imgSize);
         pos += imgSize;
         QImage image;
         if (image.loadFromData(imgData)) {
@@ -233,11 +238,15 @@ void TcpSocket::on_ready_read()
         }
     }
 
-    if (m_recvbuf.at(pos) != '#') {
+    if (m_recvbuf.buffer[m_recvbuf.beginIndex + pos] != '#') {
         qDebug() << "数据包结尾错误";
         return;
     }
-
+    ++pos;
+    m_recvbuf.beginIndex += pos;
+    if (m_recvbuf.beginIndex >= m_recvbuf.capacity) {
+        m_recvbuf.beginIndex -= m_recvbuf.capacity;
+    }
 
     switch (msgType) {
     case PrivateMessage:
@@ -269,10 +278,7 @@ void TcpSocket::on_ready_read()
     default:
         break;
     }
-
-    m_recvbuf.clear();  //清空缓冲区
 }
-
 
 
 void TcpSocket::parsePrivateMessage(QJsonValue jsonvalue,QList<QImage>& images)
