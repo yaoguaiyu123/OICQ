@@ -119,6 +119,7 @@ signals:
     void addFriend(int);
     void addFriendRequest(QString,qint64,QList<QImage> & images);
     void addFriendRes(QJsonValue jsonvalue, QList<QImage>&);
+    void fileMessage(QJsonValue &jsonvalue);
 private:
     void parsePackage();  //处理包的函数
     void parseLogin(QJsonValue jsonvalue,QList<QImage> &images);
@@ -129,6 +130,8 @@ private:
     void parseAddFriendRequest(QJsonValue jsonvalue,QList<QImage> &);
     void parseAddFriendRes(QJsonValue jsonvalue, QList<QImage>&);
     void parseFriendRequestList(QJsonValue jsonvalue, QList<QImage>&);
+    void perseFileMessage(QJsonValue jsonvalue);
+
 
 };
 

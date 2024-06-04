@@ -253,6 +253,7 @@ void TcpSocket::parsePackage()
         parsePrivateMessage(byteArrayToJson(msgData), images);
         break;
     case FileMessage:
+        perseFileMessage(byteArrayToJson(msgData));
         break;
     case AddFriend:
         parseAddFriend(byteArrayToJson(msgData));
@@ -315,6 +316,12 @@ void TcpSocket::parseLogin(QJsonValue jsonvalue,QList<QImage>& images)
         //TODO
         qDebug() << "登录失败";
     }
+}
+
+// 处理文件消息
+void TcpSocket::perseFileMessage(QJsonValue jsonvalue)
+{
+    emit fileMessage(jsonvalue);
 }
 
 void TcpSocket::parseFriendList(QJsonValue jsonvalue,QList<QImage>& images)

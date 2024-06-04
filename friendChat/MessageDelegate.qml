@@ -53,6 +53,8 @@ Item {
             height: 80
             width: 220
             visible: type === "sendfile" || type === "recvfile" ? true : false
+            fileName: filename
+            fileSize: filesize
         }
 
         Component.onCompleted: {

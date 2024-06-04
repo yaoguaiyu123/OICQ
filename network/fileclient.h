@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 // 文件传输的套接字
+// 注册为一个单例类
 
 #include <QTcpSocket>
 #include <QObject>
@@ -14,7 +15,7 @@ class FileClient : public QObject
 public:
     FileClient(QObject *parent = nullptr);
     bool connectToServer(const QString &host, quint16 port);
-    void uploadFile(const QString& filePath);
+    void uploadFile(const QString& filePath, qint64 from ,qint64 to);
     void handleBytesWritten(qint64 size);
     ~FileClient();
 public slots:

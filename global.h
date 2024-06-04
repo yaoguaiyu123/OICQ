@@ -16,7 +16,8 @@ enum MSG_TYPE {
     UpdateHead,
     AddFriendRequest,
     AddFriendRes,
-    FriendRequestList
+    FriendRequestList,
+    UpLoadFileRequest
 };
 
 enum RETURN{
@@ -26,11 +27,25 @@ enum RETURN{
     Repeat2
 };
 
+#include <QString>
+
 struct Recode {
     QString date;
     QString type;
     QString message;
+    QString filename;
+    QString filesize;
+
+    Recode(const QString &date, const QString &type, const QString &message)
+        : date(date), type(type), message(message) {
+    }
+
+    Recode(const QString &date, const QString &type, const QString &message,
+        const QString &filename, const QString &filesize)
+        : date(date), type(type), message(message), filename(filename), filesize(filesize) {
+    }
 };
+
 
 struct Friend {
     QString name;

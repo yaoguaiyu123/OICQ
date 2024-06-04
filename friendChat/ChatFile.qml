@@ -49,7 +49,7 @@ Control{
                     id: filecondition
                     font.pixelSize: 12
                     color: "#898989"
-                    text: "已发送"
+                    text: type === "sendfile" ? "已发送" : "未接收"
                 }
             }
         }
@@ -62,7 +62,7 @@ Control{
                 id: image
                 width: 40
                 height: 40
-                source: "qrc:/image/download.png"
+                source: type === "sendfile" ? "qrc:/image/download.png" : "qrc:/image/to_download.png"
             }
         }
     }

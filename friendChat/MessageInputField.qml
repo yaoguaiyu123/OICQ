@@ -43,7 +43,7 @@ Rectangle {
                 rejectLabel: "Cancel"
                 onAccepted: {
                     // console.log("用户选择的文件: " + fileDialog.selectedFile)
-                    sendFile(fileDialog.selectedFile)
+                    sendFile(fileDialog.selectedFiles)
                 }
             }
         }

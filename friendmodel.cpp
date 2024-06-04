@@ -9,6 +9,7 @@
 #include <QImage>
 #include <QDir>
 #include <QTimer>
+#include "network/fileclient.h"
 ///好友列表model接口
 
 namespace {
@@ -79,7 +80,6 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                         // 是一个图片
                         i = i + 9;
                         if (message.mid(i, 9) == "file:////") {
-                            qDebug() << "file4类型的图片";
                             i = i + 9;
                             QString url = "/";
                             QString dateFolder; // 日期对应的文件夹
@@ -147,6 +147,30 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             addNewFriend(jsonvalue, images.first());
             endResetModel();
         });
+    // 文件消息
+    QObject::connect(m_tcpsocket, &TcpSocket::fileMessage,
+        [this](QJsonValue jsonvalue) {
+            if (!jsonvalue.isObject()) {
+                return;
+            }
+            QJsonObject recvObj = jsonvalue.toObject();
+            qint64 from = recvObj.value("from").toInteger();
+            QString filename = recvObj.value("filename").toString();
+            QString filesize = recvObj.value("filesize").toString();
+            int j;
+            for (int i = 0; i < _allData->friends.length(); ++i) {
+                if (_allData->friends.at(i).userid == from) {
+                    beginResetModel();
+                    qDebug() << filename << " 接收到的********************************************* " << filesize;
+                    _messageModel->addMessage("[文件] " + filename , "recvfile", filename, filesize, i);
+                    endResetModel();
+                    j = i;
+                    break;
+                }
+            }
+            emit(newMessage(j));
+        });
+
 }
 
 //在delegate能获得数据
@@ -237,7 +261,7 @@ void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
 
 //发送消息
 void FriendModel::sendMessage(QString message,int index,int type){
-    qDebug() << "###############    " << message << " " << type;
+    // qDebug() << "###############    " << message << " " << type;
     if (type == PrivateMessage) {
         QList<QImage> imageList;
         processImages(message, imageList);  //获取所有图片
@@ -254,18 +278,44 @@ void FriendModel::sendMessage(QString message,int index,int type){
         } else {
             m_tcpsocket->packingMessage(JsonObjectToString(obj), PrivateMessage, imageList);
         }
-    }else if(type == FileMessage){
+    } else if (type == FileMessage) {
+        QStringList files = message.split(","); // 分割字符串
+        if (files.length() > 5) {
+            emit(toManyFiles());
+            return;
+        }
         beginResetModel();
-        _messageModel->addMessage(message, "sendfile", index);
-        endResetModel();
-        // 发送消息到socket（先得到friendId）
-        qint64 userId = _allData->friends.at(index).userid;
-        QJsonObject obj;
-        obj.insert("to", userId);
-        obj.insert("message", message);
-        m_tcpsocket->packingMessage(JsonObjectToString(obj), FileMessage);
-    }
+        for (const QString& filepath : files) {
+            QFileInfo fileInfo(filepath.mid(7));
+            QString fileName = fileInfo.fileName();
+            // qDebug() << "得到文件大小" << fileName << "   " << fileInfo.size() << "   " << filepath.mid(7);
+            qint64 totalSize = fileInfo.size();
+            double kilobytes = totalSize / 1024.0;
+            double megabytes = totalSize / 1048576.0; // 1024*1024
 
+            QString result;
+            if (totalSize >= 1048576) {
+                result = QString::number(megabytes, 'f', 2) + " MB";
+            } else if (totalSize >= 1024) {
+                result = QString::number(kilobytes, 'f', 2) + " KB";
+            } else {
+                result = QString::number(totalSize) + " B";
+            }
+            _messageModel->addMessage("[文件] " + fileName , "sendfile", fileName, result, index);
+        }
+        endResetModel();
+        // 上传文件
+        for (const QString& filepath : files) {
+            FileClient* client = new FileClient();
+            if (!client->connectToServer("127.0.0.1", 8081)) {
+                client->deleteLater(); // 释放内存
+                return;
+            }
+            qint64 from = m_tcpsocket->getUserId();
+            qint64 to = _allData->friends.at(index).userid;
+            client->uploadFile(filepath ,from ,to); // 上传文件
+        }
+    }
 }
 
 // 更新头像

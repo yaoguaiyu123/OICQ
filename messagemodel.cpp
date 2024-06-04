@@ -34,7 +34,12 @@ QVariant MessageModel::data(const QModelIndex& index, int role) const{
         return f.type;
     }else if (role == Qt::UserRole + 2){
         return f.date;
+    } else if (role == Qt::UserRole + 3) {
+        return f.filename;
+    }else if (role == Qt::UserRole + 4){
+        return f.filesize;
     }
+
     return QVariant("");
 }
 
@@ -43,6 +48,8 @@ QHash<int, QByteArray> MessageModel::roleNames() const{
     roles[Qt::UserRole] = "msg";
     roles[Qt::UserRole + 1] = "type";
     roles[Qt::UserRole + 2] = "date";
+    roles[Qt::UserRole + 3] = "filename";
+    roles[Qt::UserRole + 4] = "filesize";
     return roles;
 }
 
@@ -79,6 +86,25 @@ void MessageModel::addMessage(QString text, QString msgType, int index, qint64 u
         for (int i = 0; i < _allData->friends.length(); ++i) {
             if (_allData->friends[i].userid == userid) {
                 _allData->messages[i].append({ now, msgType, text });
+                break;
+            }
+        }
+    }
+    endResetModel();
+}
+
+//添加消息信息
+void MessageModel::addMessage(QString text, QString msgType,QString filename ,QString filesize
+    ,int index, qint64 userid)
+{
+    beginResetModel();
+    QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
+    if(index != -1){
+        _allData->messages[index].append({ now, msgType, text ,filename, filesize});
+    } else {
+        for (int i = 0; i < _allData->friends.length(); ++i) {
+            if (_allData->friends[i].userid == userid) {
+                _allData->messages[i].append({ now, msgType, text ,filename, filesize});
                 break;
             }
         }

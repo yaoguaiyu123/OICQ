@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "../components" as MyComponent
 import "../comman/Comman.js" as Comman
 import "../comman/NetChat.js" as NetChat
@@ -85,6 +86,7 @@ Rectangle {
                 listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
             }
             onSendFile: (text)=>{
+                // console.log("将发送",text)
                 FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.FileMessage)
                 listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
             }
@@ -107,6 +109,14 @@ Rectangle {
         }
     }
 
+
+    MessageDialog{
+        id: tipDialog
+        title: qsTr("一次最多只能上传5个文件")
+        informativeText: "请重新选择"
+        buttons: MessageDialog.Ok
+    }
+
     function updateModel(index){
         listIndex = index
         listView.model = FriendModel.getMessageModel(index)
@@ -124,9 +134,11 @@ Rectangle {
         function onNewMessage(index){
             if(index === listIndex){
                 listView.positionViewAtIndex(listView.count - 1,ListView.Beginning) ;
-            }else{
-                //TODO
             }
+        }
+        //过多文件
+        function onToManyFiles(){
+            tipDialog.open()
         }
     }
 

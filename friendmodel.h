@@ -32,6 +32,7 @@ public:
 signals:
     void initDataFinished();
     void newMessage(int);
+    void toManyFiles();
 private:
     FriendData* _allData;
     MessageModel* _messageModel;

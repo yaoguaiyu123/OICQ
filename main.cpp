@@ -10,6 +10,7 @@
 #include "friendrequestmodel.h"
 #include <memory>
 #include <QThread>
+#include "network/fileclient.h"
 
 
 QObject* tcpSocket_qobject_singletontype_provider(QQmlEngine* engine, QJSEngine* scriptEngine)
@@ -34,12 +35,13 @@ QObject* friendRequestModel_qobject_singletontype_provider(QQmlEngine* engine, Q
     return &FriendRequestModel::singleTon();
 }
 
+
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/icon/appicon.png"));   //设置应用图标
     //初始化单例类
-    std::unique_ptr<QThread> thread = std::make_unique<QThread>();
+    // std::unique_ptr<QThread> thread = std::make_unique<QThread>();
     TcpSocket &socket = TcpSocket::singleTon();
     // socket.moveToThread(thread.get());
     FriendModel::singleTon();
