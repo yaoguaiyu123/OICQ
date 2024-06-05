@@ -14,6 +14,7 @@ Item {
     height: layout.visible ? layout.height : tiptext.height
     property string headUrl
     property int viewWidth: 120
+    signal uploadFile1(var filepath, var index)
     Text{
         id:tiptext
         width: viewWidth
@@ -55,6 +56,9 @@ Item {
             visible: type === "sendfile" || type === "recvfile" ? true : false
             fileName: filename
             fileSize: filesize
+            onUploadFile:(filepath)=> {
+                uploadFile1(filepath,index)
+            }
         }
 
         Component.onCompleted: {

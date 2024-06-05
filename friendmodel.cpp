@@ -10,6 +10,9 @@
 #include <QDir>
 #include <QTimer>
 #include "network/fileclient.h"
+#include <QRandomGenerator>
+#include <QThread>
+
 ///好友列表model接口
 
 namespace {
@@ -31,6 +34,23 @@ void processImages(QString content, QList<QImage>& imageList)
             }
         }
     }
+}
+
+// 生成消息随机ID的函数
+
+qint64 generateMessageId()
+{
+    QDateTime currentTime = QDateTime::currentDateTime();
+    int year = currentTime.date().year();
+    int month = currentTime.date().month();
+    int day = currentTime.date().day();
+    int hour = currentTime.time().hour();
+    int minute = currentTime.time().minute();
+    int second = currentTime.time().second();
+    qint64 randomPart = QRandomGenerator::global()->generate() % 100000000;
+    qint64 uniqueId = (year % 100) * 10000000000 + month * 100000000 + day * 1000000 + hour * 10000 + minute * 100 + second;
+    uniqueId = (uniqueId << 8) | randomPart;
+    return uniqueId;
 }
 
 QString imageCachePath = "/root/.config/OICQ/client/recv";
@@ -271,6 +291,7 @@ void FriendModel::sendMessage(QString message,int index,int type){
         qint64 userId = _allData->friends.at(index).userid;
         QJsonObject obj;
         obj.insert("to", userId);
+        obj.insert("messageid", generateMessageId());  //消息ID
         obj.insert("message", message);
         if (imageList.isEmpty()) {
             m_tcpsocket->packingMessage(JsonObjectToString(obj), PrivateMessage);
@@ -304,17 +325,44 @@ void FriendModel::sendMessage(QString message,int index,int type){
         }
         endResetModel();
         // 上传文件
+        qint64 from = m_tcpsocket->getUserId();
+        qint64 to = _allData->friends.at(index).userid;
         for (const QString& filepath : files) {
             FileClient* client = new FileClient();
-            if (!client->connectToServer("127.0.0.1", 8081)) {
-                client->deleteLater(); // 释放内存
-                return;
-            }
-            qint64 from = m_tcpsocket->getUserId();
-            qint64 to = _allData->friends.at(index).userid;
-            client->uploadFile(filepath ,from ,to); // 上传文件
+            // QThread* thread = new QThread();
+            // client->moveToThread(thread);
+            // thread->start();
+            // connect(this, &FriendModel::uploadFile, client, &FileClient::uploadFile);
+            // // TODO 发送信号告知完成进行资源释放
+            // client->connectToServer("127.0.0.1", 8081);
+            // emit uploadFile(filepath, from, to, generateMessageId());  //通过信号调用
+
+            client->uploadFile(filepath, from, to, generateMessageId()); // 上传文件
         }
     }
+}
+
+// 文件下载请求
+void FriendModel::downloadFileRequest(int friendiIndex, int messageIndex, QString filepath)
+{
+    qint64 from = _allData->friends.at(friendiIndex).userid;
+    qint64 to = m_tcpsocket->getUserId();
+    qint64 messageId = _allData->messages.at(friendiIndex).at(messageIndex).id;
+    QString msgtype = _allData->messages.at(friendiIndex).at(messageIndex).type;
+    if (msgtype == "sendfile") { // 下载自己的文件
+        qint64 t = from;
+        from = to;
+        to = t;
+    }
+    FileClient* client = new FileClient();
+    // QThread* thread = new QThread();
+    // client->moveToThread(thread);
+    // thread->start();
+    // connect(this, &FriendModel::uploadFile, client, &FileClient::uploadFile);
+    // client->connectToServer("127.0.0.1", 8081);
+    // emit(downloadFile(messageId, from, to, filepath));
+
+    client->downloadFile(messageId, from, to ,filepath); //下载文件
 }
 
 // 更新头像

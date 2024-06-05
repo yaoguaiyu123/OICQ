@@ -70,6 +70,9 @@ Rectangle {
                 headUrl: container.headPath
                 viewWidth: listView.width - 40  //传入宽度
                 x: listView.width / 2 - viewWidth / 2   //居中
+                onUploadFile1:(filepath ,messageIndex)=> {
+                    FriendModel.downloadFileRequest(listIndex,messageIndex,filepath)
+                }
             }
         }
         Rectangle{

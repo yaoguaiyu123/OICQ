@@ -1,11 +1,13 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import Qt.labs.platform
 
 Control{
     id: all
     property string fileName: "example.txt"
     property string fileSize: "15.6KB"
+    signal uploadFile(var filepath)
     implicitWidth: 220
     implicitHeight: 80
     padding: 12
@@ -71,7 +73,25 @@ Control{
     MouseArea{
         anchors.fill: parent
         onClicked: {
+            uploadDialog.open()
+        }
+    }
 
+    // 文件对话框
+    FileDialog {
+        id: uploadDialog
+        title: "Save File"
+        nameFilters: ["All files (*)"]
+        fileMode: FileDialog.SaveFile
+        acceptLabel: "Save"
+        rejectLabel: "Cancel"
+
+        onAccepted: {
+            // console.log("你选择的路径是: " + uploadDialog.file)
+            uploadFile(uploadDialog.file)
+        }
+
+        onRejected: {
         }
     }
 

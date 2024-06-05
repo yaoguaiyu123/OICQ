@@ -30,6 +30,7 @@ enum RETURN{
 #include <QString>
 
 struct Recode {
+    qint64 id;   //消息ID
     QString date;
     QString type;
     QString message;
