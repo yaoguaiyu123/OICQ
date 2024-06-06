@@ -175,13 +175,14 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             }
             QJsonObject recvObj = jsonvalue.toObject();
             qint64 from = recvObj.value("from").toInteger();
+            qint64 messageId = recvObj.value("messageId").toInteger();
             QString filename = recvObj.value("filename").toString();
             QString filesize = recvObj.value("filesize").toString();
             int j;
             for (int i = 0; i < _allData->friends.length(); ++i) {
                 if (_allData->friends.at(i).userid == from) {
                     beginResetModel();
-                    _messageModel->addMessage(-1, "[文件] " + filename , "recvfile", filename, filesize, i);
+                    _messageModel->addMessage(messageId, "[文件] " + filename , "recvfile", filename, filesize, i);
                     endResetModel();
                     // FIXME
                     j = i;
@@ -357,7 +358,7 @@ void FriendModel::downloadFileRequest(int friendiIndex, int messageIndex, const 
         from = to;
         to = t;
     }
-    // qDebug() << from << " " << to << " " << messageId << " " << msgtype;
+    qDebug() <<" 下载文件的请求          " << from << " " << to << " " << messageId << " " << msgtype;
     FileClient* client = new FileClient();
     QThread* thread = new QThread();
     client->moveToThread(thread);
