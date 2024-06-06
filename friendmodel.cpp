@@ -12,6 +12,7 @@
 #include "network/fileclient.h"
 #include <QRandomGenerator>
 #include <QThread>
+#include <QJsonArray>
 
 ///好友列表model接口
 
@@ -71,6 +72,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
     m_currentName = "";
     m_currentHeadpath = "";
 
+    //好友列表
     QObject::connect(m_tcpsocket, &TcpSocket::friendListReturn,
         [this](QJsonValue& value, QList<QImage> imagelist) {
             addFriends(value ,imagelist);
@@ -83,6 +85,8 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                 emit initDataFinished();
             }
         });
+
+    // 私法消息
     QObject::connect(m_tcpsocket, &TcpSocket::privateMessageReturn,
         [this](QJsonValue& value,QList<QImage>images) {
             QJsonObject obj;
@@ -132,7 +136,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             for (int i = 0; i < _allData->friends.length(); ++i) {
                 if (_allData->friends.at(i).userid == from) {
                     beginResetModel();
-                    _messageModel->addMessage(-1,message, "recv", i);   // FIXME
+                    _messageModel->addMessage(-1,message, "recv", i);
                     endResetModel();
                     j = i;
                     break;
@@ -140,6 +144,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             }
             emit(newMessage(j));
         });
+
     //登录返回
     QObject::connect(m_tcpsocket, &TcpSocket::loginReturn,
         [this](int res,QImage& image) {
@@ -160,6 +165,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                 emit(myImagePathChanged());
             });
         });
+
     // 添加好友结果
     QObject::connect(m_tcpsocket, &TcpSocket::addFriendRes,
         [this](QJsonValue jsonvalue, QList<QImage>& images) {
@@ -167,6 +173,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             addNewFriend(jsonvalue, images.first());
             endResetModel();
         });
+
     // 文件消息
     QObject::connect(m_tcpsocket, &TcpSocket::fileMessage,
         [this](QJsonValue jsonvalue) {
@@ -184,7 +191,6 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                     beginResetModel();
                     _messageModel->addMessage(messageId, "[文件] " + filename , "recvfile", filename, filesize, i);
                     endResetModel();
-                    // FIXME
                     j = i;
                     break;
                 }
@@ -192,6 +198,40 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             emit(newMessage(j));
         });
 
+    // 历史聊天消息 TODO 增加初始化速度  增加初始化的条数  增加mpa映射
+    QObject::connect(m_tcpsocket, &TcpSocket::messageList,
+        [this](QJsonValue& jsonvalue) {
+            QJsonArray jsonArray = jsonvalue.toArray();
+            qint64 userid = m_tcpsocket->getUserId();
+            for (const QJsonValue& jsonvalue : jsonArray) {
+                QJsonObject jsonobj = jsonvalue.toObject();
+                qint64 senderId = jsonobj.value("senderId").toInteger();
+                qint64 receiverId = jsonobj.value("receiverId").toInteger();
+                qint64 messageId = jsonobj.value("messageId").toInteger(-1);
+                QString message = jsonobj.value("message").toString();
+                QString filename = jsonobj.value("filename").toString("");
+                QString filesize = jsonobj.value("filesize").toString("");
+                QString type = jsonobj.value("messageType").toString();
+                if (type == "file") {
+                    // 文件消息
+                    if (senderId == userid) {
+                        _messageModel->addMessage(messageId, message, "sendfile", filename, filesize, -1, receiverId);
+                    }else{
+                        _messageModel->addMessage(messageId, message, "recvfile", filename, filesize, -1, receiverId);
+                    }
+                }else{
+                    //普通消息
+                    if (senderId == userid) {
+                        _messageModel->addMessage(messageId, message, "send", -1, receiverId);
+                    }else{
+                        _messageModel->addMessage(messageId, message   , "recv", -1, receiverId);
+                    }
+
+                }
+
+            }
+            emit(newMessage(0));   //刷新第一个窗口
+        });
 }
 
 //在delegate能获得数据
@@ -275,7 +315,6 @@ void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
         single_messages.append({-1, now, "tipDate", "" });
         single_messages.append({-1, now, "tip", f.name + "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
         _allData->friends.append(f);
-        // FIXME
         _messageModel->addMessageList(single_messages);   //调用_messageModel的方法进行添加后刷新
     }
     endResetModel();
@@ -295,7 +334,7 @@ void FriendModel::sendMessage(QString message,int index,int type){
         qint64 userId = _allData->friends.at(index).userid;
         QJsonObject obj;
         obj.insert("to", userId);
-        obj.insert("messageid", msgId);  //消息ID
+        // obj.insert("messageId", msgId);  //消息ID
         obj.insert("message", message);
         if (imageList.isEmpty()) {
             m_tcpsocket->packingMessage(JsonObjectToString(obj), PrivateMessage);
@@ -398,7 +437,6 @@ void FriendModel::addNewFriend(QJsonValue& jsonvalue, QImage& image){
     single_messages.append( {-1,now, "tipDate", "" });
     single_messages.append( {-1, now, "tip", jsonvalue.toObject().value("username").toString() +
             "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
-    // FIXME
     _messageModel->addMessageList(single_messages);
     if (_allData->messages.length() == 1) {
         emit(initDataFinished());   //如果是第一个好友就要初始化
@@ -412,7 +450,7 @@ void FriendModel::addNewFriend(QString username, qint64 userid, QString headpath
     _allData->addNewFriend(username,userid,headpath);
     QList<Recode> single_messages;
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
-    single_messages.append({-1, now, "tipDate","" });  // FIXME
+    single_messages.append({-1, now, "tipDate","" });
     single_messages.append({-1, now, "tip", username +
             "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
     _messageModel->addMessageList(single_messages);

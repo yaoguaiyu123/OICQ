@@ -27,6 +27,9 @@ FramelessWindow {
     title: qsTr("qqClient")
     // minimumHeight: 530
     // minimumWidth: 840
+    x: (Screen.width - width) / 2
+    y: (Screen.height - height) / 2
+
 
     Loader {
         id: loader
