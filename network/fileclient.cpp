@@ -20,26 +20,26 @@ FileClient::FileClient(QObject* parent)
 
 bool FileClient::connectToServer(const QString& host, quint16 port)
 {
-    socket = new QTcpSocket(); //TODO
-    socket->connectToHost(host, port);
-    if (!socket->waitForConnected(2000)) {
+    m_socket = new QTcpSocket();
+    m_socket->connectToHost(host, port);
+    if (!m_socket->waitForConnected(2000)) {
         qDebug() << "连接服务端失败";
-        emit complete();
+        deleteLater();
         return false;
     } else {
-        qDebug() << "连接文件服务器成功";
-        connect(socket, &QTcpSocket::bytesWritten, this, &FileClient::handleBytesWritten);
+        connect(m_socket, &QTcpSocket::bytesWritten, this, &FileClient::handleBytesWritten);
+        connect(m_socket, &QTcpSocket::disconnected, this, &FileClient::deleteLater);  //释放内存
         return true;
     }
 }
 
+// 处理文件上传的网络套接字写入
 void FileClient::handleBytesWritten(qint64 size)
 {
     haveWritten += size;
-    qDebug() << "成功写入:" << haveWritten;
+    qDebug() << "成功写入到socket:" << haveWritten << " "  << toWrite;
     if (haveWritten == toWrite) {
         qDebug() <<"文件上传完毕:" << toWrite;
-        emit complete();
     }
 }
 
@@ -55,17 +55,11 @@ void FileClient::uploadFile(const QString& filePath, qint64 from ,qint64 to,qint
 
     connectToServer("127.0.0.1", 8081);
 
-    // if (QThread::currentThread() != socket->thread()) {
-    //     return;
-    // }
-
     QString qtPath = filePath.mid(7);
     QFile file(qtPath);
+
     if (file.open(QIODevice::ReadOnly)) {
         QByteArray uData = QByteArray("U");
-
-        // QMetaObject::invokeMethod(this, "writeByteArray", Qt::QueuedConnection,
-        //     Q_ARG(QByteArray, uData));
         writeByteArray(uData);
         qint64 fileOffset = 0;
         qint64 fileSize = file.size(); // 文件大小
@@ -79,18 +73,11 @@ void FileClient::uploadFile(const QString& filePath, qint64 from ,qint64 to,qint
         stream << from; // from
         stream << to; // to
         stream << messageId; // messageid
-        // qDebug() << "文件上传的文件id" << messageId;
-        // QMetaObject::invokeMethod(this, "writeByteArray", Qt::QueuedConnection,
-        //     Q_ARG(QByteArray, infoBytes));
         writeByteArray(infoBytes);
         toWrite = fileSize + uData.length() + infoBytes.length(); // 初始化文件总长度
         while (fileOffset < fileSize) {
-            // qDebug() << "文件传输中: " << fileOffset << "   " << fileSize;
             file.seek(fileOffset);
             QByteArray byteArray = file.read(maxBlock);
-            // 写入
-            // QMetaObject::invokeMethod(this, "writeByteArray", Qt::QueuedConnection,
-            //     Q_ARG(QByteArray, byteArray));
             writeByteArray(byteArray);
             fileOffset += byteArray.size();
         }
@@ -102,7 +89,7 @@ void FileClient::uploadFile(const QString& filePath, qint64 from ,qint64 to,qint
 
 qint64 FileClient::writeByteArray(const QByteArray& byteArray)
 {
-    return socket->write(byteArray);
+    return m_socket->write(byteArray);
 }
 
 /// 依次写入开头
@@ -111,12 +98,10 @@ qint64 FileClient::writeByteArray(const QByteArray& byteArray)
 /// 文件to
 void FileClient::downloadFile(qint64 messageId, qint64 from, qint64 to, const QString& filepath)
 {
-    qDebug() << "下载文件的请求";
     connectToServer("127.0.0.1", 8081);
-    qDebug() << "下载文件的请求1";
 
     // // 连接接收
-    connect(socket, &QTcpSocket::readyRead, this, &FileClient::readDataFromServer);
+    connect(m_socket, &QTcpSocket::readyRead, this, &FileClient::readDataFromServer);
 
     QString qtFilePath = filepath.mid(7);
     recvFile = new QFile();  //TODO
@@ -125,10 +110,7 @@ void FileClient::downloadFile(qint64 messageId, qint64 from, qint64 to, const QS
         qDebug() << "error:下载文件保存路径有误";
         return;
     }
-
-    if (QThread::currentThread() != socket->thread()) {
-        return;
-    }
+    // qDebug() << messageId << " " << from << " " << to << " " << filepath;
 
     // 发送下载文件的请求
     QByteArray uData = QByteArray("D");
@@ -136,50 +118,47 @@ void FileClient::downloadFile(qint64 messageId, qint64 from, qint64 to, const QS
     QDataStream stream(&requestData, QIODevice::WriteOnly);
     stream << messageId << from << to;
     uData.append(requestData);
+    toWrite = uData.size();
     writeByteArray(uData);
-    qDebug() << "下载文件的请求2";
 }
 
 // 处理服务端的文件数据
 void FileClient::readDataFromServer()
 {
-    // 最多等待30s
-    if (socket->bytesAvailable() > 0) {
-        QByteArray byteArray = socket->readAll();
-        if (byteArray.isEmpty()) {
-            qDebug() << "empty()";
-            return;
-        }
-        if (byteArray[0] == 'D' && !is_Dbegin) {
-            byteArray.remove(0, 1); // 去除开头
-            is_Dbegin = true;
-            QDataStream stream(byteArray);
-            QByteArray nameByte;
-            stream >> nameByte; // 读取文件名数据
-            recvfilename = QString::fromUtf8(nameByte);
-            stream >> toRead;
-            byteArray.remove(0, sizeof(qint64) + sizeof(qint32) + recvfilename.length());
-            recvFile->write(byteArray);
-            haveRead += byteArray.size();
-            qDebug() << "当前接收文件大小: " << haveRead;
-        } else if (is_Dbegin) {
-            recvFile->write(byteArray);
-            haveRead += byteArray.size();
-            qDebug() << "当前接收文件大小: " << haveRead;
-        } else {
-            qDebug() << "error:开头错误";
-        }
+    QByteArray byteArray = m_socket->readAll();
+    if (byteArray.isEmpty()) {
+        return;
     }
-    if (haveRead >= toRead) {
-        qDebug() << "下载文件接收成功";
+
+    if (byteArray[0] == 'D' && !is_Dbegin) {
+        byteArray.remove(0, 1); // 去除开头
+        is_Dbegin = true;
+        QDataStream stream(byteArray);
+        QByteArray nameByte;
+        stream >> nameByte; // 读取文件名数据
+        recvfilename = QString::fromUtf8(nameByte);
+        stream >> toRead;
+        byteArray.remove(0, sizeof(qint64) + sizeof(qint32) + recvfilename.length());
+        recvFile->write(byteArray);
+        haveRead += byteArray.size();
+        qDebug() << "写入到文件111 : " << haveRead;
+    } else if (is_Dbegin) {
+        recvFile->write(byteArray);
+        haveRead += byteArray.size();
+        qDebug() << "写入到文件 : " << haveRead;
     } else {
-        qDebug() << "下载文件接收失败";
+        qDebug() << "error:开头错误";
     }
-    emit(complete());
+    recvFile->flush();
+    if (recvFile->size() >= toRead) {
+        deleteLater();
+    }
 }
 
 
 
 FileClient::~FileClient(){
-
+    if(m_socket != nullptr){
+        delete m_socket;
+    }
 }
