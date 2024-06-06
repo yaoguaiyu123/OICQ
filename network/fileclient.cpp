@@ -20,6 +20,7 @@ FileClient::FileClient(QObject* parent)
 
 bool FileClient::connectToServer(const QString& host, quint16 port)
 {
+    m_used = true;
     m_socket = new QTcpSocket();
     m_socket->connectToHost(host, port);
     if (!m_socket->waitForConnected(2000)) {
@@ -52,9 +53,10 @@ void FileClient::handleBytesWritten(qint64 size)
 /// 文件包数据
 void FileClient::uploadFile(const QString& filePath, qint64 from ,qint64 to,qint64 messageId)
 {
-
+    if (m_used) {
+        return;
+    }
     connectToServer("127.0.0.1", 8081);
-
     QString qtPath = filePath.mid(7);
     QFile file(qtPath);
 
@@ -98,6 +100,9 @@ qint64 FileClient::writeByteArray(const QByteArray& byteArray)
 /// 文件to
 void FileClient::downloadFile(qint64 messageId, qint64 from, qint64 to, const QString& filepath)
 {
+    if (m_used) {
+        return;
+    }
     connectToServer("127.0.0.1", 8081);
 
     // // 连接接收

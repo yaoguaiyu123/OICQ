@@ -339,6 +339,7 @@ void FriendModel::sendMessage(QString message,int index,int type){
             connect(client, &FileClient::destroyed, thread, &QThread::quit);   //线程停止
             connect(thread, &QThread::finished, thread, &QThread::deleteLater);  //释放线程资源
             emit siguploadFile(filepath, from, to, msgId);  //通过信号调用
+
         }
     }
 }

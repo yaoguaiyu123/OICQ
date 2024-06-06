@@ -32,6 +32,7 @@ public slots:
 signals:
     void complete();
 private:
+    bool m_used = false;
     QTcpSocket *m_socket;
     // 上传文件
     qint64 haveWritten;
