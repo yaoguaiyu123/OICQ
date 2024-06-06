@@ -17,8 +17,8 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     void setData(QList<Recode>* data);
     void addMessageList(QList<Recode>& messgeList, int index = -1);
-    void addMessage(QString text,QString msgType,int index = -1,qint64 userid = -1);
-    void addMessage(QString text, QString msgType, QString filename, QString filesize, int index = -1, qint64 userid = -1);
+    void addMessage(qint64 id,QString text,QString msgType,int index = -1,qint64 userid = -1);
+    void addMessage(qint64 id,QString text, QString msgType, QString filename, QString filesize, int index = -1, qint64 userid = -1);
 private:
     QList<Recode>* _currentData;
     FriendData* _allData;

@@ -132,7 +132,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             for (int i = 0; i < _allData->friends.length(); ++i) {
                 if (_allData->friends.at(i).userid == from) {
                     beginResetModel();
-                    _messageModel->addMessage(message, "recv", i);
+                    _messageModel->addMessage(-1,message, "recv", i);   // FIXME
                     endResetModel();
                     j = i;
                     break;
@@ -181,8 +181,9 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             for (int i = 0; i < _allData->friends.length(); ++i) {
                 if (_allData->friends.at(i).userid == from) {
                     beginResetModel();
-                    _messageModel->addMessage("[文件] " + filename , "recvfile", filename, filesize, i);
+                    _messageModel->addMessage(-1, "[文件] " + filename , "recvfile", filename, filesize, i);
                     endResetModel();
+                    // FIXME
                     j = i;
                     break;
                 }
@@ -270,9 +271,10 @@ void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
         f.headPath = "file:///" + headpath;
         QList<Recode> single_messages;
         QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
-        single_messages.append({ now, "tipDate", "" });
-        single_messages.append({ now, "tip", f.name + "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
+        single_messages.append({-1, now, "tipDate", "" });
+        single_messages.append({-1, now, "tip", f.name + "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
         _allData->friends.append(f);
+        // FIXME
         _messageModel->addMessageList(single_messages);   //调用_messageModel的方法进行添加后刷新
     }
     endResetModel();
@@ -281,17 +283,18 @@ void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
 //发送消息
 void FriendModel::sendMessage(QString message,int index,int type){
     // qDebug() << "###############    " << message << " " << type;
+    qint64 msgId = generateMessageId();
     if (type == PrivateMessage) {
         QList<QImage> imageList;
         processImages(message, imageList);  //获取所有图片
         beginResetModel();
-        _messageModel->addMessage(message, "send", index);
+        _messageModel->addMessage(msgId,message, "send", index);
         endResetModel();
         // 发送消息到socket（先得到friendId）
         qint64 userId = _allData->friends.at(index).userid;
         QJsonObject obj;
         obj.insert("to", userId);
-        obj.insert("messageid", generateMessageId());  //消息ID
+        obj.insert("messageid", msgId);  //消息ID
         obj.insert("message", message);
         if (imageList.isEmpty()) {
             m_tcpsocket->packingMessage(JsonObjectToString(obj), PrivateMessage);
@@ -321,7 +324,7 @@ void FriendModel::sendMessage(QString message,int index,int type){
             } else {
                 result = QString::number(totalSize) + " B";
             }
-            _messageModel->addMessage("[文件] " + fileName , "sendfile", fileName, result, index);
+            _messageModel->addMessage(msgId, "[文件] " + fileName , "sendfile", fileName, result, index);
         }
         endResetModel();
         // 上传文件
@@ -329,22 +332,22 @@ void FriendModel::sendMessage(QString message,int index,int type){
         qint64 to = _allData->friends.at(index).userid;
         for (const QString& filepath : files) {
             FileClient* client = new FileClient();
-            // QThread* thread = new QThread();
-            // client->moveToThread(thread);
-            // thread->start();
-            // connect(this, &FriendModel::uploadFile, client, &FileClient::uploadFile);
-            // // TODO 发送信号告知完成进行资源释放
-            // client->connectToServer("127.0.0.1", 8081);
-            // emit uploadFile(filepath, from, to, generateMessageId());  //通过信号调用
+            QThread* thread = new QThread();
+            client->moveToThread(thread);
+            thread->start();
+            connect(this, &FriendModel::siguploadFile, client, &FileClient::uploadFile);
+            // TODO 发送信号告知完成进行资源释放
+            emit siguploadFile(filepath, from, to, msgId);  //通过信号调用
 
-            client->uploadFile(filepath, from, to, generateMessageId()); // 上传文件
+            // client->uploadFile(filepath, from, to, generateMessageId()); // 上传文件
         }
     }
 }
 
 // 文件下载请求
-void FriendModel::downloadFileRequest(int friendiIndex, int messageIndex, QString filepath)
+void FriendModel::downloadFileRequest(int friendiIndex, int messageIndex, const QString& filepath)
 {
+    // qDebug() << "你好世界";
     qint64 from = _allData->friends.at(friendiIndex).userid;
     qint64 to = m_tcpsocket->getUserId();
     qint64 messageId = _allData->messages.at(friendiIndex).at(messageIndex).id;
@@ -354,15 +357,15 @@ void FriendModel::downloadFileRequest(int friendiIndex, int messageIndex, QStrin
         from = to;
         to = t;
     }
+    qDebug() << from << " " << to << " " << messageId << " " << msgtype;
     FileClient* client = new FileClient();
-    // QThread* thread = new QThread();
-    // client->moveToThread(thread);
-    // thread->start();
-    // connect(this, &FriendModel::uploadFile, client, &FileClient::uploadFile);
-    // client->connectToServer("127.0.0.1", 8081);
-    // emit(downloadFile(messageId, from, to, filepath));
+    QThread* thread = new QThread();
+    client->moveToThread(thread);
+    thread->start();
+    connect(this, &FriendModel::sigdownloadFile, client, &FileClient::downloadFile);
+    emit(sigdownloadFile(messageId, from, to, filepath));
 
-    client->downloadFile(messageId, from, to ,filepath); //下载文件
+    // client->downloadFile(messageId, from, to ,filepath); //下载文件
 }
 
 // 更新头像
@@ -391,9 +394,10 @@ void FriendModel::addNewFriend(QJsonValue& jsonvalue, QImage& image){
     _allData->addNewFriend(jsonvalue,image);
     QList<Recode> single_messages;
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
-    single_messages.append({ now, "tipDate", "" });
-    single_messages.append({ now, "tip", jsonvalue.toObject().value("username").toString() +
+    single_messages.append( {-1,now, "tipDate", "" });
+    single_messages.append( {-1, now, "tip", jsonvalue.toObject().value("username").toString() +
             "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
+    // FIXME
     _messageModel->addMessageList(single_messages);
     if (_allData->messages.length() == 1) {
         emit(initDataFinished());   //如果是第一个好友就要初始化
@@ -407,8 +411,8 @@ void FriendModel::addNewFriend(QString username, qint64 userid, QString headpath
     _allData->addNewFriend(username,userid,headpath);
     QList<Recode> single_messages;
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
-    single_messages.append({ now, "tipDate","" });
-    single_messages.append({ now, "tip", username +
+    single_messages.append({-1, now, "tipDate","" });  // FIXME
+    single_messages.append({-1, now, "tip", username +
             "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
     _messageModel->addMessageList(single_messages);
     if (_allData->messages.length() == 1) {

@@ -11,6 +11,7 @@
 #include <QTcpSocket>
 #include <QObject>
 #include <QFile>
+#include <QEventLoop>
 
 class FileClient : public QObject
 {
@@ -19,24 +20,26 @@ class FileClient : public QObject
 public:
     FileClient(QObject *parent = nullptr);
     bool connectToServer(const QString &host, quint16 port);
-    void handleBytesWritten(qint64 size);
-    void readDataFromServer(const QString &filepath);
     ~FileClient();
 public slots:
+    void handleBytesWritten(qint64 size);
     qint64 writeByteArray(const QByteArray& byteArray);
     void uploadFile(const QString& filePath, qint64 from ,qint64 to,qint64 messageId);
     void downloadFile(qint64 messageId, qint64 from, qint64 to,  const QString &filepath);
+    void readDataFromServer();
+
 signals:
     void complete();
 private:
-    // QTcpSocket *m_socket;
-    QTcpSocket *socket = nullptr;
+    QTcpSocket *socket;
     // 上传文件
     qint64 haveWritten;
     qint64 toWrite;
     // 下载文件
     qint64 haveRead;
     qint64 toRead;
+    QEventLoop loop;
+    QFile *recvFile;
 
     QString recvfilename;
     bool is_Dbegin = false;

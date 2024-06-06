@@ -24,7 +24,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     Q_INVOKABLE MessageModel* getMessageModel(int index = -1);
     Q_INVOKABLE void sendMessage(QString,int,int);
-    Q_INVOKABLE void downloadFileRequest(int friendiIndex, int messageIndex,QString filepath);
+    Q_INVOKABLE void downloadFileRequest(int friendiIndex, int messageIndex,const QString& filepath);
     static FriendModel& singleTon();
     Q_INVOKABLE void updateMyHead(QString);
     void addNewFriend(QJsonValue& jsonvalue, QImage& image);
@@ -34,13 +34,15 @@ signals:
     void initDataFinished();
     void newMessage(int);
     void toManyFiles();
-    void downloadFile(qint64 messageId, qint64 from, qint64 to, const QString& filepath);
-    void uploadFile(const QString& filePath, qint64 from ,qint64 to,qint64 messageId);
+    void sigdownloadFile(qint64 messageId, qint64 from, qint64 to, const QString& filepath);
+    void siguploadFile(const QString& filePath, qint64 from ,qint64 to,qint64 messageId);
+
 private:
     FriendData* _allData;
     MessageModel* _messageModel;
     QHash<int, QByteArray> m_role; //表头
     TcpSocket* m_tcpsocket;
+
 };
 
 #endif // FRIENDMODEL_H

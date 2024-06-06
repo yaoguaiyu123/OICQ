@@ -76,16 +76,16 @@ void MessageModel::addMessageList(QList<Recode>& messgeList, int index)
 }
 
 //添加对应friendModel的index的message
-void MessageModel::addMessage(QString text, QString msgType, int index, qint64 userid)
+void MessageModel::addMessage(qint64 id ,QString text, QString msgType, int index, qint64 userid)
 {
     beginResetModel();
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
     if(index != -1){
-        _allData->messages[index].append({ now, msgType, text });
+        _allData->messages[index].append({ id ,now, msgType, text });
     } else {
         for (int i = 0; i < _allData->friends.length(); ++i) {
             if (_allData->friends[i].userid == userid) {
-                _allData->messages[i].append({ now, msgType, text });
+                _allData->messages[i].append({ id, now, msgType, text });
                 break;
             }
         }
@@ -94,17 +94,17 @@ void MessageModel::addMessage(QString text, QString msgType, int index, qint64 u
 }
 
 //添加消息信息
-void MessageModel::addMessage(QString text, QString msgType,QString filename ,QString filesize
+void MessageModel::addMessage(qint64 id,QString text, QString msgType,QString filename ,QString filesize
     ,int index, qint64 userid)
 {
     beginResetModel();
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
     if(index != -1){
-        _allData->messages[index].append({ now, msgType, text ,filename, filesize});
+        _allData->messages[index].append({ id, now, msgType, text ,filename, filesize});
     } else {
         for (int i = 0; i < _allData->friends.length(); ++i) {
             if (_allData->friends[i].userid == userid) {
-                _allData->messages[i].append({ now, msgType, text ,filename, filesize});
+                _allData->messages[i].append({id, now, msgType, text ,filename, filesize});
                 break;
             }
         }
