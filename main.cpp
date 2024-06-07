@@ -12,6 +12,7 @@
 #include <QThread>
 #include "network/fileclient.h"
 #include "window/framelesswindow.h"
+#include <QQuickWindow>
 
 
 QObject* tcpSocket_qobject_singletontype_provider(QQmlEngine* engine, QJSEngine* scriptEngine)
@@ -41,6 +42,7 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/icon/appicon.png"));   //设置应用图标
+    // QQuickWindow::setSceneGraphBackend("software");
     //初始化单例类
     // std::unique_ptr<QThread> thread = std::make_unique<QThread>();
     TcpSocket &socket = TcpSocket::singleTon();

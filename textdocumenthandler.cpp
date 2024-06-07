@@ -56,7 +56,7 @@ void TextDocumentHandler::insertImage(QString url)
     QTextImageFormat imageFormat;
     imageFormat.setWidth(image.width());
     imageFormat.setHeight(image.height());
-    imageFormat.setName("file:///" + newImagePath);
+    imageFormat.setName("file://" + newImagePath);   // 插入file3类型的图片
     cursor.insertImage(imageFormat);
 }
 

@@ -23,7 +23,7 @@ void processImages(QString content, QList<QImage>& imageList)
         if (content.mid(i, 9) == "![image](") {
             // 是一个图片
             i = i + 9;
-            if (content.mid(i, 9) == "file:////") {
+            if (content.mid(i, 9) == "file:///") {
                 i = i + 9;
                 QString url = "/";
                 while (content[i] != ')' && i < content.length()) {
@@ -86,7 +86,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             }
         });
 
-    // 私法消息
+    // 私发消息
     QObject::connect(m_tcpsocket, &TcpSocket::privateMessageReturn,
         [this](QJsonValue& value,QList<QImage>images) {
             QJsonObject obj;
@@ -103,7 +103,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                     if (message.mid(i, 9) == "![image](") {
                         // 是一个图片
                         i = i + 9;
-                        if (message.mid(i, 9) == "file:////") {
+                        if (message.mid(i, 9) == "file:///") {
                             i = i + 9;
                             QString url = "/";
                             QString dateFolder; // 日期对应的文件夹
@@ -150,7 +150,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
         [this](int res,QImage& image) {
             if (res == Success) {
                 !image.save(headCachePath + "/myHead.jpg");
-                m_myImagePath =  "file:///" + headCachePath + "/myHead.jpg";
+                m_myImagePath =  "file://" + headCachePath + "/myHead.jpg";
             }
         });
 
@@ -161,7 +161,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             m_myImagePath =  "qrc:/image/default_head.png";
             emit(myImagePathChanged());
             QTimer::singleShot(100, [this](){
-                m_myImagePath =  "file:///" + headCachePath + "/myHead.jpg";
+                m_myImagePath =  "file://" + headCachePath + "/myHead.jpg";
                 emit(myImagePathChanged());
             });
         });
@@ -309,7 +309,7 @@ void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
         Friend f;
         f.userid = userid;
         f.name = name;
-        f.headPath = "file:///" + headpath;
+        f.headPath = "file://" + headpath;
         QList<Recode> single_messages;
         QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
         single_messages.append({-1, now, "tipDate", "" });
