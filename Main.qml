@@ -31,6 +31,7 @@ FramelessWindow {
     y: (Screen.height - height) / 2
 
 
+
     Loader {
         id: loader
         source: "Login.qml"
@@ -79,7 +80,9 @@ FramelessWindow {
         }
     }
 
-
+    Component.onCompleted: {
+        rootWindow.showNormal()
+    }
 
 }
 

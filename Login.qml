@@ -18,23 +18,23 @@ Item{
         gradient: Gradient {
             GradientStop {
                position: 0.0
-               color: "#9e37ca"
+               color: "#321d28"
             }
             GradientStop {
                position: 0.2
-               color: "#7ecafe"
+               color: "#19194b"
             }
             GradientStop {
                position: 0.5
-               color: "#939ab9"
+               color: "#2e1934"
             }
             GradientStop {
                position: 0.7
-               color: "#7ef5fe"
+               color: "#321d28"
             }
             GradientStop {
                position: 1.0
-               color: "#636aa9"
+               color: "#2e1a30"
             }
         }
         SequentialAnimation{
@@ -116,9 +116,21 @@ Item{
             height: 40
             text: "100001"
             anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: 18
+            font.pixelSize: 14
             verticalAlignment: TextInput.AlignVCenter
             horizontalAlignment: TextInput.AlignHCenter
+            color: "white"
+            background: Rectangle{
+                color: "#22ffffff"
+                radius: 8
+            }
+            PlaceholderText{
+                text: "请输入OICQ号"
+                anchors.centerIn: parent
+                font.pixelSize: 16
+                color: "#55ffffff"
+                visible: username.text === ""
+            }
         }
         TextField {
             id: password
@@ -126,14 +138,50 @@ Item{
             height: 40
             text: "123456"
             anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: 18
+            font.pixelSize: 8
             verticalAlignment: TextInput.AlignVCenter
             horizontalAlignment: TextInput.AlignHCenter
             echoMode: TextField.Password // 设置为密码输入模式
+            color: "white"
+            background: Rectangle{
+                color: "#22ffffff"
+                radius: 8
+            }
+            PlaceholderText{
+                text: "请输入OICQ密码"
+                anchors.centerIn: parent
+                font.pixelSize: 16
+                color: "#55ffffff"
+                visible: password.text === ""
+            }
         }
         CheckBox {
             id: radioBtn
-            text: "已阅读并同意服务协议和隐私保护指引"
+            contentItem: Row {
+                Text{
+                    text: "已阅读并同意"
+                    color: "#898989"
+                    verticalAlignment: Text.AlignVCenter
+                }
+                Text{
+                    text: "服务协议"
+                    color: "#0066cc"
+                    verticalAlignment: Text.AlignVCenter
+                }
+                Text{
+                    text: "和"
+                    color: "#898989"
+                    verticalAlignment: Text.AlignVCenter
+                }
+                Text{
+                    text: "隐私保护指引"
+                    color: "#0066cc"
+                    verticalAlignment: Text.AlignVCenter
+                }
+                opacity: parent.enabled ? 1.0 : 0.3
+                leftPadding: parent.indicator.width + 5
+            }
+
             // checked: false
             checked: true
             font.pixelSize: 12
@@ -145,7 +193,7 @@ Item{
                 x: parent.leftPadding
                 y: parent.height / 2 - height / 2
                 radius: height / 2
-                border.color: radioBtn.checked ? "#0099ff" : "#888888"
+                border.color: radioBtn.checked ? "#0066cc" : "#888888"
                 border.width: 1
 
                 Rectangle {           // 绘制内圆圈
@@ -158,17 +206,8 @@ Item{
                     visible: radioBtn.checked
                 }
             }
-
-            contentItem: Text {
-                text: parent.text
-                font: parent.font
-                opacity: enabled ? 1.0 : 0.3
-                color: "#656565"
-                verticalAlignment: Text.AlignVCenter
-                leftPadding: parent.indicator.width + 5
-            }
             onCheckedChanged: {
-                icon.border.color = checked ? "#0099ff" : "#888888"
+                icon.border.color = checked ? "#0066cc" : "#888888"
             }
         }
 
@@ -176,20 +215,21 @@ Item{
         Button{
             id:loginBtn
             width: 260
-            height: 40
+            height: 38
             enabled: !(!radioBtn.checked || username.text == ""  || password.text == "")
             anchors.horizontalCenter: parent.horizontalCenter
             background: Rectangle{
                 id:loginBtnBack
-                color: enabled ? "#0099ff" : "#44ccff"
+                color: enabled ? "#0066cc" : "#1f3160"
                 opacity: enabled ? 1 : 0.75
+                radius: 8
             }
             contentItem: Text{
                 id:loginBtnText
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
                 text: "登录"
-                color: "white"
+                color: parent.enabled ? "white":"#55ffffff"
                 font.pixelSize: 16
             }
             onDownChanged: {

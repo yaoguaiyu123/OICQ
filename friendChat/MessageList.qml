@@ -65,6 +65,8 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
             clip: true
+            maximumFlickVelocity: 20000  // 增加最大滑动速度
+            flickDeceleration: 500     // 减少减速率
             delegate: MessageDelegate{
                 id:msgDelegate
                 headUrl: container.headPath

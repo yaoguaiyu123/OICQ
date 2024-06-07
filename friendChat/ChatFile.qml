@@ -27,7 +27,7 @@ Control{
                 text: fileName
                 color: "black"
                 Layout.fillWidth: true
-
+                elide: Text.ElideRight
             }
             Item{
                 width: 10
