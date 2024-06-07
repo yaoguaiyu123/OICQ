@@ -217,14 +217,14 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                     if (senderId == userid) {
                         _messageModel->addMessage(messageId, message, "sendfile", filename, filesize, -1, receiverId);
                     }else{
-                        _messageModel->addMessage(messageId, message, "recvfile", filename, filesize, -1, receiverId);
+                        _messageModel->addMessage(messageId, message, "recvfile", filename, filesize, -1, senderId);
                     }
                 }else{
                     //普通消息
                     if (senderId == userid) {
                         _messageModel->addMessage(messageId, message, "send", -1, receiverId);
                     }else{
-                        _messageModel->addMessage(messageId, message   , "recv", -1, receiverId);
+                        _messageModel->addMessage(messageId, message, "recv", -1, senderId);
                     }
 
                 }
@@ -328,7 +328,7 @@ void FriendModel::sendMessage(QString message,int index,int type){
         QList<QImage> imageList;
         processImages(message, imageList);  //获取所有图片
         beginResetModel();
-        _messageModel->addMessage(msgId,message, "send", index);
+        _messageModel->addMessage(msgId, message, "send", index);
         endResetModel();
         // 发送消息到socket（先得到friendId）
         qint64 userId = _allData->friends.at(index).userid;
