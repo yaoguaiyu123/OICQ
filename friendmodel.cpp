@@ -103,8 +103,8 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                     if (message.mid(i, 9) == "![image](") {
                         // 是一个图片
                         i = i + 9;
-                        if (message.mid(i, 9) == "file:///") {
-                            i = i + 9;
+                        if (message.mid(i, 8) == "file:///") {
+                            i = i + 8;
                             QString url = "/";
                             QString dateFolder; // 日期对应的文件夹
                             while (message[i] != ')' && i < message.length()) {
@@ -347,6 +347,8 @@ void FriendModel::sendMessage(QString message,int index,int type){
             emit(toManyFiles());
             return;
         }
+        qint64 from = m_tcpsocket->getUserId();
+        qint64 to = _allData->friends.at(index).userid;
         beginResetModel();
         for (const QString& filepath : files) {
             QFileInfo fileInfo(filepath.mid(7));
@@ -364,23 +366,22 @@ void FriendModel::sendMessage(QString message,int index,int type){
             } else {
                 result = QString::number(totalSize) + " B";
             }
-            _messageModel->addMessage(msgId, "[文件] " + fileName , "sendfile", fileName, result, index);
-        }
-        endResetModel();
-        // 上传文件
-        qint64 from = m_tcpsocket->getUserId();
-        qint64 to = _allData->friends.at(index).userid;
-        for (const QString& filepath : files) {
-            FileClient* client = new FileClient();
+            // 上传文件
+            _messageModel
+                ->addMessage(msgId, "[文件] " + fileName, "sendfile", fileName, result, index);
+            FileClient* client = new FileClient(index);
             QThread* thread = new QThread();
             client->moveToThread(thread);
             thread->start();
+
             connect(this, &FriendModel::siguploadFile, client, &FileClient::uploadFile);
             connect(client, &FileClient::destroyed, thread, &QThread::quit);   //线程停止
+            connect(client, &FileClient::updateFileMessage, _messageModel, &MessageModel::updateHaveSizeAndRecvSize);
             connect(thread, &QThread::finished, thread, &QThread::deleteLater);  //释放线程资源
-            emit siguploadFile(filepath, from, to, msgId);  //通过信号调用
 
+            emit siguploadFile(filepath, from, to, msgId);  //通过信号调用
         }
+        endResetModel();
     }
 }
 
@@ -392,17 +393,20 @@ void FriendModel::downloadFileRequest(int friendiIndex, int messageIndex, const 
     qint64 to = m_tcpsocket->getUserId();
     qint64 messageId = _allData->messages.at(friendiIndex).at(messageIndex).id;
     QString msgtype = _allData->messages.at(friendiIndex).at(messageIndex).type;
+    _allData->messages[friendiIndex][messageIndex].haveRecvOrSendSize = 0;   // 重置为0
+
     if (msgtype == "sendfile") { // 下载自己的文件
         qint64 t = from;
         from = to;
         to = t;
     }
     qDebug() <<" 下载文件的请求          " << from << " " << to << " " << messageId << " " << msgtype;
-    FileClient* client = new FileClient();
+    FileClient* client = new FileClient(friendiIndex);
     QThread* thread = new QThread();
     client->moveToThread(thread);
     thread->start();
     connect(client, &FileClient::destroyed, thread, &QThread::quit);   //线程停止
+    connect(client, &FileClient::updateFileMessage, _messageModel, &MessageModel::updateHaveSizeAndRecvSize);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);  //释放线程资源
     connect(this, &FriendModel::sigdownloadFile, client, &FileClient::downloadFile);
     emit(sigdownloadFile(messageId, from, to, filepath));

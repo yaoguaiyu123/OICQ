@@ -6,15 +6,19 @@
 #include "global.h"
 #include <QFileInfo>
 #include <QEventLoop>
+#include <QTimer>
 
 namespace {
 qint64 maxBlock = 1024;   //一次读取的最大限制
 }
 
-FileClient::FileClient(QObject* parent)
+FileClient::FileClient(int index, QObject* parent)
     : QObject(parent)
-    , toWrite(1)
+    , haveRead(0)
+    , toRead(9999)
+    , toWrite(9999)
     , haveWritten(0)
+    , m_index(index)
 {
 }
 
@@ -23,6 +27,9 @@ bool FileClient::connectToServer(const QString& host, quint16 port)
     m_used = true;
     m_socket = new QTcpSocket();
     m_socket->connectToHost(host, port);
+    m_timer = new QTimer;
+    m_timer->start(1000);
+    connect(m_timer, &QTimer::timeout, this, &FileClient::handlerTimeout);
     if (!m_socket->waitForConnected(2000)) {
         qDebug() << "连接服务端失败";
         deleteLater();
@@ -41,6 +48,7 @@ void FileClient::handleBytesWritten(qint64 size)
     qDebug() << "成功写入到socket:" << haveWritten << " "  << toWrite;
     if (haveWritten == toWrite) {
         qDebug() <<"文件上传完毕:" << toWrite;
+        deleteLater();
     }
 }
 
@@ -56,7 +64,8 @@ void FileClient::uploadFile(const QString& filePath, qint64 from ,qint64 to,qint
     if (m_used) {
         return;
     }
-    connectToServer("127.0.0.1", 8081);
+    upOrDown = true;
+    connectToServer(IPADDRESS, 8081);
     QString qtPath = filePath.mid(7);
     QFile file(qtPath);
 
@@ -103,7 +112,8 @@ void FileClient::downloadFile(qint64 messageId, qint64 from, qint64 to, const QS
     if (m_used) {
         return;
     }
-    connectToServer("127.0.0.1", 8081);
+    upOrDown = false;
+    connectToServer(IPADDRESS, 8081);
 
     // // 连接接收
     connect(m_socket, &QTcpSocket::readyRead, this, &FileClient::readDataFromServer);
@@ -161,8 +171,18 @@ void FileClient::readDataFromServer()
 }
 
 
+void FileClient::handlerTimeout()
+{
+    if (upOrDown == true) {
+        emit updateFileMessage(m_index, haveWritten, toWrite);
+    } else {
+        emit updateFileMessage(m_index, haveRead, toRead);
+    }
+}
+
 
 FileClient::~FileClient(){
+    qDebug() << "文件传输完毕， 文件传输线程退出......";
     if(m_socket != nullptr){
         delete m_socket;
     }

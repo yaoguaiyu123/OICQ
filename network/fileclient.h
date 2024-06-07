@@ -12,13 +12,15 @@
 #include <QObject>
 #include <QFile>
 #include <QEventLoop>
+#include "global.h"
+class QTimer;
 
 class FileClient : public QObject
 {
     Q_OBJECT
 
 public:
-    FileClient(QObject *parent = nullptr);
+    FileClient(int m_index ,QObject *parent = nullptr);
     bool connectToServer(const QString &host, quint16 port);
     virtual ~FileClient() override;
 public slots:
@@ -28,12 +30,16 @@ public slots:
     void uploadFile(const QString& filePath, qint64 from ,qint64 to,qint64 messageId);
     void downloadFile(qint64 messageId, qint64 from, qint64 to,  const QString &filepath);
     void readDataFromServer();
-
+private slots:
+    void handlerTimeout();
 signals:
     void complete();
+    void updateFileMessage(qint64 index,qint64 have, qint64 total);
 private:
     bool m_used = false;
     QTcpSocket *m_socket;
+    QTimer *m_timer;
+    int m_index = -1;  //标记是哪个窗口的消息
     // 上传文件
     qint64 haveWritten;
     qint64 toWrite;
@@ -45,6 +51,7 @@ private:
 
     QString recvfilename;
     bool is_Dbegin = false;
+    bool upOrDown;
 };
 
 #endif // CLIENT_H

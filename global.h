@@ -7,6 +7,8 @@
 #include <QList>
 #include <QByteArray>
 
+#define IPADDRESS "10.253.35.227"
+
 enum MSG_TYPE {
     PrivateMessage,
     FileMessage,
@@ -37,6 +39,9 @@ struct Recode {
     QString message;
     QString filename;
     QString filesize;
+
+    qint64 fileTotalSize = 0;
+    qint64 haveRecvOrSendSize = 0;
 
     Recode(qint64 id,const QString &date, const QString &type, const QString &message)
         :id(id), date(date), type(type), message(message) {

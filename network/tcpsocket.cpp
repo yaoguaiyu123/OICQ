@@ -4,7 +4,6 @@
 #include "../global.h"
 #include <QBuffer>
 namespace{
-QString ServerIP = "127.0.0.1";
 int PORT = 8080;
 }
 
@@ -14,7 +13,7 @@ TcpSocket::TcpSocket(QObject* parent)
     m_hostAddress(new QHostAddress())
 {
     connect(this, &TcpSocket::readyRead, this, &TcpSocket::on_ready_read);
-    m_hostAddress->setAddress(ServerIP);
+    m_hostAddress->setAddress(IPADDRESS);
     m_sendbuf = new uchar[32 * 1024 * 1024];
 }
 

@@ -38,6 +38,10 @@ QVariant MessageModel::data(const QModelIndex& index, int role) const{
         return f.filename;
     }else if (role == Qt::UserRole + 4){
         return f.filesize;
+    }else if (role == Qt::UserRole + 5){
+        return f.fileTotalSize;
+    }else if (role == Qt::UserRole + 6){
+        return f.haveRecvOrSendSize;
     }
 
     return QVariant("");
@@ -50,6 +54,8 @@ QHash<int, QByteArray> MessageModel::roleNames() const{
     roles[Qt::UserRole + 2] = "date";
     roles[Qt::UserRole + 3] = "filename";
     roles[Qt::UserRole + 4] = "filesize";
+    roles[Qt::UserRole + 5] = "fileTotalSize";
+    roles[Qt::UserRole + 6] = "haveRecvAndSendSize";
     return roles;
 }
 
@@ -109,6 +115,15 @@ void MessageModel::addMessage(qint64 id,QString text, QString msgType,QString fi
             }
         }
     }
+    endResetModel();
+}
+
+// 更新单独一个message的haveSize和totalSize和transferSpeed
+void MessageModel::updateHaveSizeAndRecvSize(int index, qint64 haveSize, qint64 totalSize)
+{
+    beginResetModel();
+    (*_currentData)[index].fileTotalSize = totalSize;
+    (*_currentData)[index].haveRecvOrSendSize += haveSize;
     endResetModel();
 }
 
