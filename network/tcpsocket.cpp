@@ -246,6 +246,7 @@ void TcpSocket::parsePackage()
     if (m_recvbuf.beginIndex >= m_recvbuf.capacity) {
         m_recvbuf.beginIndex -= m_recvbuf.capacity;
     }
+    // qDebug() << "缓冲区剩余数据" << m_recvbuf.availableSpaceSize();
     QJsonValue jsonData = byteArrayToJson(msgData);
     switch (msgType) {
     case PrivateMessage:
@@ -281,6 +282,9 @@ void TcpSocket::parsePackage()
     default:
         break;
     }
+    if(m_recvbuf.availableSpaceSize() > 0){
+        parsePackage();  //递归调用
+    }
 }
 
 
@@ -313,7 +317,7 @@ void TcpSocket::parseLogin(QJsonValue& jsonvalue,QList<QImage>& images)
     if (object.value("res").toInt() == Success) {
         qDebug() << "parseLogin::登录成功";
         m_userId = object.value("userId").toInteger();
-        packingMessage("{}",FriendList);   //发送好友列表的请求
+        // packingMessage("{}",FriendList);   //发送好友列表的请求
     } else if (object.value("res").toInt() == Fail) {
         //TODO
         qDebug() << "登录失败";
@@ -333,7 +337,7 @@ void TcpSocket::parseFriendList(QJsonValue& jsonvalue,QList<QImage>& images)
         return;
     }
     emit friendListReturn(jsonvalue ,images);
-    packingMessage("{}",MessageList);  //获取聊天的历史记录
+    // packingMessage("{}",MessageList);  //获取聊天的历史记录
 }
 
 void TcpSocket::parseUpdateHead(QList<QImage>& images)
@@ -368,7 +372,7 @@ void TcpSocket::parseFriendRequestList(QJsonValue& jsonvalue, QList<QImage>& ima
     QJsonObject object = jsonvalue.toObject();
     QString fromname = object.value("username").toString();
     qint64 fromid = object.value("userid").toInteger();
-    packingMessage("{}" , FriendRequestList);   //获取好友请求列表
+    // packingMessage("{}" , FriendRequestList);   //获取好友请求列表
     emit(addFriendRequest(fromname,fromid, images));
 }
 
@@ -376,7 +380,7 @@ void TcpSocket::parseFriendRequestList(QJsonValue& jsonvalue, QList<QImage>& ima
 // 处理好友消息的返回
 void TcpSocket::parseMessageList(QJsonValue& jsonvalue)
 {
-    // qDebug() << "接收到好友列表的返回AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa";
+    qDebug() << "接收到好友列表的返回AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa";
     if (!jsonvalue.isArray()) {
         return;
     }

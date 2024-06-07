@@ -51,7 +51,7 @@ Control{
                     id: filecondition
                     font.pixelSize: 12
                     color: "#898989"
-                    text: type === "sendfile" ? "已发送" : "未接收"
+                    text: type === "sendfile" ? "已发送" : "已接收"
                     visible: haveRecvAndSendSize === fileTotalSize
                 }
                 Text {
@@ -59,7 +59,7 @@ Control{
                     font.pixelSize: 12
                     color: "#898989"
                     visible: haveRecvAndSendSize < fileTotalSize
-                    text: ((haveRecvAndSendSize / fileTotalSize) * 100).toFixed(2) + "%"
+                    text: haveRecvAndSendSize === 0 ? "未接受" : ((haveRecvAndSendSize / fileTotalSize) * 100).toFixed(2) + "%"
                 }
             }
         }

@@ -290,7 +290,6 @@ MessageModel* FriendModel::getMessageModel(int index)
 // 添加好友列表
 void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
 {
-    qDebug() << "添加好友列表 addFriends";
     QJsonArray array = jsonvalue.toArray();
     if (array.isEmpty()) {
         return;
