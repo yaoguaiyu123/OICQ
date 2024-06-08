@@ -59,24 +59,35 @@ Rectangle {
             Layout.fillWidth: true
             height: 1
         }
-        ListView{
-            id:listView
+
+        ListView {
+            id: listView
             spacing: 30
             Layout.fillHeight: true
             Layout.fillWidth: true
             clip: true
-            maximumFlickVelocity: 20000  // 增加最大滑动速度
-            flickDeceleration: 500     // 减少减速率
-            delegate: MessageDelegate{
-                id:msgDelegate
+
+            delegate: MessageDelegate {
+                id: msgDelegate
                 headUrl: container.headPath
-                viewWidth: listView.width - 40  //传入宽度
-                x: listView.width / 2 - viewWidth / 2   //居中
-                onUploadFile1:(filepath ,messageIndex)=> {
-                    FriendModel.downloadFileRequest(listIndex,messageIndex,filepath)
+                viewWidth: listView.width - 40  // 传入宽度
+                x: listView.width / 2 - viewWidth / 2   // 居中
+                onUploadFile1: (filepath, messageIndex) => {
+                    FriendModel.downloadFileRequest(listIndex, messageIndex, filepath)
                 }
             }
+
+            // WheelHandler {
+            //     onWheel:(wheel)=> {
+            //         var stepSize = 100
+            //         listView.contentY += wheel.angleDelta.y > 0 ? -stepSize : stepSize
+            //         wheel.accepted = true
+            //     }
+            // }
+
+
         }
+
         Rectangle{
             color: "#dfdfdf"
             Layout.fillWidth: true
@@ -88,12 +99,12 @@ Rectangle {
                 // 发送消息的逻辑
                 FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.PrivateMessage)
                 //发送的时候也需要更新窗口滚动
-                listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
+                // listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
             }
             onSendFile: (text)=>{
                 // console.log("将发送",text)
                 FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.FileMessage)
-                listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
+                // listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
             }
         }
     }
@@ -138,7 +149,7 @@ Rectangle {
         //接收到新的消息
         function onNewMessage(index){
             if(index === listIndex){
-                listView.positionViewAtIndex(listView.count - 1,ListView.Beginning) ;
+                listView.positionViewAtIndex(listView.count - 1,ListView.End)
             }
         }
         //过多文件
@@ -146,6 +157,5 @@ Rectangle {
             tipDialog.open()
         }
     }
-
 }
 

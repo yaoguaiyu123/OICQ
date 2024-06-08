@@ -77,10 +77,10 @@ void TextDocumentHandler::textContent()
 // 解析隐藏文档中的内容，将其图片内容做转化(将图片进行缩放)
 void TextDocumentHandler::parseMarkDown(QString content)
 {
-    qDebug() << content;
+    qDebug() << "content = " << content;
     // qDebug() << "dddddd";
     for (qint32 i = 0; i < content.length(); ++i) {
-        qDebug() << content.mid(i, 8);
+        // qDebug() << content.mid(i, 8);
         if (content.mid(i, 9) == "![image](") {
             // 是一个图片(可识别的图片)
             i = i + 9;
@@ -93,6 +93,15 @@ void TextDocumentHandler::parseMarkDown(QString content)
                 }
                 insertImage(url);
                 ++i;   //跳过自带的\n
+            }else if(content.mid(i, 8) == "file:///"){
+                i = i + 8;
+                QString url = "/";
+                while (content[i] != ')' && i < content.length()) {
+                    url += content[i];
+                    ++i;
+                }
+                insertImage(url);
+                ++i;
             }
 
         } else if (content.mid(i, 8) == "file:///") {

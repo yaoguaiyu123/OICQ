@@ -59,7 +59,7 @@ Control{
                     font.pixelSize: 12
                     color: "#898989"
                     visible: haveRecvAndSendSize < fileTotalSize
-                    text: haveRecvAndSendSize === 0 ? "未接受" : ((haveRecvAndSendSize / fileTotalSize) * 100).toFixed(2) + "%"
+                    text:  ((haveRecvAndSendSize / fileTotalSize) * 100).toFixed(2) + "%"
                 }
             }
         }

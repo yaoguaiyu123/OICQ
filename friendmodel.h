@@ -30,6 +30,7 @@ public:
     void addNewFriend(QJsonValue& jsonvalue, QImage& image);
     void addNewFriend(QString username, qint64 userid, QString headpath);
     void addFriends(QJsonValue &, QList<QImage> &);
+    void updateHaveSizeAndRecvSize(); // TODO
 signals:
     void initDataFinished();
     void newMessage(int);

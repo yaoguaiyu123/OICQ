@@ -48,6 +48,7 @@ void FileClient::handleBytesWritten(qint64 size)
     qDebug() << "成功写入到socket:" << haveWritten << " "  << toWrite;
     if (haveWritten == toWrite) {
         qDebug() <<"文件上传完毕:" << toWrite;
+        emit(updateFileMessage(m_index, haveWritten, toWrite));   //发送信号
         deleteLater();
     }
 }
@@ -156,11 +157,11 @@ void FileClient::readDataFromServer()
         byteArray.remove(0, sizeof(qint64) + sizeof(qint32) + recvfilename.length());
         recvFile->write(byteArray);
         haveRead += byteArray.size();
-        qDebug() << "写入到文件111 : " << haveRead;
+        // qDebug() << "写入到文件111 : " << haveRead;
     } else if (is_Dbegin) {
         recvFile->write(byteArray);
         haveRead += byteArray.size();
-        qDebug() << "写入到文件 : " << haveRead;
+        // qDebug() << "写入到文件 : " << haveRead;
     } else {
         qDebug() << "error:开头错误";
     }
@@ -174,6 +175,7 @@ void FileClient::readDataFromServer()
 void FileClient::handlerTimeout()
 {
     if (upOrDown == true) {
+        qDebug() << "handlerTimeout " << haveWritten << " " << toWrite;
         emit updateFileMessage(m_index, haveWritten, toWrite);
     } else {
         emit updateFileMessage(m_index, haveRead, toRead);
@@ -183,6 +185,9 @@ void FileClient::handlerTimeout()
 
 FileClient::~FileClient(){
     qDebug() << "文件传输完毕， 文件传输线程退出......";
+    if (m_timer != nullptr) {
+        delete m_timer;
+    }
     if(m_socket != nullptr){
         delete m_socket;
     }

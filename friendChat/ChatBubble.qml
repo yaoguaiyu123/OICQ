@@ -8,6 +8,7 @@ Rectangle{
     implicitHeight: chatText.height + 12
     color: type === "send" ? "#0099ff" : "white"
     radius: 8
+    signal chatBubbleInitEnd()
     TextArea{
         id:chatText
         anchors.centerIn: parent
@@ -18,10 +19,11 @@ Rectangle{
         // lineHeight: 1.3
         font.pixelSize: 14
         readOnly: true      //设置为只读
-    }
-    Component.onCompleted: {
-        if(chatText.width > 360){
-            chatText.width = 360
+        Component.onCompleted: {
+            if(chatText.width > 360){
+                chatText.width = 360
+                chatBubbleInitEnd()
+            }
         }
     }
 }

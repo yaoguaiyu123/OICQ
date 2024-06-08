@@ -40,7 +40,7 @@ struct Recode {
     QString filename;
     QString filesize;
 
-    qint64 fileTotalSize = 0;
+    qint64 fileTotalSize = 1;
     qint64 haveRecvOrSendSize = 0;
 
     Recode(qint64 id,const QString &date, const QString &type, const QString &message)
@@ -51,6 +51,25 @@ struct Recode {
     Recode(qint64 id, const QString &date, const QString &type, const QString &message,
         const QString &filename, const QString &filesize)
         : id(id) , date(date), type(type), message(message), filename(filename), filesize(filesize) {
+    }
+
+    Recode(qint64 id,
+           const QString &date,
+           const QString &type,
+           const QString &message,
+           const QString &filename,
+           const QString &filesize,
+           qint64 fileTotalSize,
+           qint64 haveRecvOrSendSize)
+        : id(id)
+        , date(date)
+        , type(type)
+        , message(message)
+        , filename(filename)
+        , filesize(filesize)
+        , fileTotalSize(fileTotalSize)
+        , haveRecvOrSendSize(haveRecvOrSendSize)
+    {
     }
 };
 

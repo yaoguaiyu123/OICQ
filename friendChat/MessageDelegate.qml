@@ -15,6 +15,7 @@ Item {
     property string headUrl
     property int viewWidth: 120
     signal uploadFile1(var filepath, var index)
+    signal updateListView()
     Text{
         id:tiptext
         width: viewWidth
@@ -48,6 +49,9 @@ Item {
         ChatBubble{
             id:textContainer
             visible: type === "send" || type === "recv" ? true : false
+            onChatBubbleInitEnd: {
+                updateListView()
+            }
         }
         ChatFile{
             id:filePattern

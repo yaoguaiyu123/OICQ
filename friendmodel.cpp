@@ -174,7 +174,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             endResetModel();
         });
 
-    // 文件消息
+    // 接收到文件消息
     QObject::connect(m_tcpsocket, &TcpSocket::fileMessage,
         [this](QJsonValue jsonvalue) {
             if (!jsonvalue.isObject()) {
@@ -375,13 +375,14 @@ void FriendModel::sendMessage(QString message,int index,int type){
 
             connect(this, &FriendModel::siguploadFile, client, &FileClient::uploadFile);
             connect(client, &FileClient::destroyed, thread, &QThread::quit);   //线程停止
-            connect(client, &FileClient::updateFileMessage, _messageModel, &MessageModel::updateHaveSizeAndRecvSize);
+            connect(client, &FileClient::updateFileMessage, this, &FriendModel::updateHaveSizeAndRecvSize);
             connect(thread, &QThread::finished, thread, &QThread::deleteLater);  //释放线程资源
 
             emit siguploadFile(filepath, from, to, msgId);  //通过信号调用
         }
         endResetModel();
     }
+    emit(newMessage(m_currentIndex));
 }
 
 // 文件下载请求
@@ -462,3 +463,9 @@ void FriendModel::addNewFriend(QString username, qint64 userid, QString headpath
     }
     endResetModel();
 }
+
+// 更新文件显示的值
+void FriendModel::updateHaveSizeAndRecvSize(){
+
+}
+
