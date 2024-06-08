@@ -418,7 +418,7 @@ void FriendModel::updateMyHead(QString surl)
     // file3类型的地址
     QUrl url(surl);
     QString path = url.toLocalFile();
-    qDebug() << "更新头像" << path;
+    qDebug() << "更新头像: path = " << path;
     QImage image(path);
     if (image.isNull()) {
         qDebug() << "头像无效，更新失败";

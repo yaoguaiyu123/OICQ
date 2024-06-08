@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
-import Qt.labs.platform
+// import Qt.labs.platform
+import QtQuick.Dialogs as QQuickDialog
 import CustomModels
 import Qt5Compat.GraphicalEffects
 
@@ -56,6 +57,7 @@ Popup{
             }
             onClicked: {
                 if(choseHeadpath !== ""){
+                    // console.log(choseHeadpath)
                     FriendModel.updateMyHead(choseHeadpath)
                     popup.close()
                 }
@@ -111,15 +113,29 @@ Popup{
             }
         }
     }
-    FileDialog {
+    QQuickDialog.FileDialog {
         id: fileDialog
-        title: "请选择你的头像"
-        fileMode: FileDialog.OpenFile
-        folder: "./"
-        nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp)", "All files (*)"]
+        title: "选择图片"
+        fileMode: FileDialog.Open
+        nameFilters: ["图片文件 (*.png *.jpg *.jpeg *.bmp)"]
+        acceptLabel: "打开"
+        rejectLabel: "取消"
         onAccepted: {
-            choseHeadpath = fileDialog.file
-            head.source = choseHeadpath
+            choseHeadpath = fileDialog.selectedFile
+            head.source = fileDialog.selectedFile
+            // console.log("ddd ",choseHeadpath)
         }
     }
+
+
+    //acceptLabel : string
+    // currentFolder : url
+    // defaultSuffix : string
+    // fileMode : enumeration
+    // nameFilters : list<string>
+    // options : flags
+    // rejectLabel : string
+    // selectedFile : url
+    // selectedFiles : list<url>
+
 }

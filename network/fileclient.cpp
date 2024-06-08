@@ -134,7 +134,7 @@ void FileClient::downloadFile(qint64 messageId, qint64 from, qint64 to, const QS
     QDataStream stream(&requestData, QIODevice::WriteOnly);
     stream << messageId << from << to;
     uData.append(requestData);
-    toWrite = uData.size();
+    // toWrite = uData.size();
     writeByteArray(uData);
 }
 
