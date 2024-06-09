@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Controls
 import "../components" as MyComponent
 import "../comman/Comman.js" as Comman
 import "../comman/NetChat.js" as NetChat
@@ -60,6 +61,8 @@ Rectangle {
             height: 1
         }
 
+
+
         ListView {
             id: listView
             spacing: 30
@@ -70,23 +73,17 @@ Rectangle {
             delegate: MessageDelegate {
                 id: msgDelegate
                 headUrl: container.headPath
-                viewWidth: listView.width - 40  // 传入宽度
-                x: listView.width / 2 - viewWidth / 2   // 居中
+                myheadUrl: FriendModel.myImagePath
+                viewWidth: listView.width - 20
+                x: 10
                 onUploadFile1: (filepath, messageIndex) => {
                     FriendModel.downloadFileRequest(listIndex, messageIndex, filepath)
                 }
             }
-
-            // WheelHandler {
-            //     onWheel:(wheel)=> {
-            //         var stepSize = 100
-            //         listView.contentY += wheel.angleDelta.y > 0 ? -stepSize : stepSize
-            //         wheel.accepted = true
-            //     }
-            // }
-
-
         }
+
+
+
 
         Rectangle{
             color: "#dfdfdf"

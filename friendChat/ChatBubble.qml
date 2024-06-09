@@ -3,9 +3,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Rectangle{
-    id:container
-    implicitWidth: chatText.width + 16
-    implicitHeight: chatText.height + 12
+    id:bubble
+    implicitWidth: chatText.implicitWidth + 16
+    implicitHeight: chatText.implicitHeight + 12
     color: type === "send" ? "#0099ff" : "white"
     radius: 8
     signal chatBubbleInitEnd()
@@ -19,11 +19,11 @@ Rectangle{
         // lineHeight: 1.3
         font.pixelSize: 14
         readOnly: true      //设置为只读
-        Component.onCompleted: {
-            if(chatText.width > 360){
-                chatText.width = 360
-                chatBubbleInitEnd()
-            }
-        }
+        // Component.onCompleted: {
+        //     if(chatText.width > 360){
+        //         chatText.width = 360
+        //         chatBubbleInitEnd()
+        //     }
+        // }
     }
 }

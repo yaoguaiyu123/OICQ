@@ -8,17 +8,18 @@ import CustomModels
 
 Item {
     id:container
-    //NOTE
-    //这里ListView.view.width获取失败，不知道为啥
-    width: viewWidth
-    height: layout.visible ? layout.height : tiptext.height
+    implicitWidth: viewWidth
+    implicitHeight: type === "tip" || type === "tipDate" ? 20 : messageRow.implicitHeight
+
+    property int viewWidth: 0
     property string headUrl
-    property int viewWidth: 120
+    property string myheadUrl
     signal uploadFile1(var filepath, var index)
     signal updateListView()
+
     Text{
         id:tiptext
-        width: viewWidth
+        width: parent.width
         font.pixelSize: 12
         color: "#aaaaaa"
         visible: type === "sendfile" || type === "recvfile" || type === "send"
@@ -27,47 +28,56 @@ Item {
         horizontalAlignment: Text.AlignHCenter
     }
 
-    RowLayout{
-        id: layout
+    Row{
+        id: messageRow
+        spacing: 10
         visible: type === "sendfile" || type === "recvfile" || type === "send"
                  || type === "recv" ? true : false
-        layoutDirection: type === "send" || type === "sendfile" ? Qt.RightToLeft : Qt.LeftToRight
-        spacing: 10
-        width: type === "send" || type === "recv" ?
-                   textContainer.implicitWidth + headImage.implicitWidth :
-                   filePattern.implicitWidth + headImage.implicitWidth
-        height: type === "send" || type === "recv" ?
-                    Math.max(textContainer.implicitHeight, headImage.implicitWidth) :
-                    Math.max(filePattern.implicitHeight , headImage.implicitHeight)
+        anchors.right: type === "send" ? parent.right : undefined
+        layoutDirection: type === "send" ? Qt.RightToLeft : Qt.LeftToRight
+
+
         MyComponent.HeadImage {
-            id:headImage
+            id:avatar
             width: 36
             height: 36
             imageRadius: 18
-            headUrl: type === "send" || type === "sendfile" ? FriendModel.myImagePath : container.headUrl
+            headUrl: type === "recv" || type === "recvfile" ?  container.headUrl : container.myheadUrl
         }
-        ChatBubble{
-            id:textContainer
+
+        Rectangle {
+            id: bubble
+            width: Math.min(
+                       messageText.implicitWidth + 24,
+                       0.6 * (viewWidth - avatar.width - messageRow.spacing))
+            height: messageText.implicitHeight + 24
+            color: type === "send" ? "#0099ff" : "white"
+            radius: 10
             visible: type === "send" || type === "recv" ? true : false
-            onChatBubbleInitEnd: {
-                updateListView()
+            TextEdit {
+                //消息
+                id: messageText
+                text: msg
+                color: type === "send" ? "white" : "black"
+                anchors.fill: parent
+                anchors.margins: 12
+                wrapMode: TextEdit.WrapAnywhere
+                font.pixelSize: 14
+                readOnly: true      //设置为只读
+                textFormat: TextArea.MarkdownText
+
             }
         }
+
         ChatFile{
             id:filePattern
-            height: 80
-            width: 220
+            width: 180
+            height: 60
             visible: type === "sendfile" || type === "recvfile" ? true : false
             fileName: filename
             fileSize: filesize
             onUploadFile:(filepath)=> {
                 uploadFile1(filepath,index)
-            }
-        }
-
-        Component.onCompleted: {
-            if(type === "send" || type === "sendfile"){
-                anchors.right = container.right
             }
         }
 

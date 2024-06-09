@@ -17,7 +17,7 @@ import CustomWindows
 //右边中间是ListView实现的聊天窗口
 //右边下面是输入窗口
 
-FramelessWindow {
+ApplicationWindow {
     id:rootWindow
     width: 325
     height: 450
