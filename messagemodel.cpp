@@ -63,7 +63,6 @@ void MessageModel::setData(QList<Recode>* data)
 {
     beginResetModel();   //刷新数据
     _currentData = data;
-
     endResetModel();
 }
 
@@ -84,7 +83,7 @@ void MessageModel::addMessageList(QList<Recode>& messgeList, int index)
 //添加对应friendModel的index的message
 void MessageModel::addMessage(qint64 id ,QString text, QString msgType, int index, qint64 userid)
 {
-    beginResetModel();
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
     if(index != -1){
         _allData->messages[index].append({ id ,now, msgType, text });
@@ -96,14 +95,14 @@ void MessageModel::addMessage(qint64 id ,QString text, QString msgType, int inde
             }
         }
     }
-    endResetModel();
+    endInsertRows();
 }
 
 //添加消息信息
 void MessageModel::addMessage(qint64 id,QString text, QString msgType,QString filename ,QString filesize
     ,int index, qint64 userid)
 {
-    beginResetModel();
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
     if(index != -1){
         _allData->messages[index].append({ id, now, msgType, text ,filename, filesize});
@@ -115,18 +114,15 @@ void MessageModel::addMessage(qint64 id,QString text, QString msgType,QString fi
             }
         }
     }
-    endResetModel();
+    endInsertRows();
 }
 
 // 更新单独一个message的haveSize和totalSize和transferSpeed
 void MessageModel::updateHaveSizeAndRecvSize(int index, qint64 haveSize, qint64 totalSize)
-{
-    // beginResetModel();
+{    
     // 这边的信号时能接收到的
     qDebug() << "接收到update: " << haveSize << "  " << totalSize;
     (*_currentData)[index].fileTotalSize = totalSize;
     (*_currentData)[index].haveRecvOrSendSize = haveSize;
-    // endResetModel();
-    // emit(newMessage());
 }
 

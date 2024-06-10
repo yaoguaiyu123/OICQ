@@ -96,12 +96,10 @@ Rectangle {
                 // 发送消息的逻辑
                 FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.PrivateMessage)
                 //发送的时候也需要更新窗口滚动
-                // listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
             }
             onSendFile: (text)=>{
                 // console.log("将发送",text)
                 FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.FileMessage)
-                // listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
             }
         }
     }
@@ -117,7 +115,7 @@ Rectangle {
                 msg: textArg
             })
             if(id === listIndex){
-                listView.positionViewAtIndex(listView.count - 1,ListView.Beginning)
+                listView.positionViewAtEnd()
             }
         }
     }

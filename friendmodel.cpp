@@ -135,9 +135,10 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             int j;
             for (int i = 0; i < _allData->friends.length(); ++i) {
                 if (_allData->friends.at(i).userid == from) {
-                    beginResetModel();
+                    QModelIndex modelindex = createIndex(i, 0);
+                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
                     _messageModel->addMessage(-1,message, "recv", i);
-                    endResetModel();
+                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
                     j = i;
                     break;
                 }
@@ -169,9 +170,9 @@ FriendModel::FriendModel(QAbstractListModel* parent)
     // 添加好友结果
     QObject::connect(m_tcpsocket, &TcpSocket::addFriendRes,
         [this](QJsonValue jsonvalue, QList<QImage>& images) {
-            beginResetModel();
+            beginInsertRows(QModelIndex(), rowCount(), rowCount());
             addNewFriend(jsonvalue, images.first());
-            endResetModel();
+            endInsertRows();
         });
 
     // 接收到文件消息
@@ -188,9 +189,10 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             int j;
             for (int i = 0; i < _allData->friends.length(); ++i) {
                 if (_allData->friends.at(i).userid == from) {
-                    beginResetModel();
+                    QModelIndex modelindex = createIndex(i, 0);
+                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});   //刷新最近消息
                     _messageModel->addMessage(messageId, "[文件] " + filename , "recvfile", filename, filesize, i);
-                    endResetModel();
+                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
                     j = i;
                     break;
                 }
@@ -198,11 +200,16 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             emit(newMessage(j));
         });
 
-    // 历史聊天消息 TODO 增加初始化速度  增加初始化的条数  增加mpa映射
+    // 历史聊天消息 TODO 增加初始化速度  增加初始化的条数  增加map映射
     QObject::connect(m_tcpsocket, &TcpSocket::messageList,
         [this](QJsonValue& jsonvalue) {
             QJsonArray jsonArray = jsonvalue.toArray();
             qint64 userid = m_tcpsocket->getUserId();
+            QModelIndex modelindex1 = createIndex(0, 0);
+            QModelIndex modelindex2 = createIndex(rowCount() - 1, 0);
+
+            emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2});
+
             for (const QJsonValue& jsonvalue : jsonArray) {
                 QJsonObject jsonobj = jsonvalue.toObject();
                 qint64 senderId = jsonobj.value("senderId").toInteger();
@@ -226,11 +233,11 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                     }else{
                         _messageModel->addMessage(messageId, message, "recv", -1, senderId);
                     }
-
                 }
 
             }
-            emit(newMessage(0));   //刷新第一个窗口
+            emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2});
+            emit(newMessage(0));   //通知list移动到最底端
         });
 }
 
@@ -326,9 +333,10 @@ void FriendModel::sendMessage(QString message,int index,int type){
     if (type == PrivateMessage) {
         QList<QImage> imageList;
         processImages(message, imageList);  //获取所有图片
-        beginResetModel();
+        QModelIndex modelIndex = createIndex(m_currentIndex, 0, {Qt::UserRole + 2});
+        emit dataChanged(modelIndex, modelIndex, {Qt::UserRole + 2});    //刷新最近消息
         _messageModel->addMessage(msgId, message, "send", index);
-        endResetModel();
+        emit dataChanged(modelIndex, modelIndex, {Qt::UserRole + 2});
         // 发送消息到socket（先得到friendId）
         qint64 userId = _allData->friends.at(index).userid;
         QJsonObject obj;
@@ -434,7 +442,7 @@ void FriendModel::addNewFriend(QJsonValue& jsonvalue, QImage& image){
     if (!jsonvalue.isObject()) {
         return;
     }
-    beginResetModel();
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
     _allData->addNewFriend(jsonvalue,image);
     QList<Recode> single_messages;
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
@@ -445,12 +453,12 @@ void FriendModel::addNewFriend(QJsonValue& jsonvalue, QImage& image){
     if (_allData->messages.length() == 1) {
         emit(initDataFinished());   //如果是第一个好友就要初始化
     }
-    endResetModel();
+    endInsertRows();
 }
 
 //添加一个新好友
 void FriendModel::addNewFriend(QString username, qint64 userid, QString headpath){
-    beginResetModel();
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
     _allData->addNewFriend(username,userid,headpath);
     QList<Recode> single_messages;
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
@@ -461,7 +469,7 @@ void FriendModel::addNewFriend(QString username, qint64 userid, QString headpath
     if (_allData->messages.length() == 1) {
         emit(initDataFinished());   //如果是第一个好友就要初始化
     }
-    endResetModel();
+    endInsertRows();
 }
 
 // 更新文件显示的值

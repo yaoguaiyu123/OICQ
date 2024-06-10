@@ -19,7 +19,7 @@ class FriendModel : public QAbstractListModel {
     Q_PROPERTY_RDONLY_AUTO(int, currentIndex)   //当前的好友索引
 public:
     FriendModel(QAbstractListModel* parent = nullptr);
-    int rowCount(const QModelIndex& parent) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
     Q_INVOKABLE MessageModel* getMessageModel(int index = -1);
