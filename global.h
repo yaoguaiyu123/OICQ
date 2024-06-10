@@ -37,8 +37,8 @@ struct Recode {
     QString date;
     QString type;
     QString message;
-    QString filename;
-    QString filesize;
+    QString filename = "";
+    QString filesize = "";
 
     qint64 fileTotalSize = 1;
     qint64 haveRecvOrSendSize = 0;

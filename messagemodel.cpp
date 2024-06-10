@@ -119,10 +119,11 @@ void MessageModel::addMessage(qint64 id,QString text, QString msgType,QString fi
 
 // 更新单独一个message的haveSize和totalSize和transferSpeed
 void MessageModel::updateHaveSizeAndRecvSize(int index, qint64 haveSize, qint64 totalSize)
-{    
-    // 这边的信号时能接收到的
-    qDebug() << "接收到update: " << haveSize << "  " << totalSize;
+{
+    QModelIndex modelIndex = createIndex(index, 0);
+    emit dataChanged(modelIndex, modelIndex, {Qt::UserRole + 5, Qt::UserRole + 6});
     (*_currentData)[index].fileTotalSize = totalSize;
     (*_currentData)[index].haveRecvOrSendSize = haveSize;
+    emit dataChanged(modelIndex, modelIndex, {Qt::UserRole + 5, Qt::UserRole + 6});
 }
 

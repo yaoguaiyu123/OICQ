@@ -12,13 +12,14 @@ namespace {
 qint64 maxBlock = 1024;   //一次读取的最大限制
 }
 
-FileClient::FileClient(int index, QObject* parent)
+FileClient::FileClient(int friendIndex ,int messageIndex, QObject* parent)
     : QObject(parent)
     , haveRead(0)
     , toRead(9999)
     , toWrite(9999)
     , haveWritten(0)
-    , m_index(index)
+    , m_index(friendIndex)
+    , m_messageIndex(messageIndex)
 {
 }
 
@@ -48,7 +49,7 @@ void FileClient::handleBytesWritten(qint64 size)
     qDebug() << "成功写入到socket:" << haveWritten << " "  << toWrite;
     if (haveWritten == toWrite) {
         qDebug() <<"文件上传完毕:" << toWrite;
-        emit(updateFileMessage(m_index, haveWritten, toWrite));   //发送信号
+        emit updateFileMessage(m_index,m_messageIndex, haveWritten, toWrite);
         deleteLater();
     }
 }
@@ -176,9 +177,9 @@ void FileClient::handlerTimeout()
 {
     if (upOrDown == true) {
         qDebug() << "handlerTimeout " << haveWritten << " " << toWrite;
-        emit updateFileMessage(m_index, haveWritten, toWrite);
+        emit updateFileMessage(m_index,m_messageIndex, haveWritten, toWrite);
     } else {
-        emit updateFileMessage(m_index, haveRead, toRead);
+        emit updateFileMessage(m_index,m_messageIndex, haveRead, toRead);
     }
 }
 

@@ -33,8 +33,8 @@ Item {
         spacing: 10
         visible: type === "sendfile" || type === "recvfile" || type === "send"
                  || type === "recv" ? true : false
-        anchors.right: type === "send" ? parent.right : undefined
-        layoutDirection: type === "send" ? Qt.RightToLeft : Qt.LeftToRight
+        anchors.right: type === "send" || type === "sendfile" ? parent.right : undefined
+        layoutDirection: type === "send" || type === "sendfile" ? Qt.RightToLeft : Qt.LeftToRight
 
 
         MyComponent.HeadImage {
@@ -57,7 +57,7 @@ Item {
             TextEdit {
                 //消息
                 id: messageText
-                text: msg
+                text: msg === undefined ? "" : msg
                 color: type === "send" ? "white" : "black"
                 anchors.fill: parent
                 anchors.margins: 12
@@ -74,8 +74,8 @@ Item {
             width: 180
             height: 60
             visible: type === "sendfile" || type === "recvfile" ? true : false
-            fileName: filename
-            fileSize: filesize
+            fileName: filename === undefined ? "" : filename
+            fileSize: filesize === undefined ? "" : filesize
             onUploadFile:(filepath)=> {
                 uploadFile1(filepath,index)
             }

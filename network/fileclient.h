@@ -20,7 +20,7 @@ class FileClient : public QObject
     Q_OBJECT
 
 public:
-    FileClient(int m_index ,QObject *parent = nullptr);
+    FileClient(int friendIndex ,int messageIndex, QObject *parent = nullptr);
     bool connectToServer(const QString &host, quint16 port);
     virtual ~FileClient() override;
 public slots:
@@ -34,12 +34,13 @@ private slots:
     void handlerTimeout();
 signals:
     void complete();
-    void updateFileMessage(qint64 index,qint64 have, qint64 total);
+    void updateFileMessage(int friendIndex,int messageIndex,qint64 have, qint64 total);
 private:
     bool m_used = false;
     QTcpSocket *m_socket;
     QTimer *m_timer;
-    int m_index = -1;  //标记是哪个窗口的消息
+    int m_index = -1;  // 标记是哪个窗口的消息
+    int m_messageIndex = -1;  // 标记是窗口的哪条消息
     // 上传文件
     qint64 haveWritten;
     qint64 toWrite;

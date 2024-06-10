@@ -19,12 +19,13 @@
 namespace {
 void processImages(QString content, QList<QImage>& imageList)
 {
+    qDebug() << "要处理的消息 " << content;
     for (qint32 i = 0; i < content.length(); ++i) {
         if (content.mid(i, 9) == "![image](") {
             // 是一个图片
             i = i + 9;
-            if (content.mid(i, 9) == "file:///") {
-                i = i + 9;
+            if (content.mid(i, 8) == "file:///") {
+                i = i + 8;
                 QString url = "/";
                 while (content[i] != ')' && i < content.length()) {
                     url += content[i];
@@ -86,7 +87,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             }
         });
 
-    // 私发消息
+    // 接收到私发消息
     QObject::connect(m_tcpsocket, &TcpSocket::privateMessageReturn,
         [this](QJsonValue& value,QList<QImage>images) {
             QJsonObject obj;
@@ -96,7 +97,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             qint64 from = obj.value("from").toInteger();
             QString message = obj.value("message").toString();
             if (!images.isEmpty()) {
-                message.replace("config/send", "config/recv"); // 转变
+                message.replace("client/send", "client/recv"); // 转变地址
                 // 给所有收到的图片建立缓存
                 int noCount = 0;
                 for (qint32 i = 0; i < message.length(); ++i) {
@@ -123,6 +124,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                             if (!dir.exists(dateFolder)) {
                                 dir.mkpath(dateFolder);
                             }
+                            qDebug() << "要保存的地址 :" << url;
                             if (!images.at(noCount).save(url)) {
                                 return;
                             }
@@ -376,7 +378,7 @@ void FriendModel::sendMessage(QString message,int index,int type){
             // 上传文件
             _messageModel
                 ->addMessage(msgId, "[文件] " + fileName, "sendfile", fileName, result, index);
-            FileClient* client = new FileClient(index);
+            FileClient* client = new FileClient(index, _messageModel->rowCount() - 1);
             QThread* thread = new QThread();
             client->moveToThread(thread);
             thread->start();
@@ -409,12 +411,12 @@ void FriendModel::downloadFileRequest(int friendiIndex, int messageIndex, const 
         to = t;
     }
     qDebug() <<" 下载文件的请求          " << from << " " << to << " " << messageId << " " << msgtype;
-    FileClient* client = new FileClient(friendiIndex);
+    FileClient* client = new FileClient(friendiIndex , messageIndex);
     QThread* thread = new QThread();
     client->moveToThread(thread);
     thread->start();
     connect(client, &FileClient::destroyed, thread, &QThread::quit);   //线程停止
-    connect(client, &FileClient::updateFileMessage, _messageModel, &MessageModel::updateHaveSizeAndRecvSize);
+    connect(client, &FileClient::updateFileMessage, this, &FriendModel::updateHaveSizeAndRecvSize);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);  //释放线程资源
     connect(this, &FriendModel::sigdownloadFile, client, &FileClient::downloadFile);
     emit(sigdownloadFile(messageId, from, to, filepath));
@@ -473,7 +475,17 @@ void FriendModel::addNewFriend(QString username, qint64 userid, QString headpath
 }
 
 // 更新文件显示的值
-void FriendModel::updateHaveSizeAndRecvSize(){
-
+void FriendModel::updateHaveSizeAndRecvSize(int friendIndex,
+                                            int messageIndex,
+                                            qint64 haveRW,
+                                            qint64 toRW)
+{
+    if (friendIndex != m_currentIndex) {
+        Recode& recode = _allData->messages[friendIndex][messageIndex];
+        recode.haveRecvOrSendSize = haveRW;
+        recode.fileTotalSize = toRW;
+    } else {
+        _messageModel->updateHaveSizeAndRecvSize(messageIndex, haveRW, toRW);
+    }
 }
 
