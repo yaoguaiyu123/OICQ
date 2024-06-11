@@ -13,6 +13,7 @@
 #include <QRandomGenerator>
 #include <QThread>
 #include <QJsonArray>
+#include <QRegularExpression>
 
 ///好友列表model接口
 
@@ -54,6 +55,28 @@ qint64 generateMessageId()
     uniqueId = (uniqueId << 8) | randomPart;
     return uniqueId;
 }
+
+
+
+
+QString processMessageWithImages(QString message, const QString &defaultImagePath) {
+    QRegularExpression regex(R"(!\[image\]\((file:///.*?)\))"); // 正则表达式匹配 file:// 开头的图片 URL
+    QRegularExpressionMatchIterator i = regex.globalMatch(message);
+
+    while (i.hasNext()) {
+        QRegularExpressionMatch match = i.next();
+        QString url = match.captured(1);
+        QImage image(url);
+
+        if (image.isNull()) {
+            // 图片无法加载，替换为默认图片路径
+            message.replace(url, defaultImagePath);
+        }
+    }
+
+    return message;
+}
+
 
 QString imageCachePath = "/root/.config/OICQ/client/recv";
 QString headCachePath = "/root/.config/OICQ/client/head";
@@ -202,7 +225,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             emit(newMessage(j));
         });
 
-    // 历史聊天消息 TODO 增加初始化速度  增加初始化的条数  增加map映射
+    // 历史聊天消息 TODO 增加初始化速度
     QObject::connect(m_tcpsocket, &TcpSocket::messageList,
         [this](QJsonValue& jsonvalue) {
             QJsonArray jsonArray = jsonvalue.toArray();
@@ -218,6 +241,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                 qint64 receiverId = jsonobj.value("receiverId").toInteger();
                 qint64 messageId = jsonobj.value("messageId").toInteger(-1);
                 QString message = jsonobj.value("message").toString();
+
                 QString filename = jsonobj.value("filename").toString("");
                 QString filesize = jsonobj.value("filesize").toString("");
                 QString type = jsonobj.value("messageType").toString();
@@ -226,6 +250,8 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                     if (senderId == userid) {
                         _messageModel->addMessage(messageId, message, "sendfile", filename, filesize, -1, receiverId);
                     }else{
+                        message.replace("client/send", "client/recv"); // 对message转变地址
+                        message = processMessageWithImages(message, "qrc:/icon/fail_to_load.png");
                         _messageModel->addMessage(messageId, message, "recvfile", filename, filesize, -1, senderId);
                     }
                 }else{
@@ -233,6 +259,8 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                     if (senderId == userid) {
                         _messageModel->addMessage(messageId, message, "send", -1, receiverId);
                     }else{
+                        message.replace("client/send", "client/recv"); // 对message转变地址
+                        message = processMessageWithImages(message, "qrc:/icon/fail_to_load.png");
                         _messageModel->addMessage(messageId, message, "recv", -1, senderId);
                     }
                 }
