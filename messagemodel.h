@@ -15,7 +15,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    void setData(QList<Recode>* data);
+    void setModelData(QList<Recode>* data);
     void addMessageList(QList<Recode>& messgeList, int index = -1);
     void addMessage(qint64 id,QString text,QString msgType,int index = -1,qint64 userid = -1);
     void addMessage(qint64 id,QString text, QString msgType, QString filename, QString filesize, int index = -1, qint64 userid = -1);

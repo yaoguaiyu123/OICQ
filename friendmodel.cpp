@@ -101,7 +101,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
         [this](QJsonValue& value, QList<QImage> imagelist) {
             addFriends(value ,imagelist);
             if(!_allData->messages.isEmpty()){
-                _messageModel->setData(&_allData->messages[m_currentIndex]); // 设置当前聊天窗口为第一个
+                _messageModel->setModelData(&_allData->messages[m_currentIndex]); // 设置当前聊天窗口为第一个
                 m_currentName = _allData->friends.at(m_currentIndex).name;
                 m_currentHeadpath = _allData->friends.at(m_currentIndex).headPath;
                 emit currentNameChanged();
@@ -226,7 +226,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
         });
 
     // 历史聊天消息 TODO 增加初始化速度
-    QObject::connect(m_tcpsocket, &TcpSocket::messageList,
+    QObject::connect(m_tcpsocket, &TcpSocket::historyMessageList,
         [this](QJsonValue& jsonvalue) {
             QJsonArray jsonArray = jsonvalue.toArray();
             qint64 userid = m_tcpsocket->getUserId();
@@ -248,6 +248,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                 if (type == "file") {
                     // 文件消息
                     if (senderId == userid) {
+                        qDebug() << "你好世界1";
                         _messageModel->addMessage(messageId, message, "sendfile", filename, filesize, -1, receiverId);
                     }else{
                         message.replace("client/send", "client/recv"); // 对message转变地址
@@ -259,6 +260,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                     if (senderId == userid) {
                         _messageModel->addMessage(messageId, message, "send", -1, receiverId);
                     }else{
+                        qDebug() << "你好世界2";
                         message.replace("client/send", "client/recv"); // 对message转变地址
                         message = processMessageWithImages(message, "qrc:/icon/fail_to_load.png");
                         _messageModel->addMessage(messageId, message, "recv", -1, senderId);
@@ -267,7 +269,9 @@ FriendModel::FriendModel(QAbstractListModel* parent)
 
             }
             emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2});
-            emit(newMessage(0));   //通知list移动到最底端
+            _messageModel->setModelData(&_allData->messages[m_currentIndex]);
+            emit(newMessage(m_currentIndex));   //通知list移动到最底端
+
         });
 }
 
@@ -318,13 +322,13 @@ MessageModel* FriendModel::getMessageModel(int index)
         emit(currentHeadpathChanged());
         emit(currentNameChanged());
         if(m_currentIndex < _allData->messages.length()){
-            _messageModel->setData(&_allData->messages[m_currentIndex]);
+            _messageModel->setModelData(&_allData->messages[m_currentIndex]);
         }
     }
     return _messageModel;
 }
 
-// 添加好友列表
+// 初始化好友列表
 void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
 {
     QJsonArray array = jsonvalue.toArray();
@@ -349,7 +353,7 @@ void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
         QList<Recode> single_messages;
         QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
         single_messages.append({-1, now, "tipDate", "" });
-        single_messages.append({-1, now, "tip", f.name + "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
+        single_messages.append({-1, now, "tip", "快来与你的好友" + f.name + "聊天吧" }); // 这边使用列表初始化struct
         _allData->friends.append(f);
         _messageModel->addMessageList(single_messages);   //调用_messageModel的方法进行添加后刷新
     }

@@ -17,15 +17,15 @@ Item {
     signal uploadFile1(var filepath, var index)
     signal cancelTransfer1(var index)
     signal updateListView()
+    // visible: type !== undefined && type !== "" && type !== null
 
     Text{
         id:tiptext
         width: parent.width
         font.pixelSize: 12
         color: "#aaaaaa"
-        visible: type === "sendfile" || type === "recvfile" || type === "send"
-                 || type === "recv" ? false : true
-        text: type === "tip" ? msg : new Date().toLocaleString(Qt.locale(), "yyyy/MM/dd hh:mm:ss")
+        visible: type === "tip" || type === "tipDate" ? true : false
+        text: type === "tipDate" ? datetime : msg
         horizontalAlignment: Text.AlignHCenter
     }
 

@@ -51,7 +51,7 @@ QHash<int, QByteArray> MessageModel::roleNames() const{
     QHash<int, QByteArray> roles;
     roles[Qt::UserRole] = "msg";
     roles[Qt::UserRole + 1] = "type";
-    roles[Qt::UserRole + 2] = "date";
+    roles[Qt::UserRole + 2] = "datetime";
     roles[Qt::UserRole + 3] = "filename";
     roles[Qt::UserRole + 4] = "filesize";
     roles[Qt::UserRole + 5] = "fileTotalSize";
@@ -59,7 +59,7 @@ QHash<int, QByteArray> MessageModel::roleNames() const{
     return roles;
 }
 
-void MessageModel::setData(QList<Recode>* data)
+void MessageModel::setModelData(QList<Recode>* data)
 {
     beginResetModel();   //刷新数据
     _currentData = data;
@@ -69,20 +69,18 @@ void MessageModel::setData(QList<Recode>* data)
 // 添加MessageList
 void MessageModel::addMessageList(QList<Recode>& messgeList, int index)
 {
-    beginResetModel();
     if(index == -1){
         //直接在最后添加一个新的
         _allData->messages.append(messgeList);
-        if(_allData->messages.length() == 1){
-            setData(&_allData->messages.first());
-        }
     }
-    endResetModel();
 }
 
 //添加对应friendModel的index的message
 void MessageModel::addMessage(qint64 id ,QString text, QString msgType, int index, qint64 userid)
 {
+    if (msgType == "") {
+        return;
+    }
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
     if(index != -1){
@@ -96,12 +94,16 @@ void MessageModel::addMessage(qint64 id ,QString text, QString msgType, int inde
         }
     }
     endInsertRows();
+
 }
 
 //添加消息信息
 void MessageModel::addMessage(qint64 id,QString text, QString msgType,QString filename ,QString filesize
     ,int index, qint64 userid)
 {
+    if (msgType == "") {
+        return;
+    }
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
     if(index != -1){

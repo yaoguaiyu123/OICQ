@@ -277,7 +277,7 @@ void TcpSocket::parsePackage()
         parseFriendRequestList(jsonData, images);
         break;
     case MessageList:
-        parseMessageList(jsonData);
+        parseHistoryMessageList(jsonData);
         break;
     default:
         break;
@@ -378,13 +378,12 @@ void TcpSocket::parseFriendRequestList(QJsonValue& jsonvalue, QList<QImage>& ima
 
 
 // 处理好友消息的返回
-void TcpSocket::parseMessageList(QJsonValue& jsonvalue)
+void TcpSocket::parseHistoryMessageList(QJsonValue& jsonvalue)
 {
-    // qDebug() << "接收到好友列表的返回AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa";
     if (!jsonvalue.isArray()) {
         return;
     }
-    emit(messageList(jsonvalue));
+    emit(historyMessageList(jsonvalue));
 }
 
 

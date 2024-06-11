@@ -116,7 +116,7 @@ Popup{
     QQuickDialog.FileDialog {
         id: fileDialog
         title: "选择图片"
-        fileMode: QQuickDialog.FileDialog.Open
+        fileMode: QQuickDialog.FileDialog.OpenFile
         nameFilters: ["图片文件 (*.png *.jpg *.jpeg *.bmp)"]
         acceptLabel: "打开"
         rejectLabel: "取消"
