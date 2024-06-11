@@ -29,7 +29,7 @@ bool FileClient::connectToServer(const QString& host, quint16 port)
     m_socket = new QTcpSocket();
     m_socket->connectToHost(host, port);
     m_timer = new QTimer;
-    m_timer->start(1000);
+    m_timer->start(500);
     connect(m_timer, &QTimer::timeout, this, &FileClient::handlerTimeout);
     if (!m_socket->waitForConnected(2000)) {
         qDebug() << "连接服务端失败";
@@ -38,6 +38,7 @@ bool FileClient::connectToServer(const QString& host, quint16 port)
     } else {
         connect(m_socket, &QTcpSocket::bytesWritten, this, &FileClient::handleBytesWritten);
         connect(m_socket, &QTcpSocket::disconnected, this, &FileClient::deleteLater);  //释放内存
+        connect(this, &FileClient::aboutToCancel, this, &FileClient::deleteLater);
         return true;
     }
 }
@@ -50,7 +51,8 @@ void FileClient::handleBytesWritten(qint64 size)
     if (haveWritten == toWrite) {
         qDebug() <<"文件上传完毕:" << toWrite;
         emit updateFileMessage(m_index,m_messageIndex, haveWritten, toWrite);
-        deleteLater();
+        // deleteLater();
+        m_socket->disconnectFromHost();
     }
 }
 
@@ -117,7 +119,7 @@ void FileClient::downloadFile(qint64 messageId, qint64 from, qint64 to, const QS
     upOrDown = false;
     connectToServer(IPADDRESS, 8081);
 
-    // // 连接接收
+    // 连接接收
     connect(m_socket, &QTcpSocket::readyRead, this, &FileClient::readDataFromServer);
 
     QString qtFilePath = filepath.mid(7);
@@ -134,6 +136,7 @@ void FileClient::downloadFile(qint64 messageId, qint64 from, qint64 to, const QS
     QByteArray requestData;
     QDataStream stream(&requestData, QIODevice::WriteOnly);
     stream << messageId << from << to;
+    qDebug() << "messageId:  " << messageId << "你好世界";
     uData.append(requestData);
     // toWrite = uData.size();
     writeByteArray(uData);
@@ -168,7 +171,9 @@ void FileClient::readDataFromServer()
     }
     recvFile->flush();
     if (recvFile->size() >= toRead) {
-        deleteLater();
+        emit updateFileMessage(m_index,m_messageIndex, haveRead, toRead);
+        // deleteLater();
+        m_socket->disconnectFromHost();
     }
 }
 
@@ -176,20 +181,41 @@ void FileClient::readDataFromServer()
 void FileClient::handlerTimeout()
 {
     if (upOrDown == true) {
-        qDebug() << "handlerTimeout " << haveWritten << " " << toWrite;
+        qDebug() << "上传文件的进度  " << haveWritten << " " << toWrite;
         emit updateFileMessage(m_index,m_messageIndex, haveWritten, toWrite);
     } else {
+        // 下载文件的进度
+        qDebug() << "下载文件进度 " << haveRead << " " << toRead;
         emit updateFileMessage(m_index,m_messageIndex, haveRead, toRead);
     }
+}
+
+int FileClient::getIndex()
+{
+    return m_index;
+}
+
+int FileClient::getMessageIndex()
+{
+    return m_messageIndex;
+}
+
+void FileClient::cancelTransfer()
+{
+    emit(aboutToCancel());
 }
 
 
 FileClient::~FileClient(){
     qDebug() << "文件传输完毕， 文件传输线程退出......";
     if (m_timer != nullptr) {
+        m_timer->stop();
         delete m_timer;
     }
     if(m_socket != nullptr){
+        if(m_socket->state() == QAbstractSocket::ConnectedState){
+            m_socket->disconnectFromHost();
+        }
         delete m_socket;
     }
 }

@@ -79,6 +79,9 @@ Rectangle {
                 onUploadFile1: (filepath, messageIndex) => {
                     FriendModel.downloadFileRequest(listIndex, messageIndex, filepath)
                 }
+                onCancelTransfer1: (messageIndex)=>{
+                    FriendModel.cancelUploadOrDownload(listIndex, messageIndex)  //取消下载或者上传
+                }
             }
         }
 

@@ -352,12 +352,13 @@ void FriendModel::sendMessage(QString message,int index,int type){
         }
     } else if (type == FileMessage) {
         QStringList files = message.split(","); // 分割字符串
-        if (files.length() > 5) {
+        if (files.length() > 5 - m_fileList.length()) {
             emit(toManyFiles());
             return;
         }
         qint64 from = m_tcpsocket->getUserId();
         qint64 to = _allData->friends.at(index).userid;
+
         beginResetModel();
         for (const QString& filepath : files) {
             QFileInfo fileInfo(filepath.mid(7));
@@ -375,16 +376,27 @@ void FriendModel::sendMessage(QString message,int index,int type){
             } else {
                 result = QString::number(totalSize) + " B";
             }
+
+
             // 上传文件
             _messageModel
                 ->addMessage(msgId, "[文件] " + fileName, "sendfile", fileName, result, index);
+
             FileClient* client = new FileClient(index, _messageModel->rowCount() - 1);
+
+            m_fileList.append(client);  //加入list进行管理
+
+
             QThread* thread = new QThread();
             client->moveToThread(thread);
             thread->start();
-
             connect(this, &FriendModel::siguploadFile, client, &FileClient::uploadFile);
-            connect(client, &FileClient::destroyed, thread, &QThread::quit);   //线程停止
+            connect(client, &FileClient::destroyed, thread, &QThread::quit);
+            connect(client, &FileClient::destroyed,[this, thread](){
+                qDebug() << "接收到发送结束的信号，这里在进行list中的remove以及thread的退出";
+                m_fileList.removeOne(qobject_cast<FileClient*>(sender()));
+                thread->quit();  //停止线程
+            });
             connect(client, &FileClient::updateFileMessage, this, &FriendModel::updateHaveSizeAndRecvSize);
             connect(thread, &QThread::finished, thread, &QThread::deleteLater);  //释放线程资源
 
@@ -412,10 +424,16 @@ void FriendModel::downloadFileRequest(int friendiIndex, int messageIndex, const 
     }
     qDebug() <<" 下载文件的请求          " << from << " " << to << " " << messageId << " " << msgtype;
     FileClient* client = new FileClient(friendiIndex , messageIndex);
+    m_fileList.append(client);  //加入list进行管理
+
     QThread* thread = new QThread();
     client->moveToThread(thread);
     thread->start();
-    connect(client, &FileClient::destroyed, thread, &QThread::quit);   //线程停止
+    connect(client, &FileClient::destroyed,[this, thread](){
+        qDebug() << "接收到发送结束的信号，这里在进行list中的remove以及thread的退出";
+        m_fileList.removeOne(qobject_cast<FileClient*>(sender()));
+        thread->quit();  //停止线程
+    });
     connect(client, &FileClient::updateFileMessage, this, &FriendModel::updateHaveSizeAndRecvSize);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);  //释放线程资源
     connect(this, &FriendModel::sigdownloadFile, client, &FileClient::downloadFile);
@@ -488,4 +506,15 @@ void FriendModel::updateHaveSizeAndRecvSize(int friendIndex,
         _messageModel->updateHaveSizeAndRecvSize(messageIndex, haveRW, toRW);
     }
 }
+
+// 取消上传或下载
+void FriendModel::cancelUploadOrDownload(int friendIndex,int messageIndex){
+    for(FileClient * client : m_fileList){
+        if(client->getIndex() == friendIndex && client->getMessageIndex() == messageIndex){
+            client->cancelTransfer();
+            updateHaveSizeAndRecvSize(friendIndex, messageIndex, 0, 9999);
+        }
+    }
+}
+
 

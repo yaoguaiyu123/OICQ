@@ -3,9 +3,11 @@
 #include <QAbstractListModel>
 #include <QDateTime>
 #include "global.h"
-// model类，提供接口给qt
+
+// model类，提供接口给qml
 // 此类为单例类
 
+class FileClient;
 class FriendData;
 class FriendModelPrivate;
 class MessageModel;
@@ -27,6 +29,7 @@ public:
     Q_INVOKABLE void downloadFileRequest(int friendiIndex, int messageIndex,const QString& filepath);
     static FriendModel& singleTon();
     Q_INVOKABLE void updateMyHead(QString);
+    Q_INVOKABLE void cancelUploadOrDownload(int friendIndex,int messageIndex);
     void addNewFriend(QJsonValue& jsonvalue, QImage& image);
     void addNewFriend(QString username, qint64 userid, QString headpath);
     void addFriends(QJsonValue &, QList<QImage> &);
@@ -43,7 +46,7 @@ private:
     MessageModel* _messageModel;
     QHash<int, QByteArray> m_role; //表头
     TcpSocket* m_tcpsocket;
-
+    QList<FileClient*> m_fileList;
 };
 
 #endif // FRIENDMODEL_H

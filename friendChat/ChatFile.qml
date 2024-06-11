@@ -8,9 +8,24 @@ Control{
     property string fileName: "example.txt"
     property string fileSize: "15.6KB"
     signal uploadFile(var filepath)
+    signal cancelTransfer()
     implicitWidth: 220
     implicitHeight: 80
     padding: 12
+
+    //点击之后打开文件对话框，选择下载路径
+    TapHandler{
+        onTapped: {
+            if(haveRecvAndSendSize === 0 && type === "recvfile"){
+                uploadDialog.open()  //开始下载
+            }else if(haveRecvAndSendSize > 0 && haveRecvAndSendSize < fileTotalSize){
+                cancelTransfer()    //取消传输
+            }else if(haveRecvAndSendSize === fileTotalSize && type === "sendfile"){
+                uploadDialog.open()  //开始下载
+            }
+        }
+    }
+
     background: Rectangle{
         radius: 10
         color: "white"
@@ -47,18 +62,18 @@ Control{
                     height: 1
                 }
 
-                Text {
-                    id: filecondition
-                    font.pixelSize: 12
-                    color: "#898989"
-                    text: type === "sendfile" ? "已发送" : "已接收"
-                    visible: haveRecvAndSendSize === fileTotalSize
-                }
+                // Text {
+                //     id: filecondition
+                //     font.pixelSize: 12
+                //     color: "#898989"
+                //     text: type === "sendfile" ? "已发送" : "已接收"
+                //     visible: haveRecvAndSendSize === fileTotalSize
+                // }
+
                 Text {
                     id: percent
                     font.pixelSize: 12
                     color: "#898989"
-                    visible: haveRecvAndSendSize < fileTotalSize
                     text:  ((haveRecvAndSendSize / fileTotalSize) * 100).toFixed(2) + "%"
                 }
             }
@@ -72,16 +87,8 @@ Control{
                 id: image
                 width: 40
                 height: 40
-                source: type === "sendfile" ? "qrc:/image/download.png" : "qrc:/image/to_download.png"
+                source: type === "haveRecvAndSendSize === fileTotalSize" ? "qrc:/image/download.png" : "qrc:/image/to_download.png"
             }
-        }
-    }
-
-    //点击之后打开文件对话框，选择下载路径
-    MouseArea{
-        anchors.fill: parent
-        onClicked: {
-            uploadDialog.open()
         }
     }
 
@@ -101,12 +108,6 @@ Control{
 
         onRejected: {
         }
-    }
-
-
-    //下载完成
-    function downOk(){
-
     }
 
 }

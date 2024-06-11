@@ -75,8 +75,8 @@ ApplicationWindow {
         onTriggered: {
             rootWindow.visible = true
             console.log(rootWindow.width,rootWindow.height)
-            rootWindow.width = 1100
-            rootWindow.height = 710
+            rootWindow.width = 1080
+            rootWindow.height = 700
         }
     }
 

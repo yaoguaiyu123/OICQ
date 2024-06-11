@@ -15,6 +15,7 @@ Item {
     property string headUrl
     property string myheadUrl
     signal uploadFile1(var filepath, var index)
+    signal cancelTransfer1(var index)
     signal updateListView()
 
     Text{
@@ -71,13 +72,16 @@ Item {
 
         ChatFile{
             id:filePattern
-            width: 180
+            width: 200
             height: 60
             visible: type === "sendfile" || type === "recvfile" ? true : false
             fileName: filename === undefined ? "" : filename
             fileSize: filesize === undefined ? "" : filesize
             onUploadFile:(filepath)=> {
                 uploadFile1(filepath,index)
+            }
+            onCancelTransfer: {
+                cancelTransfer1(index)
             }
         }
 

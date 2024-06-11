@@ -4,9 +4,6 @@
 // 文件传输的套接字
 // 注册为一个单例类
 
-// 开发日记
-// 1. 在子thread中创建socket导致发送失败
-// 2. 打算使用信号槽和 moveToThread实现
 
 #include <QTcpSocket>
 #include <QObject>
@@ -23,6 +20,9 @@ public:
     FileClient(int friendIndex ,int messageIndex, QObject *parent = nullptr);
     bool connectToServer(const QString &host, quint16 port);
     virtual ~FileClient() override;
+    int getIndex();
+    int getMessageIndex();
+    void cancelTransfer();
 public slots:
     void handleBytesWritten(qint64 size);
     // void handleFileBytesWritten(qint64 size);
@@ -35,6 +35,7 @@ private slots:
 signals:
     void complete();
     void updateFileMessage(int friendIndex,int messageIndex,qint64 have, qint64 total);
+    void aboutToCancel();
 private:
     bool m_used = false;
     QTcpSocket *m_socket;
