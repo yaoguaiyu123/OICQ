@@ -65,12 +65,13 @@ QString processMessageWithImages(QString message, const QString &defaultImagePat
 
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
-        QString url = match.captured(1);
-        QImage image(url);
+        QString strurl = match.captured(1);
+        QUrl url(strurl);
+        QImage image(url.toLocalFile());
 
         if (image.isNull()) {
             // 图片无法加载，替换为默认图片路径
-            message.replace(url, defaultImagePath);
+            message.replace(strurl, defaultImagePath);
         }
     }
 

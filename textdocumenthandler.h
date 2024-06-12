@@ -1,6 +1,8 @@
 #ifndef TEXTDOCUMENTHANDLER_H
 #define TEXTDOCUMENTHANDLER_H
 
+// 该类注册为一个普通类
+
 #include <QQuickTextDocument>
 #include <QTextDocument>
 #include <QTextImageFormat>
@@ -16,6 +18,7 @@ class TextDocumentHandler : public QObject {
 public:
     TextDocumentHandler(QObject* parent = nullptr);
     Q_INVOKABLE void insertImage(QString);
+    Q_INVOKABLE void insertScreenshot();
     void insertText(QString);
     Q_INVOKABLE void textContent();
     Q_INVOKABLE void parseMarkDown(QString content);

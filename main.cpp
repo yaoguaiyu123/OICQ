@@ -11,8 +11,9 @@
 #include <memory>
 #include <QThread>
 #include "network/fileclient.h"
-#include "window/framelesswindow.h"
+#include "framelesswindow.h"
 #include <QQuickWindow>
+#include "screencapture.h"
 
 
 QObject* tcpSocket_qobject_singletontype_provider(QQmlEngine* engine, QJSEngine* scriptEngine)
@@ -51,6 +52,7 @@ int main(int argc, char* argv[])
     FriendRequestModel::singleTon();
 
     qmlRegisterType<PostSend>("NetWorks", 1, 0, "PostSend"); // 注册C++类
+    qmlRegisterType<ScreenCapture>("CustomWindows", 1, 0, "ScreenCapture"); // 注册C++类
     qmlRegisterType<FramelessWindow>("CustomWindows", 1, 0, "FramelessWindow"); // 注册C++类
     qmlRegisterType<TextDocumentHandler>("CustomComponents", 1, 0, "TextDocumentHandler"); // 注册C++类
     qmlRegisterType<MessageModel>("CutstomModels", 1, 0, "MessageModel"); // 注册C++类

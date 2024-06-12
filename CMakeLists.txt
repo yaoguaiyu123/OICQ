@@ -18,86 +18,56 @@ qt_add_qml_module(
   qqClient
   VERSION
   1.0
-  QML_FILES
+  QML_FILES # .qml
   Main.qml
-  SOURCES
-  main.cpp
-  SOURCES
-  network/postsend.cpp
-  QML_FILES
   MainView.qml
-  QML_FILES
   SideMenuBar.qml
-  RESOURCES
-  rec.qrc
-  QML_FILES
   components/IconButton.qml
-  QML_FILES
   components/BackIconButton.qml
-  QML_FILES
   components/HeadImage.qml
-  QML_FILES
   friendChat/RecentFriendList.qml
-  QML_FILES
   friendChat/MessageList.qml
-  QML_FILES
   components/SearchBox.qml
-  QML_FILES
   friendChat/RecentFriendListDelegate.qml
-  QML_FILES
   comman/Comman.js
-  QML_FILES
   friendChat/FriendChatWindow.qml
-  QML_FILES
   friendChat/MessageDelegate.qml
-  QML_FILES
   friendChat/MessageInputField.qml
-  SOURCES
-  network/postsend.h
-  QML_FILES
   Login.qml
-  SOURCES
+  comman/NetChat.js
+  components/HeadUpLoadPopup.qml
+  components/ScreenPrint.qml
+  friendChat/FriendsGroupMenu.qml
+  friendChat/FriendsGroupPopup.qml
+  friendChat/FriendAddWindow.qml
+  friendChat/ChatFile.qml
+  components/WindowBorder.qml
+  SOURCES # .h && .cpp
+  main.cpp
+  network/postsend.h
+  network/postsend.cpp
   network/tcpsocket.h
   network/tcpsocket.cpp
-  SOURCES
   network/fileclient.h
   network/fileclient.cpp
-  QML_FILES
-  comman/NetChat.js
-  SOURCES
   global.h
-  SOURCES
   friendmodel.h
   friendmodel.cpp
-  SOURCES
   frienddata.h
   frienddata.cpp
-  SOURCES
   messagemodel.h
   messagemodel.cpp
-  SOURCES
   global.cpp
-  SOURCES
   textdocumenthandler.h
   textdocumenthandler.cpp
-  QML_FILES
-  components/HeadUpLoadPopup.qml
-  QML_FILES
-  friendChat/FriendsGroupMenu.qml
-  QML_FILES
-  friendChat/FriendsGroupPopup.qml
-  QML_FILES
-  friendChat/FriendAddWindow.qml
-  QML_FILES
-  friendChat/ChatFile.qml
-  SOURCES
   friendrequestmodel.h
   friendrequestmodel.cpp
-  SOURCES
-  window/framelesswindow.h
-  window/framelesswindow.cpp
-  QML_FILES
-  components/WindowBorder.qml)
+  framelesswindow.h
+  framelesswindow.cpp
+  screencapture.h
+  screencapture.cpp
+  RESOURCES # .qrc
+  rec.qrc)
 
 target_compile_features(appqqV1 PRIVATE cxx_std_20)
 

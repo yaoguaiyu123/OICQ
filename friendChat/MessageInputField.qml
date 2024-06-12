@@ -4,6 +4,8 @@ import QtQuick.Controls
 import "../components" as MyComponent
 import CustomComponents
 import QtQuick.Dialogs
+import CustomWindows
+
 
 Rectangle {
     id: container
@@ -12,6 +14,7 @@ Rectangle {
     color: "#f2f2f2"
     signal send(string text)   //自定义信号
     signal sendFile(string text)   //自定义信号
+
     Row{
         x: 8
         spacing: 8
@@ -26,6 +29,26 @@ Rectangle {
             height: 32
             imagePath: "qrc:/icon/jiandao_black.png"
             hoveredImagePath: "qrc:/icon/jiandao_blue.png"
+            onClicked: {
+                screenPrint.show()
+                // console.log("还在开发中的功能")
+                screenPrint.visibility = Window.FullScreen  //使其全屏
+            }
+            MyComponent.ScreenPrint{
+                id:screenPrint
+                onProvideArea:(area)=>{
+                    screenCapture.printScreen(area)
+                }
+            }
+
+            // 用于实现捕获屏幕的对象
+            ScreenCapture {
+                id: screenCapture
+                onScreenshotComplete: ()=>{
+                    documentHandler.insertScreenshot()
+                }
+            }
+
         }
         MyComponent.IconButton{
             width: 32

@@ -8,6 +8,8 @@
 namespace {
 //图片缓存路径
 QString imageCachePath = "/root/.config/OICQ/client/send";
+QString printScreenDefaultPath = "/root/.config/OICQ/client/temp/screen_shot_temp.jpg";
+
 }
 
 TextDocumentHandler::TextDocumentHandler(QObject* parent)
@@ -15,6 +17,52 @@ TextDocumentHandler::TextDocumentHandler(QObject* parent)
     , m_textDocument(nullptr)
 {
 }
+
+// 插入截图
+void TextDocumentHandler::insertScreenshot()
+{
+    QString url = printScreenDefaultPath;
+    qDebug() << "接收到插入截图的请求";
+
+    if (!m_textDocument) {
+        return;
+    }
+
+    QTextDocument* doc = m_textDocument->textDocument();
+    QTextCursor cursor(doc);
+    cursor.setPosition(m_cursorPosition); // 确保m_cursorPosition已正确初始化
+    QImage image(url);
+
+
+    int updateWidth = image.width();
+    // 调整图片大小
+    if (updateWidth > 240) {
+        float scale = image.width() / static_cast<float>(image.height());
+        updateWidth = 240;
+        int updateHeight = static_cast<int>(updateWidth / scale);
+        image = image.scaled(updateWidth, updateHeight, Qt::KeepAspectRatio);
+    }
+
+    // 保存图片到缓存
+    QString dateFolder = QDateTime::currentDateTime().toString("yyyyMMdd");
+    QDir dir(imageCachePath);
+    if (!dir.exists(dateFolder)) {
+        dir.mkpath(dateFolder);
+    }
+    QString newImagePath = dir.filePath(dateFolder + "/" + QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz") + ".jpg");
+    if (!image.save(newImagePath)) {
+        qDebug() << "textdocumenthandler.cpp : printScreen image fail";
+        return;
+    }
+
+    // 插入缓存图片
+    QTextImageFormat imageFormat;
+    imageFormat.setWidth(image.width());
+    imageFormat.setHeight(image.height());
+    imageFormat.setName("file://" + newImagePath);
+    cursor.insertImage(imageFormat);
+}
+
 
 // 插入图片
 void TextDocumentHandler::insertImage(QString url)
@@ -25,7 +73,7 @@ void TextDocumentHandler::insertImage(QString url)
     QImage image(url);
     if (image.isNull()) {
         //TODO 说明这是一段文字,要insert文字
-        qDebug() << "疑似粘贴图片但加载失败";
+        qDebug() << "textdocumenthandler.cpp : paste image load fail";
         return;
     }
     int updateWidth = image.width();
@@ -45,7 +93,7 @@ void TextDocumentHandler::insertImage(QString url)
     }
     QString newImagePath = dir.filePath(dateFolder + "/" + QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz") + ".jpg");
     if (!image.save(newImagePath)) {
-        qDebug() << "图片保存失败";
+        qDebug() << "textdocumenthandler.cpp : paste image fail";
         return;
     }
 
@@ -59,7 +107,6 @@ void TextDocumentHandler::insertImage(QString url)
     imageFormat.setName("file://" + newImagePath);   // 插入file3类型的图片
     cursor.insertImage(imageFormat);
 }
-
 
 void TextDocumentHandler::insertText(QString content){
     QTextDocument* doc = m_textDocument->textDocument();
@@ -77,14 +124,12 @@ void TextDocumentHandler::textContent()
 // 解析隐藏文档中的内容，将其图片内容做转化(将图片进行缩放)
 void TextDocumentHandler::parseMarkDown(QString content)
 {
-    qDebug() << "content = " << content;
-    // qDebug() << "dddddd";
     for (qint32 i = 0; i < content.length(); ++i) {
         // qDebug() << content.mid(i, 8);
-        if (content.mid(i, 9) == "![image](") {
+        if (content.mid(i, 9) == STR_IMAGE_TYPE) {
             // 是一个图片(可识别的图片)
             i = i + 9;
-            if (content.mid(i, 9) == "file:////") {
+            if (content.mid(i, 9) == FILE4_TYPE) {
                 i = i + 9;
                 QString url = "/";
                 while (content[i] != ')' && i < content.length()) {
@@ -93,7 +138,7 @@ void TextDocumentHandler::parseMarkDown(QString content)
                 }
                 insertImage(url);
                 ++i;   //跳过自带的\n
-            }else if(content.mid(i, 8) == "file:///"){
+            }else if(content.mid(i, 8) == FILE3_TYPE){
                 i = i + 8;
                 QString url = "/";
                 while (content[i] != ')' && i < content.length()) {
@@ -104,7 +149,7 @@ void TextDocumentHandler::parseMarkDown(QString content)
                 ++i;
             }
 
-        } else if (content.mid(i, 8) == "file:///") {
+        } else if (content.mid(i, 8) == FILE3_TYPE) {
             // 是一个文件
             qDebug() << "是一个文件";
             i = i + 8;

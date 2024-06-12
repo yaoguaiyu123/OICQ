@@ -7,7 +7,7 @@
 #include <QList>
 #include <QByteArray>
 
-#define IPADDRESS "127.0.0.1"
+#define IPADDRESS "192.168.151.229"
 
 enum MSG_TYPE {
     PrivateMessage,
@@ -102,6 +102,18 @@ QString JsonObjectToString(const QJsonObject& jsonObject);
 
 #ifndef KB
 #define KB 1024
+#endif
+
+#ifndef STR_IMAGE_TYPE
+#define STR_IMAGE_TYPE "![image]("
+#endif
+
+#ifndef FILE3_TYPE
+#define FILE3_TYPE "file:///"
+#endif
+
+#ifndef FILE4_TYPE
+#define FILE4_TYPE "file:////"
 #endif
 
 //简化属性定义(可读可写属性)
