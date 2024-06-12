@@ -30,13 +30,15 @@ Rectangle {
             imagePath: "qrc:/icon/jiandao_black.png"
             hoveredImagePath: "qrc:/icon/jiandao_blue.png"
             onClicked: {
-                screenPrint.show()
-                // console.log("还在开发中的功能")
-                screenPrint.visibility = Window.FullScreen  //使其全屏
+                screenCapture.printFullScreen()  //获得当前全屏图片
+                screenPrintWindow.flushBackImage()
+                screenPrintWindow.show()
+                screenPrintWindow.visibility = Window.FullScreen  //使其全屏
             }
             MyComponent.ScreenPrint{
-                id:screenPrint
+                id:screenPrintWindow
                 onProvideArea:(area)=>{
+                    // 得到截图位置
                     screenCapture.printScreen(area)
                 }
             }

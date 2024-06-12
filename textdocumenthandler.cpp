@@ -8,8 +8,6 @@
 namespace {
 //图片缓存路径
 QString imageCachePath = "/root/.config/OICQ/client/send";
-QString printScreenDefaultPath = "/root/.config/OICQ/client/temp/screen_shot_temp.jpg";
-
 }
 
 TextDocumentHandler::TextDocumentHandler(QObject* parent)
@@ -21,9 +19,6 @@ TextDocumentHandler::TextDocumentHandler(QObject* parent)
 // 插入截图
 void TextDocumentHandler::insertScreenshot()
 {
-    QString url = printScreenDefaultPath;
-    qDebug() << "接收到插入截图的请求";
-
     if (!m_textDocument) {
         return;
     }
@@ -31,14 +26,14 @@ void TextDocumentHandler::insertScreenshot()
     QTextDocument* doc = m_textDocument->textDocument();
     QTextCursor cursor(doc);
     cursor.setPosition(m_cursorPosition); // 确保m_cursorPosition已正确初始化
-    QImage image(url);
+    QImage image(PRINT_SCREEN_DEFAULT_PATH);
 
 
     int updateWidth = image.width();
     // 调整图片大小
-    if (updateWidth > 240) {
+    if (updateWidth > 300) {
         float scale = image.width() / static_cast<float>(image.height());
-        updateWidth = 240;
+        updateWidth = 300;
         int updateHeight = static_cast<int>(updateWidth / scale);
         image = image.scaled(updateWidth, updateHeight, Qt::KeepAspectRatio);
     }

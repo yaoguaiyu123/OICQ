@@ -7,7 +7,7 @@
 #include <QList>
 #include <QByteArray>
 
-#define IPADDRESS "192.168.151.229"
+#define IPADDRESS "127.0.0.1"
 
 enum MSG_TYPE {
     PrivateMessage,
@@ -102,6 +102,14 @@ QString JsonObjectToString(const QJsonObject& jsonObject);
 
 #ifndef KB
 #define KB 1024
+#endif
+
+#ifndef FULL_SCREEN_DEFAULT_PATH
+#define FULL_SCREEN_DEFAULT_PATH "/root/.config/OICQ/client/temp/fullscreen_shot_temp.jpg"
+#endif
+
+#ifndef PRINT_SCREEN_DEFAULT_PATH
+#define PRINT_SCREEN_DEFAULT_PATH "/root/.config/OICQ/client/temp/screen_shot_temp.jpg"
 #endif
 
 #ifndef STR_IMAGE_TYPE

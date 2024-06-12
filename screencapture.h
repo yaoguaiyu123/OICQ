@@ -13,6 +13,7 @@ public:
     explicit ScreenCapture(QObject *parent = nullptr);
 
     Q_INVOKABLE void printScreen(const QRect &area);
+    Q_INVOKABLE void printFullScreen();
 signals:
     void screenshotComplete(); //截图完毕信号
 };

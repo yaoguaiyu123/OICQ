@@ -38,7 +38,6 @@ Rectangle {
 
             Loader {
                 id:windowloader
-                active: true
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 source:components[currentIndex]

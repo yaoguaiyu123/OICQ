@@ -7,15 +7,63 @@ import QtQuick.Window 2.14
 Window {
     id:screenShotWindow
     property int borderMargin: 3
-    property color tranparentColor: "transparent" //透明色
-    property color blurryColor: Qt.rgba(0,0,0,0.3) //半透明
-    property color selectBorderColor: "#0099ff" //边框色
     property rect captureArea: Qt.rect(0, 0, 0, 0) // 记录最终选择的范围
-
     signal provideArea(var area)
-
-    color: blurryColor
+    property color blurryColor: Qt.rgba(0,0,0,0.3)
+    color: "transparent"
     flags: Qt.FramelessWindowHint // 取消默认标题栏
+
+    Image {
+        id:backImage
+        anchors.fill: parent
+        source: "file:///root/.config/OICQ/client/temp/fullscreen_shot_temp.jpg"
+    }
+
+    Rectangle{
+        id: topRect
+        anchors{
+            top: parent.top
+            left: parent.left
+        }
+        width: parent.width
+        height: selectionRect.y
+        color: blurryColor
+    }
+
+    Rectangle{
+        id: leftRect
+        anchors{
+            top: topRect.bottom
+            left: parent.left
+        }
+        width: selectionRect.x
+        height: parent.height - topRect.height - bottomRect.height
+        color: blurryColor
+    }
+
+    Rectangle{
+        id: rightRect
+        anchors{
+            top: topRect.bottom
+            right: parent.right
+        }
+        width: parent.width - leftRect.width - selectionRect.width
+        height: leftRect.height
+        color: blurryColor
+    }
+
+    Rectangle{
+        id: bottomRect
+        anchors{
+            bottom: parent.bottom
+            left: parent.left
+        }
+        width: parent.width
+        height: parent.height - topRect.height - selectionRect.height
+        color: blurryColor
+    }
+
+
 
     // 全局的mouseArea
     MouseArea {
@@ -46,24 +94,24 @@ Window {
             }
         }
         onReleased:{
-            updateStartAndEndPoint()
+            updateStartPoint()
             buttonRow.visible = true  // 显示按钮
             captureArea = Qt.rect(selectionRect.startPoint.x, selectionRect.startPoint.y,
                                   selectionRect.width, selectionRect.height)
         }
     }
 
+
     // 实时显示的选择区域
     Rectangle {
         id: selectionRect
-        color: tranparentColor
+        color: "transparent"
         property var control: parent
         property var startPoint
-        property var endPoint
 
         visible: false
-        border.color: selectBorderColor
-        border.width: 3
+        border.color: "#0099ff"
+        border.width: 2
 
         //鼠标区域，控制拖动选择框时位置变化
         MouseArea {
@@ -74,7 +122,7 @@ Window {
             drag.target: parent
             cursorShape: Qt.SizeAllCursor
             onPositionChanged: {
-                updateStartAndEndPoint()
+                updateStartPoint()
             }
         }
 
@@ -114,9 +162,8 @@ Window {
     }
 
     // 实时更新最终选择的区域
-    function updateStartAndEndPoint() {
-        selectionRect.startPoint = Qt.point(x, y);
-        selectionRect.endPoint = Qt.point(x + width, y + height);
+    function updateStartPoint() {
+        selectionRect.startPoint = Qt.point(selectionRect.x, selectionRect.y);
     }
 
     // 重新初始化
@@ -125,6 +172,12 @@ Window {
         selectionRect.height = 0
         selectionRect.visible = false
         buttonRow.visible = false
+    }
+
+    // 刷新背景图片
+    function flushBackImage(){
+        backImage.source = ""
+        backImage.source = "file:///root/.config/OICQ/client/temp/fullscreen_shot_temp.jpg"
     }
 
 }
