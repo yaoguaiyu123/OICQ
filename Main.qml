@@ -8,64 +8,36 @@ import QtQuick.Window
 import "./components" as MyComponent
 import CustomModels
 import CustomWindows
-// import FluentUI
 
-//大体的布局就是左边一个菜单栏
-//中间上面一个搜索栏
-//中间下面一个ListView
-//右边上面一个系统按钮组
-//右边中间是ListView实现的聊天窗口
-//右边下面是输入窗口
-
-ApplicationWindow {
+FramelessWindow {
     id:rootWindow
     width: 325
     height: 450
-    // width: 1100
-    // height: 710
     visible: true
     title: qsTr("qqClient")
-    // minimumHeight: 530
-    // minimumWidth: 840
     x: (Screen.width - width) / 2
     y: (Screen.height - height) / 2
 
+    Connections{
+        target: loginItem
 
-
-    Loader {
-        id: loader
-        source: "Login.qml"
-        anchors.fill: parent
-        // TODO qml编译器报错无法检测到信号，但是实际运行还是可以连接到
-
-        Connections{
-            target: loader.item
-
-            function onLoginRequest() {
-                rootWindow.visible = false
-                timer.start()
-                toMainViewAni.start()
-                loader.source = "MainView.qml"
-            }
+        function onLoginRequest() {
+            rootWindow.hide()
+            timer.start()
         }
-        // 加上动画之后误打误撞解决了bug
-        ParallelAnimation{
-            id:toMainViewAni
-            running: false
-            NumberAnimation{
-                target: rootWindow
-                properties: "x"
-                to: (Screen.width - 1100) / 2
-                duration: 200
-                easing.type: Easing.OutQuad
-            }
-            NumberAnimation{
-                target: rootWindow
-                properties: "y"
-                to: (Screen.height - 710) / 2
-                duration: 200
-                easing.type: Easing.OutQuad
-            }
+    }
+
+    Login{
+        id:loginItem
+        anchors.fill: parent
+    }
+
+    FramelessWindow{
+        id:workWindow
+        width: 1080
+        height: 705
+        MainView{
+            anchors.fill: parent
         }
     }
 
@@ -73,28 +45,10 @@ ApplicationWindow {
         id:timer
         interval: 300
         onTriggered: {
-            rootWindow.visible = true
-            console.log(rootWindow.width,rootWindow.height)
-            rootWindow.width = 1080
-            rootWindow.height = 700
+            workWindow.show()
         }
-    }
-
-    Component.onCompleted: {
-        rootWindow.showNormal()
     }
 
 }
 
 
-// FramelessWindow {
-//     id: root
-//     visible: true
-//     width: 640
-//     height: 480
-//     minimumWidth: 480
-//     minimumHeight: 320
-//     color: "white"
-//     title: qsTr("Hello World")
-
-// }

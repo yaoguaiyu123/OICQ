@@ -2,6 +2,8 @@
 #define FRAMELESSWINDOW_H
 
 #include <QQuickWindow>
+#include <QQuickView>
+#include <QGuiApplication>
 
 class FramelessWindow : public QQuickWindow
 {
@@ -32,6 +34,8 @@ public:
     bool resizable() const;
     void setResizable(bool arg);
 
+    Q_INVOKABLE void toggleMaximizeRestore();
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
@@ -46,6 +50,11 @@ private:
     MouseArea getArea(const QPoint &pos);
     void setWindowGeometry(const QPoint &pos);
     void setCursorIcon();
+    bool is_max = false;
+    int m_lastWindowWidth;
+    int m_lastWindowHeight;
+    int m_lastWindowX;
+    int m_lastWindowY;
 
     bool m_movable = true;
     bool m_resizable = true;

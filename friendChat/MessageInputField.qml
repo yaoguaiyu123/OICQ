@@ -111,9 +111,6 @@ Rectangle {
                     (event.modifiers & Qt.ShiftModifier)) {
                     area.insert(area.cursorPosition, "\n")
                     event.accepted = true
-                    // 调整ScrollView的位置到当前光标位置
-                    // var rect = area.cursorRectangle;  // TODO
-                    //view.contentItem.y = rect.y + rect.height - view.height / 2;
                 } else if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter)) {
                     if (area.text !== "") {
                         send(area.text) // 发出信号

@@ -4,16 +4,35 @@ FramelessWindow::FramelessWindow(QWindow *parent)
     : QQuickWindow (parent)
 
 {
-   setFlags(flags() | Qt::Window | Qt::FramelessWindowHint);
+    setFlags(flags() | Qt::Window | Qt::FramelessWindowHint);
 
-   // QQuickWindow::setSceneGraphBackend("software");
+    setWindowState(Qt::WindowNoState);
 
-   //在这里改变默认移动区域
-   //只有鼠标在移动区域内，才能移动窗口
-   connect(this, &QQuickWindow::widthChanged, this, [this](int arg) {
-       m_moveArea.setWidth(arg - 16);
-   });
+   //设置移动区域，用于移动窗口
+    connect(this, &QQuickWindow::widthChanged, this, [this](int arg) {
+        m_moveArea.setWidth(arg - 16);
+    });
 }
+
+// 实现窗口最大化以及还原，需要考虑偶尔会出现的调用qtApi出错的情况
+void FramelessWindow::toggleMaximizeRestore()
+{
+    if (windowState() & Qt::WindowMaximized || is_max) {
+        showNormal();
+        if (width() > m_lastWindowWidth || height() > m_lastWindowHeight) {
+            setGeometry(m_lastWindowX, m_lastWindowY, m_lastWindowWidth, m_lastWindowHeight);
+        }
+        is_max = false;
+    } else {
+        m_lastWindowHeight = height();
+        m_lastWindowWidth = width();
+        m_lastWindowX = x();
+        m_lastWindowY = y();
+        showMaximized();
+        is_max = true;
+    }
+}
+
 
 bool FramelessWindow::movable() const
 {
@@ -79,8 +98,6 @@ void FramelessWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton) {
         if (m_movable && m_currentArea == Move) {
-            //单独处理移动区域，这样可以更快
-            //但是需要注意，z序更高的MouseArea仍会触发
             setPosition(m_oldPos - m_startPos + event->globalPos());
         } else if (m_resizable && m_currentArea != Move){
             setWindowGeometry(event->globalPos());
@@ -141,7 +158,6 @@ void FramelessWindow::setWindowGeometry(const QPoint &pos)
             temp_pos.setX(pos.x());
             temp_size.setWidth(size.width());
         } else {
-            //防止瞬间拉过头，会导致错误的计算位置，这里纠正
             if (pos.x() != temp_pos.x())
                 temp_pos.setX(m_oldPos.x() +  m_oldSize.width() - minimumWidth());
         }
@@ -149,7 +165,6 @@ void FramelessWindow::setWindowGeometry(const QPoint &pos)
             temp_pos.setY(pos.y());
             temp_size.setHeight(size.height());
         } else {
-            //防止瞬间拉过头，会导致错误的计算位置，这里纠正
             if (pos.y() != temp_pos.y())
                 temp_pos.setY(m_oldPos.y() + m_oldSize.height() - minimumHeight());
         }

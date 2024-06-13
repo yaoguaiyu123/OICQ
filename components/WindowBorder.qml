@@ -46,112 +46,41 @@ Item {
                         Layout.fillWidth: true
                     }
                     MyComponent.BackIconButton{
+                        Layout.preferredWidth: 40
+                        Layout.preferredHeight: 30
                         imagePath: "qrc:/icon/minimize.png"
                         backColor: "#f2f2f2"
                         backHoverColor: "#cfcfcf"
-                        imageHeight: 15
-                        imageWidth: 15
-                        userButton.onClicked: {
-                            rootWindow.showMinimized()
+                        onClicked: {
+                            workWindow.showMinimized()
                         }
                     }
-                    MyComponent.BackIconButton{
+                    MyComponent.BackIconButton {
+                        Layout.preferredWidth: 40
+                        Layout.preferredHeight: 30
                         imagePath: "qrc:/icon/maximize.png"
                         backColor: "#f2f2f2"
                         backHoverColor: "#cfcfcf"
-                        imageHeight: 15
-                        imageWidth: 15
-                        userButton.onClicked: {
-                            if(isMaxed){
-                                animateWindowSizeAndPosition()
-                                isMaxed = false
-                            }else{
-                                animateWindowSizeAndPosition1()
-                                isMaxed = true
+
+                        property int lastClickTime: 0
+                        property int clickThreshold: 500
+
+                        onClicked: {
+                            var currentTime = new Date().getTime();
+                            if (currentTime - lastClickTime > clickThreshold) {
+                                lastClickTime = currentTime;
+                                workWindow.toggleMaximizeRestore();
                             }
-                        }
-
-                        NumberAnimation {
-                            id: widthAnimation
-                            target: rootWindow
-                            property: "width"
-                            to: lastW
-                            duration: 5
-                            easing.type: Easing.InOutQuad
-                        }
-
-                        NumberAnimation {
-                            id: heightAnimation
-                            target: rootWindow
-                            property: "height"
-                            to: lastH
-                            duration: 5
-                            easing.type: Easing.InOutQuad
-                        }
-
-                        NumberAnimation {
-                            id: xAnimation
-                            target: rootWindow
-                            property: "x"
-                            to: lastX
-                            duration: 5
-                            easing.type: Easing.InOutQuad
-                        }
-
-                        NumberAnimation {
-                            id: yAnimation
-                            target: rootWindow
-                            property: "y"
-                            to: lastY
-                            duration: 5
-                            easing.type: Easing.InOutQuad
-                        }
-
-
-                        NumberAnimation {
-                            id: widthAnimation1
-                            target: rootWindow
-                            property: "width"
-                            to: Screen.width
-                            duration: 5
-                            easing.type: Easing.InOutQuad
-                        }
-
-                        NumberAnimation {
-                            id: heightAnimation1
-                            target: rootWindow
-                            property: "height"
-                            to: Screen.height
-                            duration: 5
-                            easing.type: Easing.InOutQuad
-                        }
-
-                        NumberAnimation {
-                            id: xAnimation1
-                            target: rootWindow
-                            property: "x"
-                            to: 0
-                            duration: 5
-                            easing.type: Easing.InOutQuad
-                        }
-
-                        NumberAnimation {
-                            id: yAnimation1
-                            target: rootWindow
-                            property: "y"
-                            to: 0
-                            duration: 5
-                            easing.type: Easing.InOutQuad
                         }
                     }
                     MyComponent.BackIconButton{
+                        Layout.preferredWidth: 40
+                        Layout.preferredHeight: 30
                         imagePath: "qrc:/icon/close.png"
                         imageHoverPath: "qrc:/icon/close_w.png"
                         backColor: "#f2f2f2"
                         backHoverColor: "#cc4444"
-                        imageHeight: 15
-                        imageWidth: 15
-                        userButton.onClicked: {
+                        onClicked: {
                             Qt.quit()  //关闭应用
                         }
                     }
@@ -165,26 +94,5 @@ Item {
 
         }
     }
-
-    function animateWindowSizeAndPosition() {
-
-        widthAnimation.start()
-        heightAnimation.start()
-        xAnimation.start()
-        yAnimation.start()
-    }
-
-
-    function animateWindowSizeAndPosition1() {
-        lastH = rootWindow.height
-        lastW = rootWindow.width
-        lastX = rootWindow.x
-        lastY = rootWindow.y
-        widthAnimation1.start()
-        heightAnimation1.start()
-        xAnimation1.start()
-        yAnimation1.start()
-    }
-
 
 }
