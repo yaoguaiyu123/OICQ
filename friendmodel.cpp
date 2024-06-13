@@ -18,29 +18,69 @@
 ///好友列表model接口
 
 namespace {
-void processImages(QString content, QList<QImage>& imageList)
+QString imageCachePath = "/root/.config/OICQ/client/recv";
+QString headCachePath = "/root/.config/OICQ/client/head";
+
+// 解析将要发送的消息
+ void processImages(const QString& content, QList<QImage>& imageList)
 {
-    qDebug() << "要处理的消息 " << content;
-    for (qint32 i = 0; i < content.length(); ++i) {
-        if (content.mid(i, 9) == "![image](") {
-            // 是一个图片
-            i = i + 9;
-            if (content.mid(i, 8) == "file:///") {
-                i = i + 8;
-                QString url = "/";
-                while (content[i] != ')' && i < content.length()) {
-                    url += content[i];
-                    ++i;
-                }
-                QImage image(url);
+
+    QRegularExpression regex("<img[^>]*src=\"(file:///[^\">]+)\"");
+    QRegularExpressionMatchIterator it = regex.globalMatch(content);
+    while (it.hasNext()) {
+        QRegularExpressionMatch match = it.next();
+        QString filePath = match.captured(1);
+
+
+        if (filePath.startsWith("file:///")) {
+            filePath = filePath.mid(7);
+            QImage image(filePath);
+            if (!image.isNull()) {
                 imageList.append(image);
+                qDebug() << "添加图片到发送List: " << filePath;
             }
         }
     }
 }
 
-// 生成消息随机ID的函数
+// 解析接收到的消息
+void processReceiveImages(const QString& message,const QList<QImage>& images) {
+    qint32 noCount = 0;
+    for (qint32 i = 0; i < message.length(); ++i) {
+        if (message.mid(i, 4) == "<img") {
+            int startSrc = message.indexOf("src=\"", i) + 5;
+            if (startSrc > 4) {
+                int endSrc = message.indexOf("\"", startSrc);
+                if (endSrc > startSrc) {
+                    QString url = message.mid(startSrc, endSrc - startSrc);
 
+                    if (url.startsWith("file:///")) {
+                        QString localPath = url.mid(8);
+
+                        // 处理路径并创建日期文件夹
+                        QString dateFolder = localPath.section('/', -2, -2);
+                        QDir dir(imageCachePath);
+                        if (!dir.exists(dateFolder)) {
+                            dir.mkpath(dateFolder);
+                        }
+
+                        qDebug() << "要保存的地址 :" << "/" + localPath;
+
+                        // 保存图片到缓存
+                        if (noCount < images.size() && !images.at(noCount).save("/" + localPath)) {
+                            qDebug() << "保存图片失败";
+                            return;
+                        }
+                        ++noCount;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+// 生成消息随机ID的函数
 qint64 generateMessageId()
 {
     QDateTime currentTime = QDateTime::currentDateTime();
@@ -57,30 +97,36 @@ qint64 generateMessageId()
 }
 
 
-
-
-QString processMessageWithImages(QString message, const QString &defaultImagePath) {
-    QRegularExpression regex(R"(!\[image\]\((file:///.*?)\))"); // 正则表达式匹配 file:// 开头的图片 URL
+// 解析离线消息中的图片
+QString processMessageWithImages(QString message, const QString& defaultImagePath)
+{
+    QRegularExpression regex("<img[^>]*src=\"(file:///[^\">]+)\"");
     QRegularExpressionMatchIterator i = regex.globalMatch(message);
 
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
-        QString strurl = match.captured(1);
-        QUrl url(strurl);
+        QString imageUrl = match.captured(1);
+        QUrl url(imageUrl);
         QImage image(url.toLocalFile());
 
         if (image.isNull()) {
             // 图片无法加载，替换为默认图片路径
-            message.replace(strurl, defaultImagePath);
+            message.replace(imageUrl, defaultImagePath);
         }
     }
 
     return message;
 }
 
+// 提取纯文本
+QString extractPlainTextFromHtml(const QString &html)
+{
+    QTextDocument doc;
+    doc.setHtml(html);
+    return doc.toPlainText();
+}
 
-QString imageCachePath = "/root/.config/OICQ/client/recv";
-QString headCachePath = "/root/.config/OICQ/client/head";
+
 }
 
 FriendModel::FriendModel(QAbstractListModel* parent)
@@ -123,39 +169,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             if (!images.isEmpty()) {
                 message.replace("client/send", "client/recv"); // 转变地址
                 // 给所有收到的图片建立缓存
-                int noCount = 0;
-                for (qint32 i = 0; i < message.length(); ++i) {
-                    if (message.mid(i, 9) == "![image](") {
-                        // 是一个图片
-                        i = i + 9;
-                        if (message.mid(i, 8) == "file:///") {
-                            i = i + 8;
-                            QString url = "/";
-                            QString dateFolder; // 日期对应的文件夹
-                            while (message[i] != ')' && i < message.length()) {
-                                url += message[i];
-                                if (message.mid(i, 4) == "recv") {
-                                    url += "ecv/";
-                                    i += 5;
-                                    dateFolder = message.mid(i, 8);
-                                    url += dateFolder + "/";
-                                    i += 8;
-                                }
-                                ++i;
-                            }
-                            //保存图片到缓存
-                            QDir dir(imageCachePath);
-                            if (!dir.exists(dateFolder)) {
-                                dir.mkpath(dateFolder);
-                            }
-                            qDebug() << "要保存的地址 :" << url;
-                            if (!images.at(noCount).save(url)) {
-                                return;
-                            }
-                        }
-                        ++noCount;   //图片+1
-                    }
-                }
+                processReceiveImages(message, images);
             }
             //刷新qml的回显
             int j;
@@ -285,12 +299,11 @@ QVariant FriendModel::data(const QModelIndex& index, int role) const
     Friend f = _allData->friends.at(index.row());
     QList<Recode> recodeList = _allData->messages.at(index.row());
     if (role == Qt::UserRole) {
-        // qDebug() << f->name;
         return f.name;
     } else if (role == Qt::UserRole + 1){
         return f.headPath;
     } else if (role == Qt::UserRole + 2) {
-        return recodeList.last().message;
+        return extractPlainTextFromHtml(recodeList.last().message);
     }
     return QVariant("");
 }
@@ -363,7 +376,7 @@ void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
 
 //发送消息
 void FriendModel::sendMessage(QString message,int index,int type){
-    // qDebug() << "###############    " << message << " " << type;
+
     qint64 msgId = generateMessageId();
     if (type == PrivateMessage) {
         QList<QImage> imageList;

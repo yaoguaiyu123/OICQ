@@ -88,7 +88,7 @@ Rectangle {
         //数据缓冲的TextArea
         TextArea {
             id: hiddenArea
-            textFormat: TextArea.MarkdownText
+            textFormat: TextArea.RichText
             visible: false
             z:-1
         }
@@ -99,7 +99,7 @@ Rectangle {
             width: view.width
             color: "#0E0E0E"
             font.pixelSize: 14
-            textFormat: TextArea.MarkdownText
+            textFormat: TextArea.RichText
             background: Rectangle {
                 color: "#f2f2f2"
                 radius: 4
@@ -109,11 +109,11 @@ Rectangle {
             Keys.onPressed: (event) => {
                 if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter) &&
                     (event.modifiers & Qt.ShiftModifier)) {
-                    area.insert(area.cursorPosition, "\n")
+                    area.insert(area.cursorPosition, "<br/>")
                     event.accepted = true
                 } else if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter)) {
-                    if (area.text !== "") {
-                        send(area.text) // 发出信号
+                    if (!documentHandler.isTextContentEmpty()) {
+                        send(area.text)    //发出信号
                         area.text = ""
                         event.accepted = true
                     }
@@ -121,9 +121,9 @@ Rectangle {
                     // 自定义粘贴逻辑
                     event.accepted = true
                     hiddenArea.paste()
-                    documentHandler.parseMarkDown(hiddenArea.text)
+                    documentHandler.parseHtml()
                     hiddenArea.clear()
-                    area.insert(area.cursorPosition, "\n")
+                    area.insert(area.cursorPosition, "<br/>")
                 }
             }
             TextDocumentHandler {
@@ -153,7 +153,7 @@ Rectangle {
             horizontalAlignment: Text.AlignHCenter
         }
         onClicked: {
-            if(area.text !== ""){
+            if(!documentHandler.isTextContentEmpty()){
                 send(area.text)    //发出信号
                 area.text = ""
             }

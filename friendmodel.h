@@ -13,6 +13,8 @@ class FriendModelPrivate;
 class MessageModel;
 class TcpSocket;
 class QImage;
+#include <QQuickTextDocument>
+
 class FriendModel : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY_RDONLY_AUTO(QString, currentHeadpath)

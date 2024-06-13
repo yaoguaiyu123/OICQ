@@ -65,7 +65,7 @@ Item {
                 wrapMode: TextEdit.WrapAnywhere
                 font.pixelSize: 14
                 readOnly: true      //设置为只读
-                textFormat: TextArea.MarkdownText
+                textFormat: TextArea.RichText
 
             }
         }

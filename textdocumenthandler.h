@@ -20,8 +20,10 @@ public:
     Q_INVOKABLE void insertImage(QString);
     Q_INVOKABLE void insertScreenshot();
     void insertText(QString);
-    Q_INVOKABLE void textContent();
-    Q_INVOKABLE void parseMarkDown(QString content);
+    QString textContent();
+    Q_INVOKABLE bool isTextContentEmpty();
+    // Q_INVOKABLE void parseMarkDown(QString content);
+    Q_INVOKABLE void parseHtml();
 
 private:
 };

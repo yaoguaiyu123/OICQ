@@ -28,16 +28,6 @@ void TextDocumentHandler::insertScreenshot()
     cursor.setPosition(m_cursorPosition); // 确保m_cursorPosition已正确初始化
     QImage image(PRINT_SCREEN_DEFAULT_PATH);
 
-
-    int updateWidth = image.width();
-    // 调整图片大小
-    if (updateWidth > 300) {
-        float scale = image.width() / static_cast<float>(image.height());
-        updateWidth = 300;
-        int updateHeight = static_cast<int>(updateWidth / scale);
-        image = image.scaled(updateWidth, updateHeight, Qt::KeepAspectRatio);
-    }
-
     // 保存图片到缓存
     QString dateFolder = QDateTime::currentDateTime().toString("yyyyMMdd");
     QDir dir(imageCachePath);
@@ -52,32 +42,29 @@ void TextDocumentHandler::insertScreenshot()
 
     // 插入缓存图片
     QTextImageFormat imageFormat;
-    imageFormat.setWidth(image.width());
-    imageFormat.setHeight(image.height());
+    if(image.width() > 280){
+        imageFormat.setWidth(280);
+    }else{
+        imageFormat.setWidth(image.width());
+    }
     imageFormat.setName("file://" + newImagePath);
     cursor.insertImage(imageFormat);
 }
 
 
 // 插入图片
-void TextDocumentHandler::insertImage(QString url)
+void TextDocumentHandler::insertImage(QString strurl)
 {
     if (!m_textDocument) {
         return;
     }
-    QImage image(url);
+    QUrl url(strurl);
+    QImage image(url.toLocalFile());
+
     if (image.isNull()) {
-        //TODO 说明这是一段文字,要insert文字
+        insertText(strurl);
         qDebug() << "textdocumenthandler.cpp : paste image load fail";
         return;
-    }
-    int updateWidth = image.width();
-    // 调整图片大小
-    if (updateWidth > 200) {
-        float scale = image.width() / static_cast<float>(image.height());
-        updateWidth = 200;
-        int updateHeight = static_cast<int>(updateWidth / scale);
-        image = image.scaled(updateWidth, updateHeight, Qt::KeepAspectRatio);
     }
 
     // 保存图片到缓存
@@ -97,9 +84,13 @@ void TextDocumentHandler::insertImage(QString url)
     QTextCursor cursor(doc);
     cursor.setPosition(m_cursorPosition);
     QTextImageFormat imageFormat;
-    imageFormat.setWidth(image.width());
-    imageFormat.setHeight(image.height());
-    imageFormat.setName("file://" + newImagePath);   // 插入file3类型的图片
+
+    if(image.width() > 280){
+        imageFormat.setWidth(280);
+    }else{
+        imageFormat.setWidth(image.width());
+    }
+    imageFormat.setName("file:///" + newImagePath);   // 插入file4类型的图片
     cursor.insertImage(imageFormat);
 }
 
@@ -110,63 +101,68 @@ void TextDocumentHandler::insertText(QString content){
     cursor.insertText(content);
 }
 
-void TextDocumentHandler::textContent()
+QString TextDocumentHandler::textContent()
 {
     QTextDocument* doc = m_textDocument->textDocument();
-    qDebug() << doc->toPlainText();
+    return doc->toPlainText();
 }
 
-// 解析隐藏文档中的内容，将其图片内容做转化(将图片进行缩放)
-void TextDocumentHandler::parseMarkDown(QString content)
+bool TextDocumentHandler::isTextContentEmpty()
 {
-    for (qint32 i = 0; i < content.length(); ++i) {
-        // qDebug() << content.mid(i, 8);
-        if (content.mid(i, 9) == STR_IMAGE_TYPE) {
-            // 是一个图片(可识别的图片)
-            i = i + 9;
-            if (content.mid(i, 9) == FILE4_TYPE) {
-                i = i + 9;
-                QString url = "/";
-                while (content[i] != ')' && i < content.length()) {
-                    url += content[i];
-                    ++i;
-                }
-                insertImage(url);
-                ++i;   //跳过自带的\n
-            }else if(content.mid(i, 8) == FILE3_TYPE){
-                i = i + 8;
-                QString url = "/";
-                while (content[i] != ')' && i < content.length()) {
-                    url += content[i];
-                    ++i;
-                }
-                insertImage(url);
-                ++i;
-            }
+    return textContent().isEmpty();
+}
 
-        } else if (content.mid(i, 8) == FILE3_TYPE) {
-            // 是一个文件
-            qDebug() << "是一个文件";
-            i = i + 8;
-            QString url = "/";
-            while (content[i] != '\n' && i < content.length()) {
-                url += content[i];
-                ++i;
+
+
+// 解析隐藏文档中的内容，将其图片内容做转化(将图片进行缩放)
+void TextDocumentHandler::parseHtml()
+{
+    QTextDocument* doc = m_hideTextDocument->textDocument(); //获取隐藏文档
+    QTextBlock block = doc->begin(); // 获取文档的第一个块
+
+    while (block.isValid()) {
+        QTextBlock::iterator it;
+        // 遍历块中的所有元素
+        for (it = block.begin(); !(it.atEnd()); ++it) {
+            QTextFragment fragment = it.fragment();
+            if (fragment.isValid()) {
+                if (fragment.charFormat().isImageFormat()) {
+                    // 处理图片
+                    QTextImageFormat imgFormat = fragment.charFormat().toImageFormat();
+                    QString imgName = imgFormat.name(); // 图片名称
+                    insertImage(imgName);
+                } else {
+                    // 处理文字
+                    QString content = fragment.text();
+                    int startIndex = 0;
+                    int lastEndIndex = 0;
+                    // 寻找是否有遗漏的图片(非标准格式的图片)
+                    while ((startIndex = content.indexOf("file://", lastEndIndex)) != -1) {
+                        if (startIndex > lastEndIndex) {
+                            insertText(
+                                content.mid(lastEndIndex, startIndex - lastEndIndex).trimmed());
+                        }
+                        int endIndex = content.indexOf(' ', startIndex);
+                        if (endIndex == -1) {
+                            endIndex = content.length();
+                        }
+
+                        QString filePath = content.mid(startIndex, endIndex - startIndex);
+                        if (filePath.endsWith(".png") || filePath.endsWith(".jpg")
+                            || filePath.endsWith(".jpeg")) {
+                            insertImage(filePath);
+                        } else {
+                            insertText(filePath); // 路径不是图片，插入普通文本
+                        }
+                        lastEndIndex = endIndex;
+                    }
+
+                    if (lastEndIndex < content.length()) {
+                        insertText(content.mid(lastEndIndex).trimmed());
+                    }
+                }
             }
-            // 如果是图片文件就插入
-            QImage image(url);
-            if (!image.isNull()) {
-                insertImage(url);
-            } else {
-                insertText("file://" + url);
-            }
-            ++i;
-        }else{
-            // 普通文字
-            QTextDocument* doc = m_textDocument->textDocument();
-            QTextCursor cursor(doc);
-            cursor.setPosition(m_cursorPosition);
-            cursor.insertText(content[i]);
         }
+        block = block.next(); // 移动到下一个块
     }
 }
