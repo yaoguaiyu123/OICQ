@@ -36,6 +36,7 @@ qt_add_qml_module(
   Login.qml
   comman/NetChat.js
   components/HeadUpLoadPopup.qml
+  components/ImageViewer.qml
   components/ScreenPrint.qml
   friendChat/FriendsGroupMenu.qml
   friendChat/FriendsGroupPopup.qml

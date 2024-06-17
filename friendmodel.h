@@ -32,6 +32,7 @@ public:
     static FriendModel& singleTon();
     Q_INVOKABLE void updateMyHead(QString);
     Q_INVOKABLE void cancelUploadOrDownload(int friendIndex,int messageIndex);
+    Q_INVOKABLE QList<QString> currentWindowImages(int friendIndex, int messageIndex);
     void addNewFriend(QJsonValue& jsonvalue, QImage& image);
     void addNewFriend(QString username, qint64 userid, QString headpath);
     void addFriends(QJsonValue &, QList<QImage> &);

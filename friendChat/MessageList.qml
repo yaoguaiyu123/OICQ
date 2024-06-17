@@ -15,6 +15,8 @@ Rectangle {
     property int listIndex: 0
     property string headPath: FriendModel.currentHeadpath
     property string url: "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=24.e242c2f0ea3971c6f72f402ed63b7150.2592000.1717236204.282335-66121946"
+
+
     //列布局
     ColumnLayout{
         anchors.fill: parent
@@ -55,6 +57,8 @@ Rectangle {
                 }
             }
         }
+
+        // 分割线
         Rectangle{
             color: "#dfdfdf"
             Layout.fillWidth: true
@@ -82,6 +86,15 @@ Rectangle {
                 onCancelTransfer1: (messageIndex)=>{
                     FriendModel.cancelUploadOrDownload(listIndex, messageIndex)  //取消下载或者上传
                 }
+                onBrowsePictures: (messageIndex) => {
+                    var res = FriendModel.currentWindowImages(listIndex, messageIndex)
+
+                    var imageIndex = res[0]
+                    var imagePaths = res.slice(1)
+                    imageViewer.loadImages(imageIndex,imagePaths)
+                    imageViewer.show()
+                }
+
             }
         }
 
@@ -121,6 +134,11 @@ Rectangle {
                 listView.positionViewAtEnd()
             }
         }
+    }
+
+    MyComponent.ImageViewer{
+        id:imageViewer
+        visible: false
     }
 
 

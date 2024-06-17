@@ -21,8 +21,8 @@ namespace {
 QString imageCachePath = "/root/.config/OICQ/client/recv";
 QString headCachePath = "/root/.config/OICQ/client/head";
 
-// 解析将要发送的消息
- void processImages(const QString& content, QList<QImage>& imageList)
+// 解析将要发送的消息生成imageList
+void processImages(const QString& content, QList<QImage>& imageList)
 {
 
     QRegularExpression regex("<img[^>]*src=\"(file:///[^\">]+)\"");
@@ -31,19 +31,31 @@ QString headCachePath = "/root/.config/OICQ/client/head";
         QRegularExpressionMatch match = it.next();
         QString filePath = match.captured(1);
 
-
-        if (filePath.startsWith("file:///")) {
-            filePath = filePath.mid(7);
-            QImage image(filePath);
-            if (!image.isNull()) {
-                imageList.append(image);
-                qDebug() << "添加图片到发送List: " << filePath;
-            }
+        filePath = filePath.mid(7);
+        QImage image(filePath);
+        if (!image.isNull()) {
+            imageList.append(image);
+            qDebug() << "添加图片到发送List: " << filePath;
         }
     }
 }
 
-// 解析接收到的消息
+// 解析聊天消息并返回其中的图片地址
+QList<QString> getAllImagePaths(const QString& content)
+{
+    QList<QString> strLists;
+    QRegularExpression regex("<img[^>]*src=\"(file:///[^\">]+)\"");
+    QRegularExpressionMatchIterator it = regex.globalMatch(content);
+    while (it.hasNext()) {
+        QRegularExpressionMatch match = it.next();
+        QString filePath = match.captured(1);
+        strLists.append(filePath);
+    }
+
+    return strLists;
+}
+
+// 解析接收到的消息提取imageList并保存 TODO
 void processReceiveImages(const QString& message,const QList<QImage>& images) {
     qint32 noCount = 0;
     for (qint32 i = 0; i < message.length(); ++i) {
@@ -64,8 +76,6 @@ void processReceiveImages(const QString& message,const QList<QImage>& images) {
                             dir.mkpath(dateFolder);
                         }
 
-                        qDebug() << "要保存的地址 :" << "/" + localPath;
-
                         // 保存图片到缓存
                         if (noCount < images.size() && !images.at(noCount).save("/" + localPath)) {
                             qDebug() << "保存图片失败";
@@ -80,24 +90,7 @@ void processReceiveImages(const QString& message,const QList<QImage>& images) {
 }
 
 
-// 生成消息随机ID的函数
-qint64 generateMessageId()
-{
-    QDateTime currentTime = QDateTime::currentDateTime();
-    int year = currentTime.date().year();
-    int month = currentTime.date().month();
-    int day = currentTime.date().day();
-    int hour = currentTime.time().hour();
-    int minute = currentTime.time().minute();
-    int second = currentTime.time().second();
-    qint64 randomPart = QRandomGenerator::global()->generate() % 100000000;
-    qint64 uniqueId = (year % 100) * 10000000000 + month * 100000000 + day * 1000000 + hour * 10000 + minute * 100 + second;
-    uniqueId = (uniqueId << 8) | randomPart;
-    return uniqueId;
-}
-
-
-// 解析离线消息中的图片
+// 解析离线消息中是否存在无缓存的图片
 QString processMessageWithImages(QString message, const QString& defaultImagePath)
 {
     QRegularExpression regex("<img[^>]*src=\"(file:///[^\">]+)\"");
@@ -116,6 +109,23 @@ QString processMessageWithImages(QString message, const QString& defaultImagePat
     }
 
     return message;
+}
+
+
+// 生成消息随机ID的函数
+qint64 generateMessageId()
+{
+    QDateTime currentTime = QDateTime::currentDateTime();
+    int year = currentTime.date().year();
+    int month = currentTime.date().month();
+    int day = currentTime.date().day();
+    int hour = currentTime.time().hour();
+    int minute = currentTime.time().minute();
+    int second = currentTime.time().second();
+    qint64 randomPart = QRandomGenerator::global()->generate() % 100000000;
+    qint64 uniqueId = (year % 100) * 10000000000 + month * 100000000 + day * 1000000 + hour * 10000 + minute * 100 + second;
+    uniqueId = (uniqueId << 8) | randomPart;
+    return uniqueId;
 }
 
 // 提取纯文本
@@ -192,6 +202,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             if (res == Success) {
                 !image.save(headCachePath + "/myHead.jpg");
                 m_myImagePath =  "file://" + headCachePath + "/myHead.jpg";
+                emit(myImagePathChanged());
             }
         });
 
@@ -562,5 +573,25 @@ void FriendModel::cancelUploadOrDownload(int friendIndex,int messageIndex){
         }
     }
 }
+
+// 获取当前聊天窗口中的所有图片
+QList<QString> FriendModel::currentWindowImages(int friendIndex, int messageIndex)
+{
+    QList<QString> strList;
+    int count = 0; //图片数量
+    int currentIndex, i = 0;
+    for (const Recode& recode : _allData->messages[friendIndex]) {
+        QList<QString> tempList = getAllImagePaths(recode.message);
+        strList.append(tempList);
+        if (i == messageIndex) {
+            currentIndex = count;
+        }
+        count += tempList.length();
+        ++i;
+    }
+    strList.push_front(tr("%1").arg(currentIndex));
+    return strList;
+}
+
 
 

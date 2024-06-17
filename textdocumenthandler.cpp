@@ -42,8 +42,8 @@ void TextDocumentHandler::insertScreenshot()
 
     // 插入缓存图片
     QTextImageFormat imageFormat;
-    if(image.width() > 280){
-        imageFormat.setWidth(280);
+    if(image.width() > 200){
+        imageFormat.setWidth(200);
     }else{
         imageFormat.setWidth(image.width());
     }

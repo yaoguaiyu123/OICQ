@@ -25,33 +25,33 @@ Rectangle {
             hoveredImagePath: "qrc:/icon/biaoqing_blue.png"
         }
         MyComponent.IconButton{
-            width: 32
-            height: 32
-            imagePath: "qrc:/icon/jiandao_black.png"
-            hoveredImagePath: "qrc:/icon/jiandao_blue.png"
-            onClicked: {
-                screenCapture.printFullScreen()  //获得当前全屏图片
-                screenPrintWindow.flushBackImage()
-                screenPrintWindow.show()
-                screenPrintWindow.visibility = Window.FullScreen  //使其全屏
-            }
-            MyComponent.ScreenPrint{
-                id:screenPrintWindow
-                onProvideArea:(area)=>{
-                    // 得到截图位置
-                    screenCapture.printScreen(area)
-                }
-            }
+                    width: 32
+                    height: 32
+                    imagePath: "qrc:/icon/jiandao_black.png"
+                    hoveredImagePath: "qrc:/icon/jiandao_blue.png"
+                    onClicked: {
+                        screenCapture.printFullScreen()  //获得当前全屏图片
+                        screenPrintWindow.flushBackImage()
+                        screenPrintWindow.show()
+                        screenPrintWindow.visibility = Window.FullScreen  //使其全屏
+                    }
+                    MyComponent.ScreenPrint{
+                        id:screenPrintWindow
+                        onProvideArea:(area)=>{
+                            // 得到截图位置
+                            screenCapture.printScreen(area)
+                        }
+                    }
 
-            // 用于实现捕获屏幕的对象
-            ScreenCapture {
-                id: screenCapture
-                onScreenshotComplete: ()=>{
-                    documentHandler.insertScreenshot()
-                }
-            }
+                    // 用于实现捕获屏幕的对象
+                    ScreenCapture {
+                        id: screenCapture
+                        onScreenshotComplete: ()=>{
+                            documentHandler.insertScreenshot()
+                        }
+                    }
 
-        }
+                }
         MyComponent.IconButton{
             width: 32
             height: 32

@@ -52,7 +52,7 @@ Item {
                         backColor: "#f2f2f2"
                         backHoverColor: "#cfcfcf"
                         onClicked: {
-                            workWindow.showMinimized()
+                            rootWindow.showMinimized()
                         }
                     }
                     MyComponent.BackIconButton {
@@ -69,7 +69,7 @@ Item {
                             var currentTime = new Date().getTime();
                             if (currentTime - lastClickTime > clickThreshold) {
                                 lastClickTime = currentTime;
-                                workWindow.toggleMaximizeRestore();
+                                rootWindow.toggleMaximizeRestore();
                             }
                         }
                     }

@@ -17,7 +17,14 @@ Item {
     signal uploadFile1(var filepath, var index)
     signal cancelTransfer1(var index)
     signal updateListView()
-    // visible: type !== undefined && type !== "" && type !== null
+    signal browsePictures(var index)
+
+    TapHandler{
+        onDoubleTapped: {
+            browsePictures(index)
+        }
+    }
+
 
     Text{
         id:tiptext

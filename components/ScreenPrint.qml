@@ -138,16 +138,36 @@ Window {
 
             Button{
                 id: cancelBtn
-                text: "取消"
+                implicitWidth: 65
+                background: Rectangle{
+                    color: "white"
+                    radius: 5
+                }
+                contentItem: Label{
+                    color: "black"
+                    text: "取消"
+                    horizontalAlignment: Text.AlignHCenter
+                }
                 onClicked: {
                     initToBegin()
                     screenShotWindow.hide()
+                    // workWindow.show()
                 }
             }
 
             Button{
                 id: oKBtn
-                text: "确定"
+                implicitWidth: 65
+                background: Rectangle{
+                    color: "#0099ff"
+                    radius: 5
+                }
+                contentItem: Label{
+                    color: "white"
+                    text: "确定"
+                    horizontalAlignment: Text.AlignHCenter
+
+                }
                 onClicked: {
                     // 更新最终选择的区域
                     captureArea = Qt.rect(selectionRect.startPoint.x, selectionRect.startPoint.y,
@@ -155,6 +175,7 @@ Window {
                     provideArea(captureArea)
                     initToBegin()
                     screenShotWindow.hide()
+                    // workWindow.show()
                 }
             }
         }
