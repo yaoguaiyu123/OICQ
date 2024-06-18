@@ -23,6 +23,8 @@ Rectangle {
             height: 32
             imagePath: "qrc:/icon/biaoqing_black.png"
             hoveredImagePath: "qrc:/icon/biaoqing_blue.png"
+            onClicked: memeview.visible = true
+
         }
         MyComponent.IconButton{
                     width: 32
@@ -78,6 +80,19 @@ Rectangle {
             imagePath: "qrc:/icon/tupian_black.png"
             hoveredImagePath: "qrc:/icon/tupian_blue.png"
         }
+    }
+    MemeView {
+        id: memeview
+        clip: false
+         x:   8
+         y:  -310
+         onMemepathChanged: {   //表情包的路径改变时更新输入框的显示内容
+             //console.log(memepath)
+             hiddenArea.text += memeview.memepath
+             documentHandler.parseHtml()
+             hiddenArea.clear()
+             area.insert(area.cursorPosition, "<br/>")
+         }
     }
 
     ScrollView {
@@ -204,6 +219,5 @@ Rectangle {
         hiddenArea.clear()
         area.insert(area.cursorPosition, "<br/>")
     }
-
 
 }

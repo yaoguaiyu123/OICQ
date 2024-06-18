@@ -69,7 +69,8 @@ qt_add_qml_module(
   screencapture.cpp
   RESOURCES # .qrc
   rec.qrc
-  QML_FILES components/RightPopUpMenu.qml)
+  QML_FILES components/RightPopUpMenu.qml
+  QML_FILES friendChat/MemeView.qml)
 
 target_compile_features(appqqV1 PRIVATE cxx_std_20)
 
