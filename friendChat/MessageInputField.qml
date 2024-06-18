@@ -126,6 +126,20 @@ Rectangle {
                     area.insert(area.cursorPosition, "<br/>")
                 }
             }
+            //处理右击菜单
+             TapHandler {
+                 acceptedButtons: Qt.RightButton
+
+                 onTapped: {
+                         sender.popup();
+                }
+            }
+             MyComponent.RightPopUpMenu {
+                 id: sender
+                 onCutSignal: handleCut()
+                 onCopySignal: handleCopy()
+                 onPasteSignal: handlePaste()
+           }
             TextDocumentHandler {
                 id: documentHandler
                 textDocument: area.textDocument
@@ -133,6 +147,7 @@ Rectangle {
                 cursorPosition: area.cursorPosition
             }
         }
+
     }
 
 
@@ -161,7 +176,34 @@ Rectangle {
 
     }
 
+    //剪切操作处理器
 
+    function handleCut() {
+        console.log("Cut signal received!")
+        // 在这里执行剪切操作
+        area.cut()
+
+    }
+
+    //复制操作处理器
+    function handleCopy() {
+        console.log("Copy signal received!")
+        // 在这里执行复制操作
+        //area.selectedText.copy();
+        area.copy();
+
+    }
+
+    //粘贴操作处理器
+    function handlePaste() {
+        console.log("Paste signal received!")
+        // 在这里执行粘贴操作
+        //area.paste()
+        hiddenArea.paste()
+        documentHandler.parseHtml()
+        hiddenArea.clear()
+        area.insert(area.cursorPosition, "<br/>")
+    }
 
 
 }
