@@ -339,10 +339,9 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             }
             emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2 ,Qt::UserRole + 3});
             
-            if(_allData->messages.length() == 1){
-                _messageModel->setModelData(&_allData->messages[m_currentIndex]);
-                emit(newMessage(m_currentIndex));   //通知list移动到最底端
-            }
+            // 设置当前窗口
+            _messageModel->setModelData(&_allData->messages[m_currentIndex]);
+            emit(newMessage(m_currentIndex));   //通知list移动到最底端
 
             // 将当前窗口的设为已读通知服务端
             QJsonObject obj;
