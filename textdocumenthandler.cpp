@@ -58,12 +58,21 @@ void TextDocumentHandler::insertImage(QString strurl)
     if (!m_textDocument) {
         return;
     }
+    bool isQrc = false;
+    if (strurl.startsWith("qrc")) {
+        strurl.remove(0, 3);
+        isQrc = true;
+    }
     QUrl url(strurl);
-    QImage image(url.toLocalFile());
-
+    QImage image;
+    if (isQrc) {
+        image.load(strurl);
+    } else {
+        image.load(url.toLocalFile());
+    }
     if (image.isNull()) {
         insertText(strurl);
-        qDebug() << "textdocumenthandler.cpp : paste image load fail";
+        qDebug() << "textdocumenthandler.cpp : paste image load fail, url = " << url.toLocalFile();
         return;
     }
 
@@ -136,7 +145,7 @@ void TextDocumentHandler::parseHtml()
                     QString content = fragment.text();
                     int startIndex = 0;
                     int lastEndIndex = 0;
-                    // 寻找是否有遗漏的图片(非标准格式的图片)
+                    // 寻找是否有非标准格式的图片
                     while ((startIndex = content.indexOf("file://", lastEndIndex)) != -1) {
                         if (startIndex > lastEndIndex) {
                             insertText(
@@ -156,6 +165,28 @@ void TextDocumentHandler::parseHtml()
                         }
                         lastEndIndex = endIndex;
                     }
+                    // 寻找是否有qrc图片
+                    while ((startIndex = content.indexOf("qrc:/", lastEndIndex)) != -1) {
+                        if (startIndex > lastEndIndex) {
+                            insertText(content.mid(lastEndIndex, startIndex - lastEndIndex).trimmed());
+                        }
+                        int endIndex = content.indexOf(' ', startIndex);
+                        if (endIndex == -1) {
+                            endIndex = content.length();
+                        }
+
+                        QString filePath = content.mid(startIndex, endIndex - startIndex);
+                        if (filePath.endsWith(".png") || filePath.endsWith(".jpg")
+                            || filePath.endsWith(".jpeg")) {
+                            insertImage(filePath);
+                        } else {
+                            insertText(filePath); // 路径不是图片，插入普通文本
+                        }
+                        lastEndIndex = endIndex;
+                    }
+
+
+
 
                     if (lastEndIndex < content.length()) {
                         insertText(content.mid(lastEndIndex).trimmed());
