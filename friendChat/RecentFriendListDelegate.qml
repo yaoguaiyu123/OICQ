@@ -18,25 +18,29 @@ Button {
         id:content
         color: button.backColor
         //横向定位
-        Row{
-            //只指定宽度，高度靠子元素撑起来
+        RowLayout{
             width: content.width
+            implicitHeight: 70
             id:row
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 5
+            spacing: 9
             MyComponent.HeadImage{
                 id:headimage
-                width: 40
-                height: 40
+                Layout.preferredHeight: 40
+                Layout.preferredWidth: 40
                 imageRadius: 20
                 headUrl: headPath
             }
-            Column{
-                spacing: 7
+            ColumnLayout{
+                spacing: 9
+                Layout.preferredHeight: 40
+                Layout.fillWidth: true
                 Text{
                     id: username
                     font.pixelSize: 14
                     text: name
+                    Layout.fillWidth: true
+                    horizontalAlignment: Text.AlignLeft
                     //TODO 先简单实现逻辑
                     color:name === "小爱同学" && bigTextColor === "black" ? "#10a37f" : button.bigTextColor
                 }
@@ -48,6 +52,9 @@ Button {
                     width: button.width - headimage.width
                     height: 16
                     elide: Text.ElideRight
+                    horizontalAlignment: Text.AlignLeft
+                    Layout.fillWidth: true
+
                 }
 
             }
@@ -60,6 +67,23 @@ Button {
             text: getRecentDate()
             color: button.smallTextColor
             font.pixelSize: 12
+        }
+
+        // 当前未读消息数量
+        Rectangle{
+            width: 24
+            height: 16
+            anchors.right: row.right
+            anchors.bottom: row.bottom
+            radius: 8
+            visible: unreadMessageNum > 0
+            color: "#ff2222"
+            Text{
+                anchors.centerIn: parent
+                color: "white"
+                text: unreadMessageNum
+                font.pixelSize: 11
+            }
         }
     }
 

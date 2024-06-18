@@ -133,7 +133,11 @@ QString extractPlainTextFromHtml(const QString &html)
 {
     QTextDocument doc;
     doc.setHtml(html);
-    return doc.toPlainText();
+    if (doc.toPlainText().isEmpty()) {
+        return "[图片]";
+    }else{
+        return doc.toPlainText();
+    }
 }
 
 
@@ -149,6 +153,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
     m_role.insert(Qt::UserRole, "name");
     m_role.insert(Qt::UserRole + 1, "headPath");
     m_role.insert(Qt::UserRole + 2, "recentMessage");
+    m_role.insert(Qt::UserRole + 3, "unreadMessageNum");
     m_currentIndex = 0;
     m_currentName = "";
     m_currentHeadpath = "";
@@ -167,7 +172,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             }
         });
 
-    // 接收到私发消息
+    // 接收到普通私发消息
     QObject::connect(m_tcpsocket, &TcpSocket::privateMessageReturn,
         [this](QJsonValue& value,QList<QImage>images) {
             QJsonObject obj;
@@ -184,10 +189,16 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             //刷新qml的回显
             int j;
             for (int i = 0; i < _allData->friends.length(); ++i) {
-                if (_allData->friends.at(i).userid == from) {
+                if (_allData->friends[i].userid == from) {
+                    if (i != m_currentIndex) {
+                        QModelIndex modelindex = createIndex(i, 0);
+                        emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+                        _allData->friends[i].unreadMessageNum += 1; //未读消息数量+1
+                        emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+                    }
                     QModelIndex modelindex = createIndex(i, 0);
                     emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
-                    _messageModel->addMessage(-1,message, "recv", i);
+                    _messageModel->addMessage(-1, message, "recv", i, 0);
                     emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
                     j = i;
                     break;
@@ -239,7 +250,13 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             QString filesize = recvObj.value("filesize").toString();
             int j;
             for (int i = 0; i < _allData->friends.length(); ++i) {
-                if (_allData->friends.at(i).userid == from) {
+                if (_allData->friends[i].userid == from) {
+                    if (i != m_currentIndex) {
+                        QModelIndex modelindex = createIndex(i, 0);
+                        emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+                        _allData->friends[i].unreadMessageNum += 1; //未读消息数量+1
+                        emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+                    }
                     QModelIndex modelindex = createIndex(i, 0);
                     emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});   //刷新最近消息
                     _messageModel->addMessage(messageId, "[文件] " + filename , "recvfile", filename, filesize, i);
@@ -256,10 +273,10 @@ FriendModel::FriendModel(QAbstractListModel* parent)
         [this](QJsonValue& jsonvalue) {
             QJsonArray jsonArray = jsonvalue.toArray();
             qint64 userid = m_tcpsocket->getUserId();
+
             QModelIndex modelindex1 = createIndex(0, 0);
             QModelIndex modelindex2 = createIndex(rowCount() - 1, 0);
-
-            emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2});
+            emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2 ,Qt::UserRole + 3});
 
             for (const QJsonValue& jsonvalue : jsonArray) {
                 QJsonObject jsonobj = jsonvalue.toObject();
@@ -271,34 +288,69 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                 QString filename = jsonobj.value("filename").toString("");
                 QString filesize = jsonobj.value("filesize").toString("");
                 QString type = jsonobj.value("messageType").toString();
+                int isRead = jsonobj.value("is_read").toInt();
                 if (type == "file") {
                     // 文件消息
-                    if (senderId == userid) {
-                        qDebug() << "你好世界1";
-                        _messageModel->addMessage(messageId, message, "sendfile", filename, filesize, -1, receiverId);
-                    }else{
-                        message.replace("client/send", "client/recv"); // 对message转变地址
-                        message = processMessageWithImages(message, "qrc:/icon/fail_to_load.png");
-                        _messageModel->addMessage(messageId, message, "recvfile", filename, filesize, -1, senderId);
+                    for (int i = 0; i < _allData->friends.size(); ++i) {
+                        if (senderId == userid) {
+                            if (receiverId == _allData->friends[i].userid) {
+                                _messageModel->addMessage(messageId,
+                                                          message,
+                                                          "sendfile",
+                                                          filename,
+                                                          filesize,
+                                                          i);
+                            }
+                        } else {
+                            if (senderId == _allData->friends[i].userid) {
+                                if (i != m_currentIndex && isRead == 0) {
+                                    _allData->friends[i].unreadMessageNum += 1; // 未读消息 + 1
+                                }
+                                _messageModel->addMessage(messageId,
+                                                          message,
+                                                          "recvfile",
+                                                          filename,
+                                                          filesize,
+                                                          i);
+                            }
+                        }
                     }
-                }else{
+                } else {
                     //普通消息
-                    if (senderId == userid) {
-                        _messageModel->addMessage(messageId, message, "send", -1, receiverId);
-                    }else{
-                        qDebug() << "你好世界2";
-                        message.replace("client/send", "client/recv"); // 对message转变地址
-                        message = processMessageWithImages(message, "qrc:/icon/fail_to_load.png");
-                        _messageModel->addMessage(messageId, message, "recv", -1, senderId);
+                    for (int i = 0; i < _allData->friends.size(); ++i) {
+                        if (senderId == userid) {
+                            if (receiverId == _allData->friends[i].userid) {
+                                _messageModel->addMessage(messageId, message, "send", i);
+                            }
+                        } else {
+                            if (senderId == _allData->friends[i].userid) {
+                                if (i != m_currentIndex && isRead == 0) {
+                                    _allData->friends[i].unreadMessageNum += 1; // 未读消息 + 1
+                                }
+                                message.replace("client/send",
+                                                "client/recv"); // 对message转变地址
+                                message = processMessageWithImages(message,
+                                                                   "qrc:/icon/fail_to_load.png");
+                                _messageModel->addMessage(messageId, message, "recv", i);
+                            }
+                        }
                     }
                 }
-
             }
-            emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2});
-            _messageModel->setModelData(&_allData->messages[m_currentIndex]);
-            emit(newMessage(m_currentIndex));   //通知list移动到最底端
+            emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2 ,Qt::UserRole + 3});
+            
+            if(_allData->messages.length() == 1){
+                _messageModel->setModelData(&_allData->messages[m_currentIndex]);
+                emit(newMessage(m_currentIndex));   //通知list移动到最底端
+            }
+
+            // 将当前窗口的设为已读通知服务端
+            QJsonObject obj;
+            obj.insert("friendId", _allData->friends[m_currentIndex].userid);
+            m_tcpsocket->packingMessage(JsonObjectToString(obj), UpdateIsRead);
 
         });
+
 }
 
 //在delegate能获得数据
@@ -315,6 +367,8 @@ QVariant FriendModel::data(const QModelIndex& index, int role) const
         return f.headPath;
     } else if (role == Qt::UserRole + 2) {
         return extractPlainTextFromHtml(recodeList.last().message);
+    } else if (role == Qt::UserRole + 3) {
+        return f.unreadMessageNum;
     }
     return QVariant("");
 }
@@ -348,6 +402,17 @@ MessageModel* FriendModel::getMessageModel(int index)
         emit(currentNameChanged());
         if(m_currentIndex < _allData->messages.length()){
             _messageModel->setModelData(&_allData->messages[m_currentIndex]);
+        }
+
+        if (_allData->friends[index].unreadMessageNum != 0) {
+            QModelIndex modelindex = createIndex(index, 0);
+            emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+            _allData->friends[index].unreadMessageNum = 0;
+            emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+            // 发送消息通知服务端数据已读
+            QJsonObject obj;
+            obj.insert("friendId", _allData->friends[index].userid);
+            m_tcpsocket->packingMessage(JsonObjectToString(obj), UpdateIsRead);
         }
     }
     return _messageModel;

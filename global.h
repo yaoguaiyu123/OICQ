@@ -20,7 +20,8 @@ enum MSG_TYPE {
     AddFriendRes,
     FriendRequestList,
     UpLoadFileRequest,
-    MessageList
+    MessageList,
+    UpdateIsRead
 };
 
 enum RETURN{
@@ -78,6 +79,7 @@ struct Friend {
     QString name;
     QString headPath;
     qint64 userid; // QQ号
+    int unreadMessageNum = 0;
 };
 
 struct MESG //消息结构体
