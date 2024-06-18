@@ -68,7 +68,8 @@ qt_add_qml_module(
   screencapture.h
   screencapture.cpp
   RESOURCES # .qrc
-  rec.qrc)
+  rec.qrc
+  QML_FILES components/RightPopUpMenu.qml)
 
 target_compile_features(appqqV1 PRIVATE cxx_std_20)
 

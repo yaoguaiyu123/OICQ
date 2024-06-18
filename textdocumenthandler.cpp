@@ -36,7 +36,7 @@ void TextDocumentHandler::insertScreenshot()
     }
     QString newImagePath = dir.filePath(dateFolder + "/" + QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz") + ".jpg");
     if (!image.save(newImagePath)) {
-        qDebug() << "textdocumenthandler.cpp : printScreen image fail";
+        qDebug() << "textdocumenthandler.cpp : printScreen image fail  " << newImagePath;
         return;
     }
 
