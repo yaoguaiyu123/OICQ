@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import "../components" as MyComponents
 import Qt.labs.folderlistmodel
 
+// 表情组件
 
 Popup {
     id: popup
@@ -18,6 +19,8 @@ Popup {
         border.color: "#ccc"
         color: "white"
     }
+
+    signal emojiInsert(var type)
 
 
     ListModel {
@@ -111,8 +114,8 @@ Popup {
                 MouseArea{
                     anchors.fill: parent
                     onClicked: {
-                        //console.log(parent.source)
                         memepath = parent.source
+                        emojiInsert(0)
                     }
                 }
             }
@@ -132,8 +135,8 @@ Popup {
                 MouseArea{
                     anchors.fill: parent
                     onClicked: {
-                        //console.log(parent.source)
                         memepath = parent.source
+                        emojiInsert(1)
                     }
                 }
             }

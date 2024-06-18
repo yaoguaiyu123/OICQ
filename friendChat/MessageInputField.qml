@@ -86,12 +86,16 @@ Rectangle {
         clip: false
          x:   8
          y:  -310
-         onMemepathChanged: {   //表情包的路径改变时更新输入框的显示内容
-             //console.log(memepath)
+         // 接受到表情信号
+         onEmojiInsert:(type)=> {
              hiddenArea.text += memeview.memepath
-             documentHandler.parseHtml()
+             documentHandler.parseHtmlWithEmoji(type)
              hiddenArea.clear()
-             area.insert(area.cursorPosition, "<br/>")
+             if(type !== 1){
+                 area.insert(area.cursorPosition, "<br/>")
+             }else{
+                 area.insert(area.cursorPosition, "&nbsp;")
+             }
          }
     }
 
