@@ -90,6 +90,8 @@ void FileClient::uploadFile(const QString& filePath, qint64 from ,qint64 to,qint
         stream << messageId; // messageid
         writeByteArray(infoBytes);
         toWrite = fileSize + uData.length() + infoBytes.length(); // 初始化文件总长度
+        qDebug() << "将要发送的数据包的长度(开头不算) " << infoBytes.length();
+        qDebug() << "文件名的字节长度: " << namebytes.length();
         while (fileOffset < fileSize) {
             file.seek(fileOffset);
             QByteArray byteArray = file.read(maxBlock);
@@ -158,7 +160,7 @@ void FileClient::readDataFromServer()
         stream >> nameByte; // 读取文件名数据
         recvfilename = QString::fromUtf8(nameByte);
         stream >> toRead;
-        byteArray.remove(0, sizeof(qint64) + sizeof(qint32) + recvfilename.length());
+        byteArray.remove(0, sizeof(qint64) + sizeof(qint32) + nameByte.length());
         recvFile->write(byteArray);
         haveRead += byteArray.size();
         // qDebug() << "写入到文件111 : " << haveRead;

@@ -4,7 +4,6 @@
 // 文件传输的套接字
 // 注册为一个单例类
 
-
 #include <QTcpSocket>
 #include <QObject>
 #include <QFile>

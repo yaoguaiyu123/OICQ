@@ -32,9 +32,9 @@ void FileClientHandler::onReadyRead()
     }
     if (byteArray[0] == 'U' && !is_Ubegin) {
         // 上传文件
-        QDataStream stream(&byteArray, QIODevice::ReadOnly);
         is_Ubegin = true;
         byteArray.remove(0, 1); // 去除开头
+        QDataStream stream(&byteArray, QIODevice::ReadOnly);
         stream >> totalSize; // 读取文件大小
         QByteArray nameByte;
         stream >> nameByte; // 读取文件名数据
@@ -50,9 +50,11 @@ void FileClientHandler::onReadyRead()
         } else {
             qDebug() << "开始接收" << file.fileName() << "文件";
         }
-        // 去除已读取部分
-        byteArray.remove(0, sizeof(qint64) * 4 + sizeof(qint32) + filename.length());
-        qDebug() << "将要去除的数据包的长度(开头不算):" << sizeof(qint64) + sizeof(qint32) + filename.length();
+        // 去除已读取的数据包部分
+        byteArray.remove(0, sizeof(qint64) * 4 + sizeof(qint32) + nameByte.length());
+        qDebug() << "将要去除的数据包的长度(开头不算):"
+                 << sizeof(qint64) * 4 + sizeof(qint32) + nameByte.length();
+        qDebug() << "文件名的字节数据长度:" << nameByte.length();
         file.write(byteArray);
         file.flush();
         recvSize += byteArray.size();
@@ -93,10 +95,8 @@ void FileClientHandler::onReadyRead()
         } else {
             filesize = QString::number(totalSize) + " B";
         }
-        // qDebug() << from << " " << to << " " << newFileName;
         TcpServer::singleTon().transferFile(from, to, newFileName, filesize, messageId);
         file.close();
-        // deleteLater();
     }
 }
 

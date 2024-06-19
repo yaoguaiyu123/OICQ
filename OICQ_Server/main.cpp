@@ -27,7 +27,6 @@ int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
     printLocalIPs();
-    DBManager::singleTon().createTableMessages();  //创建消息表
     TcpServer &server = TcpServer::singleTon();
     FileServer fileserver;
     return a.exec();
