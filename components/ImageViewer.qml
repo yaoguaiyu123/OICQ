@@ -11,6 +11,11 @@ Window {
     title: qsTr("仿QQ图片浏览器")
     property int currentIndex: 0
     property var imagePaths : []
+    property int num: 100 //默认比例数字
+    property real imageScale: 1 // 控制图片的缩放比例
+    //判断图片是否达到最大最小
+    property bool isSmallist: false
+    property bool isBiggest: false
 
     ColumnLayout{
         anchors.fill: parent
@@ -52,7 +57,7 @@ Window {
                             easing.type: Easing.OutQuad
                         }
                     }
-
+                    scale: imageScale
                     DragHandler {
                         target: photoImage
                         xAxis.enabled: photoImage.width * photoImage.scale > flickable.width ||
@@ -62,7 +67,42 @@ Window {
                     }
                 }
 
-
+                //最大值提示框
+                Rectangle{
+                    id:tipsMax
+                    visible: false
+                    color: "transparent"
+                    anchors.centerIn: parent
+                    implicitWidth: 100
+                    implicitHeight: 50
+                    radius: 4
+                    Label{
+                        color: "white"
+                        text: "The image has reached its maximum value ！"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: 16
+                        anchors.centerIn:parent
+                    }
+                }
+                //最小值提示框
+                Rectangle{
+                    id:tipsMin
+                    visible: false
+                    color:"transparent"
+                    anchors.centerIn: parent
+                    implicitWidth: 100
+                    implicitHeight: 50
+                    radius: 4
+                    Label{
+                        color: "white"
+                        text: "The image has reached its minimum value ！"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: 16
+                        anchors.centerIn:parent
+                    }
+                }
                 // 提示框
                 Rectangle{
                     id:tips
@@ -74,7 +114,7 @@ Window {
                     radius: 4
                     Label{
                         color: "white"
-                        text: "100%"
+                        text: num+" %"
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         font.pixelSize: 16
@@ -168,17 +208,97 @@ Window {
             }
         }
 
+        //控制器，控制tips提示时间
+        Timer {
+            id: closeTimer
+            interval: 1000  // 设置定时器时间为2000毫秒（2秒）
+            onTriggered: {
+                tips.visible = false
+                tipsMax.visible=false
+                tipsMin.visible=false
+            }
+
+        }
+
         //按钮区域
         ColumnLayout{
             Layout.fillWidth: true
             Rectangle{
+                id:background
                 color: "black"
                 Layout.preferredHeight: 50
                 Layout.fillWidth: true
+                Row{
+                    Layout.preferredWidth: parent.width
+                    Layout.preferredHeight: parent.height
+                    anchors.centerIn: parent
+                    padding: 30
+                    //减小图片大小的按钮
+                    Button {
+                        id:smaller
+                        text: "➖"
+                        //icon.source: "../../详情页放大镜图标减.png"
+                        enabled: !isSmallist
+                        onClicked: {
+                            imageScale/= 1.2 ;// 减少20%
+                            num=parseInt(num/1.2);
+                            if(num<=20){
+                                isSmallist=true
+                                tipsMin.visible=true
+                            }
+                            else if(num<=200){
+                            isBiggest=false
+                            tips.visible=true
+                            }
+
+                            closeTimer.start()
+                        }
+                        //anchors.left: parent.width / 2
+                        // anchors.top:background.top
+                        // anchors.bottom: background.bottom
+                        //Layout.alignment: Qt.AlignVCenter
+                        //anchors.right: numText.left
+                        }
+
+
+                        Text{
+                            id:numText
+                            text:num+" %"
+                            anchors.centerIn:background
+                            color:"white"
+                            font.pixelSize: 25
+                            font.family: "微软雅黑"
+                        }
+
+                      //增加图片大小的按钮
+                        Button {
+                            id:bigger
+                            text: "➕"
+                            //icon.source: "../../详情页放大镜图标加.png"
+                            enabled: !isBiggest
+                            onClicked: {
+                                imageScale *= 1.2 ;// 增加20%
+                                 num=parseInt(num*1.2);
+                                if(num>=200){
+                                    isBiggest=true
+                                    tipsMax.visible=true
+                                }else if(num>=20){
+                            isSmallist=false
+                            tips.visible=true
+                                }
+                                closeTimer.start()
+                            }
+                            //anchors.left: parent.left
+                            // anchors.top:background.top
+                            // anchors.bottom: background.bottom
+                            //Layout.alignment: Qt.AlignVCenter
+                            //anchors.left: numText.right
+                        }
+
+                    }
             }
         }
-    }
-
+   }
     function loadImages(index, images){
         currentIndex = index
         imagePaths = images
