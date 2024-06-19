@@ -21,12 +21,16 @@ FriendData::~FriendData()
 {
 }
 
-//TODO
+// 清空所有的数据
 void FriendData::clear()
 {
     int count = friends.size();
     if (count > 0) {
         friends.clear();
+    }
+    count = messages.size();
+    if(count > 0){
+        messages.clear();
     }
 }
 
