@@ -133,12 +133,16 @@ QString extractPlainTextFromHtml(const QString &html)
 {
     QTextDocument doc;
     doc.setHtml(html);
-    if (doc.toPlainText().isEmpty()) {
+    QString plainText = doc.toPlainText();
+    plainText = plainText.simplified();
+    plainText = plainText.remove(QRegularExpression("\\s"));
+    if (plainText.isEmpty()) {
         return "[图片]";
-    }else{
-        return doc.toPlainText();
+    } else {
+        return plainText;
     }
 }
+
 
 
 }

@@ -17,13 +17,15 @@ class TextDocumentHandler : public QObject {
     Q_PROPERTY_AUTO(int, cursorPosition)  //当前光标位置
 public:
     TextDocumentHandler(QObject* parent = nullptr);
-    Q_INVOKABLE void insertImage(QString);
-    Q_INVOKABLE void insertScreenshot();
+    void insertImage(QString);
+    void insertEmoji(QString, int width = -1,int height = -1);
     void insertText(QString);
     QString textContent();
+    Q_INVOKABLE void insertScreenshot();
     Q_INVOKABLE bool isTextContentEmpty();
-    // Q_INVOKABLE void parseMarkDown(QString content);
     Q_INVOKABLE void parseHtml();
+    Q_INVOKABLE void parseHtmlWithEmoji(int type);
+
 
 private:
 };

@@ -58,18 +58,9 @@ void TextDocumentHandler::insertImage(QString strurl)
     if (!m_textDocument) {
         return;
     }
-    bool isQrc = false;
-    if (strurl.startsWith("qrc")) {
-        strurl.remove(0, 3);
-        isQrc = true;
-    }
     QUrl url(strurl);
     QImage image;
-    if (isQrc) {
-        image.load(strurl);
-    } else {
-        image.load(url.toLocalFile());
-    }
+    image.load(url.toLocalFile());
     if (image.isNull()) {
         insertText(strurl);
         qDebug() << "textdocumenthandler.cpp : paste image load fail, url = " << url.toLocalFile();
@@ -82,7 +73,7 @@ void TextDocumentHandler::insertImage(QString strurl)
     if (!dir.exists(dateFolder)) {
         dir.mkpath(dateFolder);
     }
-    QString newImagePath = dir.filePath(dateFolder + "/" + QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz") + ".jpg");
+    QString newImagePath = dir.filePath(dateFolder + "/" + QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz") + ".png");
     if (!image.save(newImagePath)) {
         qDebug() << "textdocumenthandler.cpp : paste image fail";
         return;
@@ -94,13 +85,50 @@ void TextDocumentHandler::insertImage(QString strurl)
     cursor.setPosition(m_cursorPosition);
     QTextImageFormat imageFormat;
 
-    if(image.width() > 280){
-        imageFormat.setWidth(280);
+    if(image.width() > 200){
+        imageFormat.setWidth(200);
     }else{
         imageFormat.setWidth(image.width());
     }
     imageFormat.setName("file:///" + newImagePath);   // 插入file4类型的图片
     cursor.insertImage(imageFormat);
+}
+
+
+// 插入表情
+void TextDocumentHandler::insertEmoji(QString strurl, int width, int height)
+{
+    if (!m_textDocument) {
+        return;
+    }
+    QImage image;
+    image.load(strurl.remove(0, 3));
+    if (image.isNull()) {
+        insertText(strurl);
+        qDebug() << "textdocumenthandler.cpp : paste image load fail, url = "
+                 << strurl.remove(0, 3);
+        return;
+    }
+
+    // 插入表情图片
+    QTextDocument* doc = m_textDocument->textDocument();
+    QTextCursor cursor(doc);
+    cursor.setPosition(m_cursorPosition);
+    QTextImageFormat imageFormat;
+
+    if (width == -1) {
+        if (image.width() > 200) {
+            imageFormat.setWidth(200);
+        } else {
+            imageFormat.setWidth(image.width());
+        }
+    } else {
+        imageFormat.setWidth(width);
+        imageFormat.setHeight(height);
+    }
+    imageFormat.setName(strurl);   // 插入file4类型的图片
+    cursor.insertImage(imageFormat);
+
 }
 
 void TextDocumentHandler::insertText(QString content){
@@ -185,12 +213,58 @@ void TextDocumentHandler::parseHtml()
                         lastEndIndex = endIndex;
                     }
 
-
-
-
                     if (lastEndIndex < content.length()) {
                         insertText(content.mid(lastEndIndex).trimmed());
                     }
+                }
+            }
+        }
+        block = block.next(); // 移动到下一个块
+    }
+}
+
+
+// 解析插入表情路径的函数
+void TextDocumentHandler::parseHtmlWithEmoji(int type)
+{
+    QTextDocument* doc = m_hideTextDocument->textDocument(); //获取隐藏文档
+    QTextBlock block = doc->begin(); // 获取文档的第一个块
+
+    while (block.isValid()) {
+        QTextBlock::iterator it;
+        // 遍历块中的所有元素
+        for (it = block.begin(); !(it.atEnd()); ++it) {
+            QTextFragment fragment = it.fragment();
+            if (fragment.isValid()) {
+                // 处理文字
+                QString content = fragment.text();
+                int startIndex = 0;
+                int lastEndIndex = 0;
+                // 寻找是否有qrc图片(表情图片)
+                while ((startIndex = content.indexOf("qrc:/", lastEndIndex)) != -1) {
+                    if (startIndex > lastEndIndex) {
+                        insertText(content.mid(lastEndIndex, startIndex - lastEndIndex).trimmed());
+                    }
+                    int endIndex = content.indexOf(' ', startIndex);
+                    if (endIndex == -1) {
+                        endIndex = content.length();
+                    }
+
+                    QString filePath = content.mid(startIndex, endIndex - startIndex);
+                    if (filePath.endsWith(".png") || filePath.endsWith(".jpg")
+                        || filePath.endsWith(".jpeg")) {
+                        if (type == 0) {
+                            insertEmoji(filePath , 110, 110);
+                        }else{
+                            insertEmoji(filePath, 18 , 18);
+                        }
+                    } else {
+                        insertText(filePath); // 路径不是图片，插入普通文本
+                    }
+                    lastEndIndex = endIndex;
+                }
+                if (lastEndIndex < content.length()) {
+                    insertText(content.mid(lastEndIndex).trimmed());
                 }
             }
         }
