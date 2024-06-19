@@ -71,7 +71,8 @@ qt_add_qml_module(
   QML_FILES
   components/RightPopUpMenu.qml
   QML_FILES
-  friendChat/MemeView.qml)
+  friendChat/MemeView.qml
+  QML_FILES friendChat/SendRestriction.qml)
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 

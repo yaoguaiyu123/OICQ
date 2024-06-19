@@ -203,13 +203,15 @@ Rectangle {
             if(!documentHandler.isTextContentEmpty()){
                 send(area.text)    //发出信号
                 area.text = ""
+            } else {
+                //错误 仅调试用，消息过多的限制弹窗
+                sendrestrict.timerstart()
             }
         }
 
     }
 
     //剪切操作处理器
-
     function handleCut() {
         console.log("Cut signal received!")
         // 在这里执行剪切操作
