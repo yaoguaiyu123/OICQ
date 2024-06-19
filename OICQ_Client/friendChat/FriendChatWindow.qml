@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "../comman/Comman.js" as Comman
 import CustomModels
 //该窗口为好友聊天窗口
 

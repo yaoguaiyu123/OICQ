@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "./comman/Comman.js" as Comman
 import "./friendChat" as FriendChat
 import "components" as MyComponent
 

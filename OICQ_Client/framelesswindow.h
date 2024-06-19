@@ -59,8 +59,8 @@ private:
     bool m_movable = true;
     bool m_resizable = true;
     MouseArea m_currentArea = Move;
-    QPoint m_startPos;
-    QPoint m_oldPos;
+    QPointF m_startPos;
+    QPointF m_oldPos;
     QSize m_oldSize;
     QRect m_moveArea = { 8, 8, width() - 16, 35 };
 };

@@ -43,7 +43,6 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/icon/appicon.png"));   //设置应用图标
-    // QQuickWindow::setSceneGraphBackend("software");
     //初始化单例类
     // std::unique_ptr<QThread> thread = std::make_unique<QThread>();
     TcpSocket &socket = TcpSocket::singleTon();
@@ -67,7 +66,8 @@ int main(int argc, char* argv[])
         &engine, &QQmlApplicationEngine::objectCreationFailed,
         &app, []() { QCoreApplication::exit(-1); }, Qt::QueuedConnection);
 
-    engine.loadFromModule("qqClient", "Main");
+    // 这里要加载名称应该写 URI
+    engine.loadFromModule("oicqclient", "Main");
 
     return app.exec();
 }

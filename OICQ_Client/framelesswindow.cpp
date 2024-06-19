@@ -62,7 +62,7 @@ void FramelessWindow::setResizable(bool arg)
 
 void FramelessWindow::mousePressEvent(QMouseEvent *event)
 {
-    m_startPos = event->globalPos();
+    m_startPos = event->globalPosition();
     m_oldPos = position();
     m_oldSize = size();
 
@@ -98,9 +98,9 @@ void FramelessWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton) {
         if (m_movable && m_currentArea == Move) {
-            setPosition(m_oldPos - m_startPos + event->globalPos());
+            setPosition(m_oldPos.toPoint() - m_startPos.toPoint() + event->globalPosition().toPoint());
         } else if (m_resizable && m_currentArea != Move){
-            setWindowGeometry(event->globalPos());
+            setWindowGeometry(event->globalPosition().toPoint());
         }
     } else {
         QPoint pos = event->pos();
@@ -146,13 +146,13 @@ FramelessWindow::MouseArea FramelessWindow::getArea(const QPoint &pos)
 
 void FramelessWindow::setWindowGeometry(const QPoint &pos)
 {
-    QPoint offset = m_startPos - pos;
+    QPoint offset = m_startPos.toPoint() - pos;
 
     if (offset.x() == 0 && offset.y() == 0)
         return;
 
     static auto set_geometry_func = [this](const QSize &size, const QPoint &pos) {
-        QPoint temp_pos = m_oldPos;
+        QPoint temp_pos = m_oldPos.toPoint();
         QSize temp_size = minimumSize();
         if (size.width() > minimumWidth()) {
             temp_pos.setX(pos.x());
@@ -174,22 +174,22 @@ void FramelessWindow::setWindowGeometry(const QPoint &pos)
 
     switch (m_currentArea) {
     case TopLeft:
-        set_geometry_func(m_oldSize + QSize(offset.x(), offset.y()), m_oldPos - offset);
+        set_geometry_func(m_oldSize + QSize(offset.x(), offset.y()), m_oldPos.toPoint() - offset);
         break;
     case Top:
-        set_geometry_func(m_oldSize + QSize(0, offset.y()), m_oldPos - QPoint(0, offset.y()));
+        set_geometry_func(m_oldSize + QSize(0, offset.y()), m_oldPos.toPoint() - QPoint(0, offset.y()));
         break;
     case TopRight:
-        set_geometry_func(m_oldSize - QSize(offset.x(), -offset.y()), m_oldPos - QPoint(0, offset.y()));
+        set_geometry_func(m_oldSize - QSize(offset.x(), -offset.y()), m_oldPos.toPoint() - QPoint(0, offset.y()));
         break;
     case Left:
-        set_geometry_func(m_oldSize + QSize(offset.x(), 0), m_oldPos - QPoint(offset.x(), 0));;
+        set_geometry_func(m_oldSize + QSize(offset.x(), 0), m_oldPos.toPoint() - QPoint(offset.x(), 0));;
         break;
     case Right:
         set_geometry_func(m_oldSize - QSize(offset.x(), 0), position());
         break;
     case BottomLeft:
-        set_geometry_func(m_oldSize + QSize(offset.x(), -offset.y()), m_oldPos - QPoint(offset.x(), 0));
+        set_geometry_func(m_oldSize + QSize(offset.x(), -offset.y()), m_oldPos.toPoint() - QPoint(offset.x(), 0));
         break;
     case Bottom:
         set_geometry_func(m_oldSize + QSize(0, -offset.y()), position());

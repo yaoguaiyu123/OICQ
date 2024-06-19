@@ -1,2 +1,3 @@
-# OICQ_Client
-OICQ_Client
+# OICQ仿QQ9即时聊天
+
+- OICQ

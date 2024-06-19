@@ -1,7 +1,3 @@
-// Date:2024/4/30
-// Author:妖怪鱼
-// Introduction:qqClient
-// 使用QML实现的一个仿QQ,先实现基本功能和界面
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
@@ -14,7 +10,7 @@ FramelessWindow {
     width: 325
     height: 450
     visible: true
-    title: qsTr("qqClient")
+    title: qsTr("OICQ")
     x: (Screen.width - width) / 2
     y: (Screen.height - height) / 2
 

@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Controls
 import "../components" as MyComponent
-import "../comman/Comman.js" as Comman
 import "../comman/NetChat.js" as NetChat
 import NetWorks
 import CustomModels
