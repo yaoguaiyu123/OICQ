@@ -211,7 +211,7 @@ Window {
         //控制器，控制tips提示时间
         Timer {
             id: closeTimer
-            interval: 1000  // 设置定时器时间为2000毫秒（2秒）
+            interval: 1000  // 设置定时器时间为1000毫秒（1秒）
             onTriggered: {
                 tips.visible = false
                 tipsMax.visible=false
@@ -234,10 +234,10 @@ Window {
                     anchors.centerIn: parent
                     padding: 30
                     //减小图片大小的按钮
-                    Button {
+                    IconButton {
                         id:smaller
-                        text: "➖"
-                        //icon.source: "../../详情页放大镜图标减.png"
+                        backColor: background.color
+                        imagePath:  "qrc:/icon/详情页放大镜图标减.png"
                         enabled: !isSmallist
                         onClicked: {
                             imageScale/= 1.2 ;// 减少20%
@@ -254,27 +254,29 @@ Window {
                             closeTimer.start()
                         }
                         //anchors.left: parent.width / 2
-                        // anchors.top:background.top
-                        // anchors.bottom: background.bottom
+                        anchors.top:numText.top
+                        anchors.bottom: numText.bottom
                         //Layout.alignment: Qt.AlignVCenter
-                        //anchors.right: numText.left
+                        anchors.right: numText.left
                         }
 
 
                         Text{
                             id:numText
                             text:num+" %"
-                            anchors.centerIn:background
+                            //anchors.centerIn:background
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
                             color:"white"
                             font.pixelSize: 25
                             font.family: "微软雅黑"
                         }
 
                       //增加图片大小的按钮
-                        Button {
+                        IconButton {
                             id:bigger
-                            text: "➕"
-                            //icon.source: "../../详情页放大镜图标加.png"
+                            backColor: background.color
+                            imagePath:  "qrc:/icon/详情页放大镜图标加.png"
                             enabled: !isBiggest
                             onClicked: {
                                 imageScale *= 1.2 ;// 增加20%
@@ -289,10 +291,10 @@ Window {
                                 closeTimer.start()
                             }
                             //anchors.left: parent.left
-                            // anchors.top:background.top
-                            // anchors.bottom: background.bottom
+                            anchors.top:numText.top
+                            anchors.bottom: numText.bottom
                             //Layout.alignment: Qt.AlignVCenter
-                            //anchors.left: numText.right
+                            anchors.left: numText.right
                         }
 
                     }

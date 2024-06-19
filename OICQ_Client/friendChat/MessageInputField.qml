@@ -55,6 +55,19 @@ Rectangle {
 
                 }
         MyComponent.IconButton{
+                   width: 16
+                   height: 20
+                   imagePath: "qrc:/icon/向下.png"
+                   hoveredImagePath: "qrc:/icon/向下_blue.png"
+                   //anchors.horizontalCenter: parent.horizontalCenter
+                   anchors.verticalCenter: parent.verticalCenter
+                   onClicked: {
+                   //todo打开一个按钮选项菜单
+
+                   }
+                   //todo点击菜单后隐藏qq窗口进行截图
+               }
+        MyComponent.IconButton{
             width: 32
             height: 32
             imagePath: "qrc:/icon/wenjian_black.png"

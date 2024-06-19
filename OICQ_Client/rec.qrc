@@ -214,5 +214,9 @@
         <file>smallMemes/172.png</file>
         <file>icon/tianjia.png</file>
         <file>icon/shoucang.png</file>
+        <file>icon/详情页放大镜图标加.png</file>
+        <file>icon/详情页放大镜图标减.png</file>
+        <file>icon/向下_blue.png</file>
+        <file>icon/向下.png</file>
     </qresource>
 </RCC>
