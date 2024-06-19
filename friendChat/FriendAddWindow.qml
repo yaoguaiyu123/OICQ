@@ -5,16 +5,18 @@ import "../components" as MyComponent
 import CustomModels
 //好友添加消息的窗口
 Item {
-    property bool buttonClicked: false  // 定义一个属性来记录按钮是否被点击
+    property bool buttonClicked: false  // 定义一个属性来记录按钮是否被点击过
     id:friendAddWindow
-    //监听
-    onWidthChanged: {
-    if(width<870){
-        view.visible=false;
-    }else if(buttonClicked==true){
-        view.visible=true;
+    //监听窗口宽度变化
+    onWidthChanged : {
+    if( width<870 )
+    {
+        view.visible =false;
     }
+    else if(buttonClicked==true)
+    { view.visible = true;}
     }
+
     //行布局
     RowLayout{
         anchors.fill: parent
@@ -110,22 +112,22 @@ Item {
                 source: "qrc:/image/back.png"
                 anchors.centerIn: parent
             }
-            Text {
-                   id:title
-                   text: qsTr("好友通知")
-                   font.pixelSize: 18
-                   x: 15
-                   y: 15
-            }
+            Text{
+                   id: title
+                   text:qsTr("好友通知")
+                   font.pixelSize:18
+                   x:15
+                   y:15
+             }
             ListView{
                 id:view
-                visible: false
-                width: parent.width
-                boundsBehavior: Flickable.StopAtBounds // 到达边界时停止滚动
-                anchors.left:leftRectangle.right
-                anchors.top:title.bottom
-                anchors.topMargin: 15
-                anchors.bottom: parent.bottom
+                visible:false
+                width:parent.width
+                boundsBehavior: Flickable.StopAtBounds // 到达边界时listview停止滚动
+                anchors.left: leftRectangle.right
+                anchors.top: title.bottom
+                anchors.topMargin:15
+                anchors.bottom:parent.bottom
                 model: FriendRequestModel
                 spacing: 20
                 delegate: Item{
@@ -138,28 +140,28 @@ Item {
                         //x: parent.width / 2 - width / 2
                         radius: 8
                         Row{
-                            x: 20
-                            anchors.verticalCenter: parent.verticalCenter
-                            MyComponent.HeadImage {
-                                id: head
-                                headUrl: headpath
-                                width:45
-                                height: 45
-                                radius: 22.5
+                            x:20
+                            anchors.verticalCenter:parent.verticalCenter
+                            MyComponent.HeadImage{
+                                id:head
+                                headUrl:headpath
+                                width: 45
+                                height:45
+                                radius:22.5
+                             }
+                            Rectangle {
+                                width:10
+                                height:5
+                             }
+                            Text{
+                                text:name
+                                color:"#0099ff"
+                                anchors.verticalCenter:parent.verticalCenter
                             }
-                            Rectangle{
-                                width: 10
-                                height: 5
-                            }
-                            Text {
-                                text: name
-                                color: "#0099ff"
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                            Rectangle{
-                                width: 5
-                                height: 5
-                            }
+                            Rectangle {
+                                width:5
+                                height:5
+                             }
                             Text {
                                 text: qsTr("请求添加为好友")
                                 anchors.verticalCenter: parent.verticalCenter
