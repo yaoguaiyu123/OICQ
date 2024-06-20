@@ -104,7 +104,7 @@ public slots:
 private slots:
     void on_ready_read();
 signals:
-    void disconnected(int);
+    void disconnected(ClientHandler* , bool);
     void forwardMessages(QJsonValue,qint64,QList<QImage>);
     void addFriend(qint64, QString, qint64, QList<QImage>&);
     void addFriendRes(QJsonValue jsonvalue,qint64 friendId, QList<QImage>&);
@@ -115,7 +115,8 @@ private:
     qint64 m_userId = -1;
     uchar* m_sendbuf;
     RecvBuf m_recvbuf;
-    QImage m_headImage;  //记录当前的头像
+    QImage m_headImage; //记录当前的头像
+    bool m_isLogin = false;
 private:
     void parsePackage();
     void parsePrivateMessage(QJsonValue, QList<QImage> images);

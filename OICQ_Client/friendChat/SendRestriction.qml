@@ -14,7 +14,7 @@ Rectangle {
     opacity: 0  //不透明度
     Text {
         id: name
-        text: qsTr("字数超过上限，无法发送")
+        text: qsTr("发送内容为空")
         font.pixelSize: 16
         color: "#555"
         anchors.centerIn: parent

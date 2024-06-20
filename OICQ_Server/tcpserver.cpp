@@ -74,10 +74,14 @@ void TcpServer::incomingConnection(qintptr socketDescriptor)
 }
 
 // 断开连接
-void TcpServer::on_disconnected(int id)
+void TcpServer::on_disconnected(ClientHandler* handler, bool isLogined)
 {
+    if (isLogined) {
+        socketMap.remove(handler->userId());
+        qDebug() << QString("用户%1下线").arg(handler->userId());
+    }
     for (int i = 0; i < socketList.length(); ++i) {
-        if (socketList.at(i)->userId() == id){
+        if (socketList[i] == handler) {
             delete socketList[i];
             socketList.remove(i);
             // 将线程对象也释放
@@ -85,7 +89,6 @@ void TcpServer::on_disconnected(int id)
             threadList[i]->wait();
             delete threadList[i];
             threadList.remove(i);
-            qDebug() << QString("用户%1下线").arg(id);
         }
     }
 }

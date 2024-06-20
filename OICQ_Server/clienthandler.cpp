@@ -27,7 +27,7 @@ void ClientHandler::init()
     m_tcpSocket->setSocketDescriptor(m_descriptor);
     connect(m_tcpSocket, &QTcpSocket::readyRead, this, &ClientHandler::on_ready_read);
     connect(m_tcpSocket, &QTcpSocket::disconnected,[this]() {
-        emit(disconnected(m_userId));
+        emit(disconnected(this,m_isLogin));
     });
 }
 
@@ -278,6 +278,7 @@ void ClientHandler::returnLoginRes(int restype)
     QList<QImage> imageList;
     QJsonObject sendObj;
     if (restype == Success) {
+        m_isLogin = true;
         QVariantMap vmap = DBManager::singleTon().queryDataUser(m_userId);
         if (!vmap.isEmpty()) {
             m_headImage.load(vmap.value("headpath").toString());

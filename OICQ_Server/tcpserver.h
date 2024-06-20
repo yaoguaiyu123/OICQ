@@ -22,7 +22,7 @@ signals:
     void signalUserStatus(const QString& text);
 
 private slots:
-    void on_disconnected(int);
+    void on_disconnected(ClientHandler *, bool);
     void on_forwardMessages(QJsonValue,qint64,QList<QImage>);
     void on_addFriend(qint64,QString,qint64,QList<QImage>&);
     void on_addFriendRes(QJsonValue jsonvalue,qint64 friendId, QList<QImage>&);
