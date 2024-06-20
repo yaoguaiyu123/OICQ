@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import "../components" as MyComponent
 import CustomModels
+
 //好友添加消息的窗口
 Item {
     property bool buttonClicked: false  // 定义一个属性来记录按钮是否被点击过

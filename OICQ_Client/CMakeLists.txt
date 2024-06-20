@@ -79,7 +79,10 @@ qt_add_qml_module(
   QML_FILES
   components/LoginFail.qml
   QML_FILES
-  friendChat/SendRestriction.qml)
+  friendChat/SendRestriction.qml
+  QML_FILES friendChat/F1.qml
+  QML_FILES friendChat/F2.qml
+  QML_FILES components/ThreeButtons.qml)
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 
