@@ -7,7 +7,7 @@
 #include <QList>
 #include <QByteArray>
 
-#define IPADDRESS "192.168.240.52"
+#define IPADDRESS "10.252.150.209"
 
 enum MSG_TYPE {
     PrivateMessage,

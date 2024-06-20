@@ -111,9 +111,8 @@ Popup {
                 id: image
                 anchors.fill: parent
                 source: model.imageUrl // 绑定到模型的 imageUrl 属性
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
+                TapHandler{
+                    onTapped: {
                         memepath = parent.source
                         emojiInsert(0)
                     }
@@ -132,9 +131,8 @@ Popup {
                 id: image
                 anchors.fill: parent
                 source: model.imageUrl // 绑定到模型的 imageUrl 属性
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
+                TapHandler{
+                    onTapped: {
                         memepath = parent.source
                         emojiInsert(1)
                     }

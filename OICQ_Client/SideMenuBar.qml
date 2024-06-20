@@ -48,9 +48,8 @@ Rectangle {
             width: 36
             height: 36
             imageRadius: 18
-            MouseArea{
-                anchors.fill: parent
-                onClicked: headPopupOpen()  //发出信号
+            TapHandler{
+                onTapped: headPopupOpen()  //发出信号
             }
         }
 

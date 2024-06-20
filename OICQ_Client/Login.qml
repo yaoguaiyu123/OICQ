@@ -266,6 +266,9 @@ Item{
             if(res === NetChat.RETURN.Success){
                 console.log("Login.qml :: 登录成功")
                 loginRequest()
+            }else if(res===NetChat.RETURN.Fail){
+                console.log("登录失败")
+                //MyComponent.LoginFail
             }
         }
     }
@@ -287,5 +290,6 @@ Item{
         }
     }
 
+    //MyComponent.LoginFail
 
 }

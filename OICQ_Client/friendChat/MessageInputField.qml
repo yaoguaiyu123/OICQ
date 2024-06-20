@@ -14,6 +14,8 @@ Rectangle {
     color: "#f2f2f2"
     signal send(string text)   //自定义信号
     signal sendFile(string text)   //自定义信号
+    property bool isPreparePrint:false  //是否准备截图
+    property bool selectHide: false
 
     Row{
         x: 8
@@ -32,6 +34,7 @@ Rectangle {
                     imagePath: "qrc:/icon/jiandao_black.png"
                     hoveredImagePath: "qrc:/icon/jiandao_blue.png"
                     onClicked: {
+                        isPreparePrint=true
                         screenCapture.printFullScreen()  //获得当前全屏图片
                         screenPrintWindow.flushBackImage()
                         screenPrintWindow.show()
@@ -42,6 +45,8 @@ Rectangle {
                         onProvideArea:(area)=>{
                             // 得到截图位置
                             screenCapture.printScreen(area)
+                            //截图选区结束
+                            isPreparePrint=false
                         }
                     }
 
@@ -49,6 +54,7 @@ Rectangle {
                     ScreenCapture {
                         id: screenCapture
                         onScreenshotComplete: ()=>{
+                            //图片插入聊天框
                             documentHandler.insertScreenshot()
                         }
                     }
@@ -63,9 +69,23 @@ Rectangle {
                    anchors.verticalCenter: parent.verticalCenter
                    onClicked: {
                    //todo打开一个按钮选项菜单
-
+                   // MyComponent.RoundCheckBox.popup()
+                       checkBox.popup()
                    }
                    //todo点击菜单后隐藏qq窗口进行截图
+
+                   MyComponent.RoundCheckBox{
+                        id:checkBox
+                        //按钮选择信号处理
+                        onIsChecked: {
+                            selectHide=true
+                            //hiddenWindow()
+                        }
+                        onNoChecked: {
+                            selectHide=false
+                        }
+                   }
+
                }
         MyComponent.IconButton{
             width: 32
@@ -235,6 +255,18 @@ Rectangle {
         documentHandler.parseHtml()
         hiddenArea.clear()
         area.insert(area.cursorPosition, "<br/>")
+    }
+
+    //设置窗口隐藏操作处理器
+    //判断是否点击截图且已勾选隐藏qq窗口
+    function hiddenWindow(){
+        console.log("Hidden the QQ window before cutScreen！")
+        //todo将qq窗口隐藏
+        if(selectHide===true&&isPreparePrint===true)
+        {
+         //todo hide window set window visibility equals ispreparePrint
+
+        }
     }
 
 }
