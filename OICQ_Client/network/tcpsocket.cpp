@@ -312,16 +312,11 @@ void TcpSocket::parseLogin(QJsonValue& jsonvalue,QList<QImage>& images)
     }
     QJsonObject object = jsonvalue.toObject();
     qDebug() << "parseLogin::登录返回 " << object.value("res").toInt();
-    emit loginReturn(object.value("res").toInt(),images.first()); // 发出信号
-    emit loginReturnToQml(object.value("res").toInt());
     if (object.value("res").toInt() == Success) {
-        qDebug() << "parseLogin::登录成功";
+        emit loginReturn(images.first()); // 发出信号
         m_userId = object.value("userId").toInteger();
-        // packingMessage("{}",FriendList);   //发送好友列表的请求
-    } else if (object.value("res").toInt() == Fail) {
-        //TODO
-        qDebug() << "登录失败";
     }
+    emit loginReturnToQml(object.value("res").toInt());
 }
 
 // 处理文件消息

@@ -213,12 +213,10 @@ FriendModel::FriendModel(QAbstractListModel* parent)
 
     //登录返回
     QObject::connect(m_tcpsocket, &TcpSocket::loginReturn,
-        [this](int res,QImage& image) {
-            if (res == Success) {
-                !image.save(headCachePath + "/myHead.jpg");
-                m_myImagePath =  "file://" + headCachePath + "/myHead.jpg";
-                emit(myImagePathChanged());
-            }
+        [this](QImage& image) {
+            !image.save(headCachePath + "/myHead.jpg");
+            m_myImagePath =  "file://" + headCachePath + "/myHead.jpg";
+            emit(myImagePathChanged());
         });
 
     //更新头像返回

@@ -49,8 +49,22 @@ void TcpServer::incomingConnection(qintptr socketDescriptor)
     ClientHandler* clientHandler = new ClientHandler(socketDescriptor, this);
     QThread* thread = new QThread;
     connect(thread, &QThread::started, clientHandler, &ClientHandler::init);
+    connect(clientHandler,
+            &ClientHandler::loginRequest,
+            [this](qint64 userid, ClientHandler* clientHandler) {
+                qDebug() << "server接受到clientHandler的登录判断信号";
+                if (socketMap.value(userid) == nullptr) {
+                    if (clientHandler == nullptr) {
+                        return;
+                    }
+                    socketMap.insert(userid, clientHandler); //加入进行管理
+                    clientHandler->returnLoginRes(Success);
+                } else {
+                    clientHandler->returnLoginRes(Repeat);
+                }
+    });
     connect(clientHandler, &ClientHandler::disconnected, this, &TcpServer::on_disconnected);
-    connect(clientHandler, &ClientHandler::transpond, this, &TcpServer::on_transpond);
+    connect(clientHandler, &ClientHandler::forwardMessages, this, &TcpServer::on_forwardMessages);
     connect(clientHandler, &ClientHandler::addFriend, this, &TcpServer::on_addFriend);
     connect(clientHandler, &ClientHandler::addFriendRes, this, &TcpServer::on_addFriendRes);
     clientHandler->moveToThread(thread);   //在一个线程中运行
@@ -79,7 +93,7 @@ void TcpServer::on_disconnected(int id)
 
 // 进行消息转发的槽函数
 // 根据from to发送消息
-void TcpServer::on_transpond(QJsonValue jsonvalue,qint64 from,QList<QImage> images)
+void TcpServer::on_forwardMessages(QJsonValue jsonvalue,qint64 from,QList<QImage> images)
 {
     if (!jsonvalue.isObject()) {
         return;

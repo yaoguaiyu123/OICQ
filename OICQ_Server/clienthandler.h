@@ -98,21 +98,24 @@ public:
     qint64 userId();
     void sendToClient(MESG *);
     void packingMessage(QJsonValue jsonvalue, int msgType, QList<QImage> imageList = QList<QImage>());
+    void returnLoginRes(int resType);
 public slots:
     void init();
 private slots:
     void on_ready_read();
 signals:
     void disconnected(int);
-    void transpond(QJsonValue,qint64,QList<QImage>);
+    void forwardMessages(QJsonValue,qint64,QList<QImage>);
     void addFriend(qint64, QString, qint64, QList<QImage>&);
     void addFriendRes(QJsonValue jsonvalue,qint64 friendId, QList<QImage>&);
+    void loginRequest(qint64 userId,ClientHandler* clientHandler);
 private:
     qintptr m_descriptor;
     QTcpSocket* m_tcpSocket;
     qint64 m_userId = -1;
     uchar* m_sendbuf;
     RecvBuf m_recvbuf;
+    QImage m_headImage;  //记录当前的头像
 private:
     void parsePackage();
     void parsePrivateMessage(QJsonValue, QList<QImage> images);

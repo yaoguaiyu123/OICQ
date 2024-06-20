@@ -247,7 +247,7 @@ void ClientHandler::parsePackage()
 void ClientHandler::parsePrivateMessage(QJsonValue jsonvalue, QList<QImage> images)
 {
     // qDebug() << "socket接收到私发消息";
-    emit(transpond(jsonvalue, m_userId,images));
+    emit(forwardMessages(jsonvalue, m_userId,images));
 }
 
 //登录
@@ -259,30 +259,50 @@ void ClientHandler::parseLogin(QJsonValue jsonvalue)
     QString password = object.value("password").toString();
     QJsonObject sendObj;
     QVariantMap vmap = DBManager::singleTon().queryDataUser(userid);
-    QList<QImage> imageList;
     if (!vmap.isEmpty()) {
         if (vmap.value("password").toString() == password) {
             m_userId = userid;
-            sendObj["res"] = Success;
-            sendObj["userId"] = userid;
-            // 返回头像
-            // QImage image(":/Image/default_head.png");
-            QImage image(vmap.value("headpath").toString());
-            if (image.isNull()) {
-                qDebug() << "登录返回头像失败 " << vmap.value("headpath").toString();
-                return;
-            }
-            imageList.append(image);
-            packingMessage(sendObj, Login, imageList);
-            sendFriendList();
-            sendFriendRequestList();
-            sendMessageList();
+
+            emit(loginRequest(m_userId ,this)); // 向server发送请求判断是不是重复登录
             return;
         }
     }
     sendObj["res"] = Fail;
     packingMessage(sendObj, Login);
+
 }
+
+// 返回登录结果
+void ClientHandler::returnLoginRes(int restype)
+{
+    QList<QImage> imageList;
+    QJsonObject sendObj;
+    if (restype == Success) {
+        QVariantMap vmap = DBManager::singleTon().queryDataUser(m_userId);
+        if (!vmap.isEmpty()) {
+            m_headImage.load(vmap.value("headpath").toString());
+            if (m_headImage.isNull()) {
+                // 没有头像就返回默认头像
+                m_headImage.load(":/Image/default_head.png");
+                if (m_headImage.isNull()) {
+                    qDebug() << "登录返回头像失败 ";
+                    return;
+                }
+            }
+            imageList.append(m_headImage);
+            sendObj.insert("res", restype);
+            sendObj.insert("userId", m_userId);
+        }
+        packingMessage(sendObj, Login, imageList);
+        sendFriendList();
+        sendFriendRequestList();
+        sendMessageList();
+    } else if (restype == Repeat) {
+        sendObj.insert("res", restype);
+        packingMessage(sendObj, Login);
+    }
+}
+
 
 // 添加好友
 void ClientHandler::parseAddFriend(QJsonValue jsonvalue)
