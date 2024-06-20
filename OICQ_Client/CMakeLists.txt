@@ -72,10 +72,14 @@ qt_add_qml_module(
   components/RightPopUpMenu.qml
   QML_FILES
   friendChat/MemeView.qml
-  QML_FILES components/RoundCheckBox.qml
-  QML_FILES components/RepeatLogin.qml
-  QML_FILES components/LoginFail.qml)
-  QML_FILES friendChat/SendRestriction.qml)
+  QML_FILES
+  components/RoundCheckBox.qml
+  QML_FILES
+  components/RepeatLogin.qml
+  QML_FILES
+  components/LoginFail.qml
+  QML_FILES
+  friendChat/SendRestriction.qml)
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 

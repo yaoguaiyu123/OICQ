@@ -268,8 +268,14 @@ Item{
                 loginRequest()
             }else if(res === NetChat.RETURN.Repeat){
                 console.log("Login.qml :: 重复登录")
+                repeatlogin.visible=true
+                z=1
+                repeatlogin.username=username.text
+
             }else if(res === NetChat.RETURN.Fail){
                 console.log("Login.qml :: 账号或者密码错误")
+                loginfail.visible=true
+                z=1
             }
         }
     }
@@ -291,6 +297,15 @@ Item{
         }
     }
 
-    //MyComponent.LoginFail
+    MyComponent.LoginFail{
+        id:loginfail
+        visible: false
+        anchors.centerIn: parent
+    }
+    MyComponent.RepeatLogin{
+        id:repeatlogin
+        visible: false
+        anchors.centerIn: parent
+    }
 
 }

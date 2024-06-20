@@ -1,23 +1,31 @@
 import QtQuick 2.0
 import QtQuick.Controls
-import "components" as MyComponent
 
 //登录失败页面
 Rectangle{
     id:content
     color: "white"
     radius: 10
-
-    MyComponent.BackIconButton{
-        anchors.right: parent.right
-        anchors.top: parent.top
+    width: parent.width*0.8
+    height: parent.width*0.5
+    BackIconButton{
+        id:iconButton
+        // anchors.right: parent.right
+        // anchors.top: parent.top
         imagePath: "qrc:/icon/close.png"
         imageHoverPath: "qrc:/icon/close_w.png"
         backColor: "#00000000"
         backHoverColor: "#cc4444"
         onClicked: {
-            Qt.quit()  //关闭应用
+            content.visible=false
+            z=-1//关闭应用
         }
+        anchors.right: tipsText.right
+        anchors.rightMargin: 3
+        anchors.top:parent.top
+        anchors.topMargin: 3
+        // anchors.bottom: tipsText.top
+        // anchors.bottomMargin: 20
     }
 
     //文本内容提示
@@ -26,7 +34,7 @@ Rectangle{
         // width: 200
         // height: 50
         //anchors.centerIn: parent
-        anchors.top: parent.top
+        anchors.top: iconButton.bottom
         anchors.topMargin: 30
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 18
@@ -67,7 +75,10 @@ Rectangle{
                 onExited: parent.color = "#0066cc"
             }
         }
-        onClicked: Qt.exit()
+        onClicked: {
+            content.visible=false
+            z=-1//关闭应用
+        }
 
     }
 }
