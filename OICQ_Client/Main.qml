@@ -25,7 +25,6 @@ FramelessWindow {
     }
 
 
-
     Login{
         id:loginItem
         anchors.fill: parent

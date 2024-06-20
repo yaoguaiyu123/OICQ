@@ -16,6 +16,7 @@ Rectangle {
     signal sendFile(string text)   //自定义信号
     property bool isPreparePrint:false  //是否准备截图
     property bool selectHide: false
+    // signal hidecut
 
     Row{
         x: 8
@@ -35,6 +36,12 @@ Rectangle {
                     hoveredImagePath: "qrc:/icon/jiandao_blue.png"
                     onClicked: {
                         isPreparePrint=true
+                        // hidecut()
+                        if(selectHide===true&&isPreparePrint===true)
+                        {
+                         //todo hide window set window visibility equals ispreparePrint
+                            rootWindow.visible=false
+                        }
                         screenCapture.printFullScreen()  //获得当前全屏图片
                         screenPrintWindow.flushBackImage()
                         screenPrintWindow.show()
@@ -43,10 +50,10 @@ Rectangle {
                     MyComponent.ScreenPrint{
                         id:screenPrintWindow
                         onProvideArea:(area)=>{
+                            rootWindow.visible=true
                             // 得到截图位置
                             screenCapture.printScreen(area)
-                            //截图选区结束
-                            isPreparePrint=false
+
                         }
                     }
 
@@ -56,6 +63,8 @@ Rectangle {
                         onScreenshotComplete: ()=>{
                             //图片插入聊天框
                             documentHandler.insertScreenshot()
+                            //截图选区结束
+                            isPreparePrint=false
                         }
                     }
 
@@ -267,7 +276,9 @@ Rectangle {
         if(selectHide===true&&isPreparePrint===true)
         {
          //todo hide window set window visibility equals ispreparePrint
-
+            rootWindow.visible=false
+        }else{
+            rootWindow.visible=true
         }
     }
 
