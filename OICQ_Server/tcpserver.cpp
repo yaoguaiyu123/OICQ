@@ -49,8 +49,22 @@ void TcpServer::incomingConnection(qintptr socketDescriptor)
     ClientHandler* clientHandler = new ClientHandler(socketDescriptor, this);
     QThread* thread = new QThread;
     connect(thread, &QThread::started, clientHandler, &ClientHandler::init);
+    connect(clientHandler,
+            &ClientHandler::loginRequest,
+            [this](qint64 userid, ClientHandler* clientHandler) {
+                qDebug() << "server接受到clientHandler的登录判断信号";
+                if (socketMap.value(userid) == nullptr) {
+                    if (clientHandler == nullptr) {
+                        return;
+                    }
+                    socketMap.insert(userid, clientHandler); //加入进行管理
+                    clientHandler->returnLoginRes(Success);
+                } else {
+                    clientHandler->returnLoginRes(Repeat);
+                }
+    });
     connect(clientHandler, &ClientHandler::disconnected, this, &TcpServer::on_disconnected);
-    connect(clientHandler, &ClientHandler::transpond, this, &TcpServer::on_transpond);
+    connect(clientHandler, &ClientHandler::forwardMessages, this, &TcpServer::on_forwardMessages);
     connect(clientHandler, &ClientHandler::addFriend, this, &TcpServer::on_addFriend);
     connect(clientHandler, &ClientHandler::addFriendRes, this, &TcpServer::on_addFriendRes);
     clientHandler->moveToThread(thread);   //在一个线程中运行
@@ -60,10 +74,14 @@ void TcpServer::incomingConnection(qintptr socketDescriptor)
 }
 
 // 断开连接
-void TcpServer::on_disconnected(int id)
+void TcpServer::on_disconnected(ClientHandler* handler, bool isLogined)
 {
+    if (isLogined) {
+        socketMap.remove(handler->userId());
+        qDebug() << QString("用户%1下线").arg(handler->userId());
+    }
     for (int i = 0; i < socketList.length(); ++i) {
-        if (socketList.at(i)->userId() == id){
+        if (socketList[i] == handler) {
             delete socketList[i];
             socketList.remove(i);
             // 将线程对象也释放
@@ -71,7 +89,6 @@ void TcpServer::on_disconnected(int id)
             threadList[i]->wait();
             delete threadList[i];
             threadList.remove(i);
-            qDebug() << QString("用户%1下线").arg(id);
         }
     }
 }
@@ -79,7 +96,7 @@ void TcpServer::on_disconnected(int id)
 
 // 进行消息转发的槽函数
 // 根据from to发送消息
-void TcpServer::on_transpond(QJsonValue jsonvalue,qint64 from,QList<QImage> images)
+void TcpServer::on_forwardMessages(QJsonValue jsonvalue,qint64 from,QList<QImage> images)
 {
     if (!jsonvalue.isObject()) {
         return;

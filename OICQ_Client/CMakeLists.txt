@@ -75,6 +75,7 @@ qt_add_qml_module(
   QML_FILES components/RoundCheckBox.qml
   QML_FILES components/RepeatLogin.qml
   QML_FILES components/LoginFail.qml)
+  QML_FILES friendChat/SendRestriction.qml)
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 

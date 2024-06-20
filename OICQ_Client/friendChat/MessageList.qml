@@ -15,7 +15,13 @@ Rectangle {
     property string headPath: FriendModel.currentHeadpath
     property string url: "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=24.e242c2f0ea3971c6f72f402ed63b7150.2592000.1717236204.282335-66121946"
 
-
+    SendRestriction{
+            id: sendrestrict
+            visible: false
+            z: 1
+            //x: 200
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
     //列布局
     ColumnLayout{
         anchors.fill: parent

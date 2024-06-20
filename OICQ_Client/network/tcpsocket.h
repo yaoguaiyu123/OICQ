@@ -111,7 +111,7 @@ private:
 signals:
     // TODO 待实现的逻辑
     void sendDataOver(bool); // 发送数据结束的信号
-    void loginReturn(int, QImage &);
+    void loginReturn(QImage &);
     void loginReturnToQml(int);
     void friendListReturn(QJsonValue&,QList<QImage>&);
     void privateMessageReturn(QJsonValue&,QList<QImage>& images);

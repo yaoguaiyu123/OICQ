@@ -22,8 +22,8 @@ signals:
     void signalUserStatus(const QString& text);
 
 private slots:
-    void on_disconnected(int);
-    void on_transpond(QJsonValue,qint64,QList<QImage>);
+    void on_disconnected(ClientHandler *, bool);
+    void on_forwardMessages(QJsonValue,qint64,QList<QImage>);
     void on_addFriend(qint64,QString,qint64,QList<QImage>&);
     void on_addFriendRes(QJsonValue jsonvalue,qint64 friendId, QList<QImage>&);
 
@@ -35,7 +35,6 @@ private:
     //管理多个socket
     QList<ClientHandler*> socketList;
     //方便查找对应的socket
-    // TODO 之后再实现map的逻辑
     QMap<qint64,ClientHandler*> socketMap;
     // 管理socket对应的thread
     QList<QThread*> threadList;
