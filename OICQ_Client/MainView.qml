@@ -7,8 +7,8 @@ import "components" as MyComponent
 Rectangle {
     id:mainView
     property int currentIndex: 0
-    property var components: ["friendChat/F1.qml",
-                              "friendChat/F2.qml"]
+    property var components: ["friendChat/FriendChatWindow.qml",
+                              "friendChat/FriendAddWindow.qml"]
 
     ColumnLayout{
         anchors.fill: parent
