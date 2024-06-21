@@ -6,7 +6,7 @@ import CustomComponents
 import QtQuick.Dialogs
 import CustomWindows
 
-
+//todo 用Layout优化布局（截图按钮与下拉按钮写在一起）
 Rectangle {
     id: container
     height: 200
@@ -14,9 +14,11 @@ Rectangle {
     color: "#f2f2f2"
     signal send(string text)   //自定义信号
     signal sendFile(string text)   //自定义信号
+    //signal sendPicture(string text)  //发送图片信号
     property bool isPreparePrint:false  //是否准备截图
     property bool selectHide: false
-    // signal hidecut
+    property string filePath: ""
+
 
     Row{
         x: 8
@@ -121,7 +123,30 @@ Rectangle {
             height: 32
             imagePath: "qrc:/icon/tupian_black.png"
             hoveredImagePath: "qrc:/icon/tupian_blue.png"
+            onClicked: {
+                pictureFileDialog.open()
+            }
+            FileDialog{
+                id:pictureFileDialog
+                title:qsTr("选择图片文件")
+                fileMode: FileDialog.OpenFile
+                nameFilters: [ "Image files (*.png *.jpeg *.jpg)" ]
+                acceptLabel: "Open"
+                rejectLabel: "Cancel"
+                onAccepted: {
+                    // sendPicture(fileDialog.selectedFiles)
+                    filePath=fileDialog.selectedFile.toString()
+                    hiddenArea.text += picture;
+                    documentHandler.parseHtml()
+                    hiddenArea.clear()
+                    area.insert(area.cursorPosition, "<br/>")
+                }
+            }
         }
+    }
+    Image {
+        id: picture
+        source: filePath
     }
     MemeView {
         id: memeview
@@ -270,16 +295,22 @@ Rectangle {
 
     //设置窗口隐藏操作处理器
     //判断是否点击截图且已勾选隐藏qq窗口
-    function hiddenWindow(){
-        console.log("Hidden the QQ window before cutScreen！")
-        //todo将qq窗口隐藏
-        if(selectHide===true&&isPreparePrint===true)
-        {
-         //todo hide window set window visibility equals ispreparePrint
-            rootWindow.visible=false
-        }else{
-            rootWindow.visible=true
-        }
-    }
+    // function hiddenWindow(){
+    //     console.log("Hidden the QQ window before cutScreen！")
+    //     //todo将qq窗口隐藏
+    //     if(selectHide===true&&isPreparePrint===true)
+    //     {
+    //      //todo hide window set window visibility equals ispreparePrint
+    //         rootWindow.visible=false
+    //     }else{
+    //         rootWindow.visible=true
+    //     }
+    // }
 
+    // function setFilesModel(){
+    //     for(var i=0;i<arguments[0].length;i++)
+    //     {
+    //         var data={"filePath":arguments[0][i]}
+    //     }
+    // }
 }

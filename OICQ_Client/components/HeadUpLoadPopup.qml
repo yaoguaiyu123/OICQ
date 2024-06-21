@@ -81,6 +81,7 @@ Popup{
             }
             onClicked: {
                 fileDialog.open()
+                //rootWindow.content.dialogs.headFileDialog.open()
 
             }
             contentItem: Text{
@@ -113,6 +114,7 @@ Popup{
             }
         }
     }
+
     QQuickDialog.FileDialog {
         id: fileDialog
         title: "选择图片"
@@ -127,7 +129,12 @@ Popup{
         }
     }
 
+    // function changeImageSource()
+    // {
+    //     choseHeadpath=rootWindow.content.dialogs.headFileDialog.selectedFile
+    //     head.source=rootWindow.content.dialogs.headFileDialog.selectedFile
 
+    // }
     //acceptLabel : string
     // currentFolder : url
     // defaultSuffix : string

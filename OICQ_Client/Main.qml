@@ -6,6 +6,8 @@ import CustomModels
 import CustomWindows
 
 FramelessWindow {
+    // property alias contentLogin: contentLogin
+    // property alias contentMainView: contentMainView
     id:rootWindow
     width: 325
     height: 450
@@ -24,6 +26,29 @@ FramelessWindow {
         }
     }
 
+    // Connections{
+    //     target: contentLogin
+
+    //     function onLoginRequest() {
+    //         contentLogin.visible = false
+    //         rootWindow.hide()
+    //         timer.start()
+    //     }
+    // }
+    // Content{
+    //     id:contentLogin
+    //     anchors.fill: parent
+    //     visible: false
+    // }
+
+    // ContentMainView{
+    //     id:contentMainView
+    //     anchors.fill: parent
+    //     visible: false
+    // }
+    Actions{
+        id:actions
+    }
 
     Login{
         id:loginItem
