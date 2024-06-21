@@ -123,25 +123,25 @@ Rectangle {
             height: 32
             imagePath: "qrc:/icon/tupian_black.png"
             hoveredImagePath: "qrc:/icon/tupian_blue.png"
-            onClicked: {
-                pictureFileDialog.open()
-            }
-            FileDialog{
-                id:pictureFileDialog
-                title:qsTr("选择图片文件")
-                fileMode: FileDialog.OpenFile
-                nameFilters: [ "Image files (*.png *.jpeg *.jpg)" ]
-                acceptLabel: "Open"
-                rejectLabel: "Cancel"
-                onAccepted: {
-                    // sendPicture(fileDialog.selectedFiles)
-                    filePath=fileDialog.selectedFile.toString()
-                    hiddenArea.text += picture;
-                    documentHandler.parseHtml()
-                    hiddenArea.clear()
-                    area.insert(area.cursorPosition, "<br/>")
-                }
-            }
+            // onClicked: {
+            //     pictureFileDialog.open()
+            // }
+            // FileDialog{
+            //     id:pictureFileDialog
+            //     title:qsTr("选择图片文件")
+            //     fileMode: FileDialog.OpenFile
+            //     nameFilters: [ "Image files (*.png *.jpeg *.jpg)" ]
+            //     acceptLabel: "Open"
+            //     rejectLabel: "Cancel"
+            //     onAccepted: {
+            //         // sendPicture(fileDialog.selectedFiles)
+            //         filePath=fileDialog.selectedFile.toString()
+            //         hiddenArea.text += picture;
+            //         documentHandler.parseHtml()
+            //         hiddenArea.clear()
+            //         area.insert(area.cursorPosition, "<br/>")
+            //     }
+            // }
         }
     }
     Image {
@@ -314,3 +314,4 @@ Rectangle {
     //     }
     // }
 }
+
