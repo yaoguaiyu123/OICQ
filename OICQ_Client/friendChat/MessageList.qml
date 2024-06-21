@@ -144,11 +144,14 @@ Rectangle {
         }
     }
 
-    MyComponent.ImageViewer{
+    // MyComponent.ImageViewer{
+    //     id:imageViewer
+    //     visible: false
+    // }
+    MyComponent.PictureViewer{
         id:imageViewer
         visible: false
     }
-
 
     MessageDialog{
         id: tipDialog

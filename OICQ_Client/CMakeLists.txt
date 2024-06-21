@@ -85,11 +85,11 @@ qt_add_qml_module(
   QML_FILES
   Actions.qml
   QML_FILES
-  Content.qml
+  components/ThreeButtons.qml
   QML_FILES
-  ContentMainView.qml
-  QML_FILES
-  components/ThreeButtons.qml)
+  LoginContent.qml
+  QML_FILES MainViewContent.qml
+  QML_FILES components/PictureViewer.qml)
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 

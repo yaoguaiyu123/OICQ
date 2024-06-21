@@ -7,16 +7,12 @@ import "components" as MyComponent
 Rectangle {
     id:mainView
     property int currentIndex: 0
-    property var components: ["friendChat/FriendChatWindow.qml",
-                              "friendChat/FriendAddWindow.qml"]
+    property var components: ["friendChat/F1.qml",
+                              "friendChat/F2.qml"]
 
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
-        MyComponent.WindowBorder{
-            Layout.preferredHeight: 50
-            Layout.fillWidth: true
-        }
 
         // 行布局
         RowLayout{

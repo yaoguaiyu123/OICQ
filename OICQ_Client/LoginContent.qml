@@ -6,15 +6,8 @@ import NetWorks
 import "./comman/NetChat.js" as NetChat
 
 Item{
-    property alias dialogs: allDialogs
-
     signal loginRequest()
     property bool connectRes: false
-
-    Dialogs{
-        id:allDialogs
-    }
-
     Rectangle{
         id:dyniBack
         // anchors.fill: parent
@@ -286,7 +279,7 @@ Item{
             }
         }
     }
-    //Connect Erro
+
     MessageDialog{
         id:messageDialog
         title: qsTr("连接服务器失败，请检查你的网络")
@@ -309,6 +302,7 @@ Item{
         visible: false
         anchors.centerIn: parent
     }
+
     MyComponent.RepeatLogin{
         id:repeatlogin
         visible: false
@@ -316,6 +310,3 @@ Item{
     }
 
 }
-
-
-
