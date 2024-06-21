@@ -1,8 +1,10 @@
 import QtQuick
 import QtQuick.Controls
 
+// 弹出信息框
+
 Rectangle {
-    signal timerstart()  //信息过大时，点击发送会发射该信号
+    signal timerstart()
     signal timerend()
     id: sendrestrict
     visible: false

@@ -302,6 +302,7 @@ Item{
         visible: false
         anchors.centerIn: parent
     }
+
     MyComponent.RepeatLogin{
         id:repeatlogin
         visible: false
