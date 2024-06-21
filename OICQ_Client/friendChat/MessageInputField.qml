@@ -39,7 +39,7 @@ Rectangle {
                     onClicked: {
                         isPreparePrint=true
                         // hidecut()
-                        if(selectHide===true&&isPreparePrint===true)
+                        if(selectHide===true && isPreparePrint===true)
                         {
                          //todo hide window set window visibility equals ispreparePrint
                             rootWindow.visible=false

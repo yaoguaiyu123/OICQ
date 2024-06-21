@@ -5,7 +5,6 @@ import QtQuick.Controls
 import CustomModels
 
 // 消息样式
-
 Item {
     id:container
     implicitWidth: viewWidth

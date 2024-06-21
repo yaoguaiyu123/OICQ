@@ -19,13 +19,16 @@ Rectangle {
             id: sendrestrict
             visible: false
             z: 1
-            //x: 200
             anchors.horizontalCenter: parent.horizontalCenter
         }
     //列布局
     ColumnLayout{
         anchors.fill: parent
         id:layout
+        MyComponent.ThreeButtons{
+           // implicitWidth: 50
+        }
+
         //行布局
         RowLayout{
             id:topRow

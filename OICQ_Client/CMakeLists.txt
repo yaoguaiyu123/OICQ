@@ -80,12 +80,22 @@ qt_add_qml_module(
   components/LoginFail.qml
   QML_FILES
   friendChat/SendRestriction.qml
+  <<<<<<<
+  HEAD
   QML_FILES
   Dialogs.qml
   QML_FILES
   Actions.qml
-  QML_FILES Content.qml
-  QML_FILES ContentMainView.qml)
+  QML_FILES
+  Content.qml
+  QML_FILES
+  ContentMainView.qml
+  QML_FILES
+  friendChat/F1.qml
+  QML_FILES
+  friendChat/F2.qml
+  QML_FILES
+  components/ThreeButtons.qml)
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 

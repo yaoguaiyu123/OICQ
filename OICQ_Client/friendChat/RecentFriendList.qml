@@ -30,9 +30,10 @@ Rectangle {
     Row{
         id:topRow
         x:15
-        spacing: 15
+        y: 30
+        spacing: 10
         MyComponent.SearchBox{
-            width: 245
+            width: 250- (310-container.width)
         }
         MyComponent.IconButton{
             id:addButton

@@ -6,8 +6,8 @@ import QtQuick.Controls
 
 Button {
     id: customButton
-    width: 40
-    height: 30
+    implicitWidth: 40
+    implicitHeight: 30
     leftPadding: 10
     rightPadding: 10
     property string backColor: "#f2f2f2"
