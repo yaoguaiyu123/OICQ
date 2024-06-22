@@ -1,7 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Window 2.14
-import QtQuick.Controls
 
 // 截屏窗口
 
@@ -15,8 +14,8 @@ Window {
     flags: Qt.FramelessWindowHint // 取消默认标题栏
 
     //将截屏窗口的宽和高设置为电脑屏幕宽和高，避免main窗口隐藏后出现的bug
-    width: Screen.width
-    height: Screen.height
+       width: Screen.width
+       height: Screen.height
 
     Image {
         id:backImage
@@ -106,46 +105,7 @@ Window {
         }
     }
 
-    //修改为taphandler版本
-    // TapHandler{
-    //     id:mainMouseArea
-    //     property int startX: 0
-    //     property int startY: 0
-    //     property int endX: 0
-    //     property int endY: 0
 
-    //     onTapped: (point)=>{
-    //                   startX=point.x
-    //                   startY=point.y
-    //                   selectionRect.width=0
-    //                   selectionRect.height=0
-    //                   selectionRect.visible=true
-    //                   captureArea =Qt.rect(startX,startY,0,0)
-    //     }
-
-    //     onPointChanged: (point)=>{
-
-    //                     endX = point.x
-    //                     endY =point.y
-    //                     selectionRect.width = Math.abs(endX - startX)
-    //                     selectionRect.height = Math.abs(endY - startY)
-    //                     selectionRect.x = Math.min(startX, endX)
-    //                     selectionRect.y = Math.min(startY, endY)
-
-    //                     }
-    //     onDestroyed: {
-
-    //         updateStartPoint();
-    //         buttonRow.visible=true
-    //         captureArea = Qt.rect(selectionRect.startPoint.x,
-    //                               selectionRect.startPoint.y,
-    //                               selectionRect.width,
-    //                               selectionRect.height)
-    //     }
-
-    // }
-
-    TapHandler{}
     // 实时显示的选择区域
     Rectangle {
         id: selectionRect
@@ -158,23 +118,29 @@ Window {
         border.width: 2
 
         //鼠标区域，控制拖动选择框时位置变化
-        MouseArea {
-            id: dragItem
+        // MouseArea {
+        //     id: dragItem
 
-            anchors.fill: parent
-            anchors.margins: 12 * 2
-            drag.target: parent
-            cursorShape: Qt.SizeAllCursor
-            onPositionChanged: {
-                updateStartPoint()
+        //     anchors.fill: parent
+        //     anchors.margins: 12 * 2
+        //     drag.target: parent
+        //     cursorShape: Qt.SizeAllCursor
+        //     onPositionChanged: {
+        //         updateStartPoint()
+        //     }
+        // }
+
+        //MouseArea修改为handler版本
+        DragHandler{
+            target: selectionRect
+            onActiveChanged: {
+                if(Drag.active)
+                {
+                    updateStartPoint()
+                }
             }
         }
 
-        DragHandler{
-
-            id:dragRectangle
-
-        }
         Row {
             id: buttonRow
             spacing: 3
@@ -231,7 +197,7 @@ Window {
 
     }
 
-    // 实时更新最终选择的区域
+    // 实时更新selectionRectangle的左上角位置
     function updateStartPoint() {
         selectionRect.startPoint = Qt.point(selectionRect.x, selectionRect.y);
     }
@@ -251,5 +217,3 @@ Window {
     }
 
 }
-
-
