@@ -14,6 +14,7 @@
 #include "framelesswindow.h"
 #include <QQuickWindow>
 #include "screencapture.h"
+#include "messagemodel.h"
 
 
 QObject* tcpSocket_qobject_singletontype_provider(QQmlEngine* engine, QJSEngine* scriptEngine)
@@ -48,36 +49,36 @@ QObject* messageModel_qobject_singletontype_provider(QQmlEngine* engine, QJSEngi
 
 int main(int argc, char* argv[])
 {
-    QGuiApplication app(argc, argv);
-    app.setWindowIcon(QIcon(":/icon/appicon.png"));   //设置应用图标
     //初始化单例类
-    // std::unique_ptr<QThread> thread = std::make_unique<QThread>();
-    TcpSocket &socket = TcpSocket::singleTon();
-    // socket.moveToThread(thread.get());
+    TcpSocket::singleTon();
     FriendModel::singleTon();
     FriendRequestModel::singleTon();
+    MessageModel::singleTon();
 
-    qmlRegisterType<PostSend>("NetWorks", 1, 0, "PostSend"); // 注册C++类
-    qmlRegisterType<ScreenCapture>("CustomWindows", 1, 0, "ScreenCapture");     // 注册C++类
-    qmlRegisterType<FramelessWindow>("CustomWindows", 1, 0, "FramelessWindow"); // 注册C++类
-    qmlRegisterType<TextDocumentHandler>("CustomComponents", 1, 0, "TextDocumentHandler"); // 注册C++类
-    qmlRegisterType<MessageModel>("CutstomModels", 1, 0, "MessageModel"); // 注册C++类
-    qmlRegisterSingletonType<TcpSocket>("NetWorks", 1, 0, "TcpSocket",
-        tcpSocket_qobject_singletontype_provider);   //注册C++单例类
-    qmlRegisterSingletonType<FriendModel>("CustomModels", 1, 0, "FriendModel",
-        friendModel_qobject_singletontype_provider);   //注册C++单例类
-    qmlRegisterSingletonType<FriendRequestModel>("CustomModels", 1, 0, "FriendRequestModel",
-        friendRequestModel_qobject_singletontype_provider);   //注册C++单例类
-    qmlRegisterSingletonType<MessageModel>(
-        "CustomModels",
-        1,
-        0,
-        "MessageModel",
-        messageModel_qobject_singletontype_provider); //注册C++单例类
+    QGuiApplication app(argc, argv);
+    app.setWindowIcon(QIcon(":/icon/appicon.png"));   //设置应用图标
     QQmlApplicationEngine engine;
-    QObject::connect(
-        &engine, &QQmlApplicationEngine::objectCreationFailed,
-        &app, []() { QCoreApplication::exit(-1); }, Qt::QueuedConnection);
+
+    // qmlRegisterType<PostSend>("NetWorks", 1, 0, "PostSend"); // 注册C++类
+    // qmlRegisterType<ScreenCapture>("CustomWindows", 1, 0, "ScreenCapture");     // 注册C++类
+    // qmlRegisterType<FramelessWindow>("CustomWindows", 1, 0, "FramelessWindow"); // 注册C++类
+    // qmlRegisterType<TextDocumentHandler>("CustomComponents", 1, 0, "TextDocumentHandler"); // 注册C++类
+    // qmlRegisterSingletonType<TcpSocket>("oicqclient", 1, 0, "TcpSocket",
+    //     tcpSocket_qobject_singletontype_provider);   //注册C++单例类
+    // qmlRegisterSingletonType<FriendModel>("oicqclient", 1, 0, "FriendModel",
+    //     friendModel_qobject_singletontype_provider);   //注册C++单例类
+    // qmlRegisterSingletonType<FriendRequestModel>("oicqclient", 1, 0, "FriendRequestModel",
+    //     friendRequestModel_qobject_singletontype_provider);   //注册C++单例类
+    // qmlRegisterSingletonType<MessageModel>(
+    //     "oicqclient",
+    //     1,
+    //     0,
+    //     "MessageModel",
+    //     messageModel_qobject_singletontype_provider); //注册C++单例类
+    // QQmlApplicationEngine engine;
+    // QObject::connect(
+    //     &engine, &QQmlApplicationEngine::objectCreationFailed,
+    //     &app, []() { QCoreApplication::exit(-1); }, Qt::QueuedConnection);
 
     // 这里要加载名称应该写 URI
     engine.loadFromModule("oicqclient", "Main");

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import "./components" as MyComponent
-import NetWorks
+import oicqclient
 import "./comman/NetChat.js" as NetChat
 
 Item{
@@ -243,10 +243,10 @@ Item{
                 // console.log("准备登录")
                 //调用单例对象的方法
                 if(!connectRes){
-                    TcpSocket.connectToServer()
+                    Controller.connectToServer()
                     timer.restart()
                 }else{
-                    TcpSocket.packingMessage("{" + "\"userId\":" + username.text+ ","
+                    Controller.packingMessage("{" + "\"userId\":" + username.text+ ","
                                              + "\"password\":" + "\"" + password.text + "\"" + "}",NetChat.MSG_TYPE.Login)  //登录
                 }
             }
@@ -255,11 +255,11 @@ Item{
 
     //连接单例socket的信号
     Connections{
-        target: TcpSocket
+        target: Controller.getTcpSocket()
         function onConnected() {
             timer.stop()
             connectRes = true
-            TcpSocket.packingMessage("{" + "\"userId\":" + username.text+ ","
+            Controller.packingMessage("{" + "\"userId\":" + username.text+ ","
                                      + "\"password\":" + "\"" + password.text + "\"" + "}",NetChat.MSG_TYPE.Login)  //登录
         }
         function onLoginReturnToQml(res){

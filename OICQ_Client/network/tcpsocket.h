@@ -15,21 +15,19 @@ class TcpSocket : public QTcpSocket {
     Q_OBJECT
 public:
     explicit TcpSocket(QObject* parent = nullptr);
-    Q_INVOKABLE void connectToServer();
-    void sendMessage(MESG* send);
     static TcpSocket& singleTon();
+    void connectToServer();
+    void sendMessage(MESG* send);
     int getUserId();
-    Q_INVOKABLE void packingMessage(QString value, int msgType, QList<QImage>imageList = QList<QImage>());
+    void packingMessage(QString value, int msgType, QList<QImage>imageList = QList<QImage>());
     void packingMessageFromJson(const QJsonValue &value, int msgType, QList<QImage> imageList = QList<QImage>());private slots:
     void on_ready_read();
 private:
-    QHostAddress* m_hostAddress;
+    QHostAddress* m_hostAddress = nullptr;
     qint64 m_userId = 0; // qq号,用于标识每一个用户
-    uchar* m_sendbuf; // uchar处理二进制数据
+    uchar* m_sendbuf = nullptr; // uchar处理二进制数据
     RecvBuf m_recvbuf;
 signals:
-    // TODO 待实现的逻辑
-    void sendDataOver(bool); // 发送数据结束的信号
     void loginReturn(const QImage & image);
     void loginReturnToQml(int);
     void friendListReturn(const QJsonValue&,const QList<QImage>&);

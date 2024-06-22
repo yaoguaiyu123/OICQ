@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../components" as MyComponent
 import QtQuick.Controls
-import CustomModels
+import oicqclient
 
 // 消息样式
 Item {

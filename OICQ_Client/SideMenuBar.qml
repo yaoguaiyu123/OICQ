@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "./components" as MyComponent
-import NetWorks
-import CustomModels
+import oicqclient
 
 Rectangle {
     id:container
@@ -44,7 +43,7 @@ Rectangle {
         spacing: 15
         MyComponent.HeadImage{
             id:head
-            headUrl:FriendModel.myImagePath
+            headUrl:Controller.getFriendModel().myImagePath
             width: 36
             height: 36
             imageRadius: 18

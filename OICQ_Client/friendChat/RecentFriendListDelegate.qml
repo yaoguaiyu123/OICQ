@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../components" as MyComponent
-import CustomModels
+import oicqclient
 
 Button {
     id:button

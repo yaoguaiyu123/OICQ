@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
 import "./components" as MyComponent
-import CustomModels
-import CustomWindows
+import oicqclient
 
 FramelessWindow {
     id:rootWindow
@@ -67,7 +66,7 @@ FramelessWindow {
             rootWindow.y = (Screen.height - height) / 2
             rootWindow.minimumHeight = 500
             rootWindow.minimumWidth = 800
-            chatItem.visible = true
+            // chatItem.visible = true
         }
     }
 

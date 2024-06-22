@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import "../components" as MyComponent
-import CustomModels
+import oicqclient
 
 //好友添加的窗口
 Item {
@@ -138,7 +138,7 @@ Item {
                     anchors.top: title.bottom
                     anchors.topMargin:15
                     anchors.bottom:parent.bottom
-                    model: FriendRequestModel
+                    model: Controller.getFriendRequestModel()
                     spacing: 20
                     delegate: Item{
                         id:item
@@ -196,7 +196,7 @@ Item {
                                     verticalAlignment: Text.AlignVCenter
                                 }
                                 onClicked: {
-                                    onClicked: FriendRequestModel.choseAddFriend(0,index)
+                                    onClicked: Controller.choseAddFriend(0,index)
                                 }
                             }
                             Button{
@@ -218,7 +218,7 @@ Item {
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
                                 }
-                                onClicked: FriendRequestModel.choseAddFriend(1,index)
+                                onClicked: Controller.choseAddFriend(1,index)
                             }
                         }
 

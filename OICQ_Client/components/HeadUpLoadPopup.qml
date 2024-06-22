@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 // import Qt.labs.platform
 import QtQuick.Dialogs as QQuickDialog
-import CustomModels
+import oicqclient
 import Qt5Compat.GraphicalEffects
 
 //头像上传的弹出窗口
@@ -31,7 +31,7 @@ Popup{
 
     Image{
         id:head
-        source: FriendModel.myImagePath
+        source: Controller.getFriendModel().myImagePath
         width: 420
         height: 420
         x: (parent.width - width) / 2
@@ -58,7 +58,7 @@ Popup{
             onClicked: {
                 if(choseHeadpath !== ""){
                     // console.log(choseHeadpath)
-                    FriendModel.updateMyHead(choseHeadpath)
+                    Controller.updateMyHead(choseHeadpath)
                     popup.close()
                 }
             }
@@ -103,7 +103,7 @@ Popup{
             }
 
             onClicked: {
-                head.source = FriendModel.myImagePath
+                head.source = Controller.getFriendModel().myImagePath
                 popup.close()
             }
             contentItem: Text{

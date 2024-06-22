@@ -14,11 +14,11 @@ public:
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
     static FriendRequestModel& singleTon();
-    Q_INVOKABLE void choseAddFriend(int, int);
+    void choseAddFriend(int, int);
 private:
     QList<Friend> friends;
-    TcpSocket* _tcpSocket;
-    FriendModel* _friendModel;
+    TcpSocket* _tcpSocket = nullptr;
+    FriendModel* _friendModel = nullptr;
 };
 
 #endif // FRIENDREQUESTMODEL_H

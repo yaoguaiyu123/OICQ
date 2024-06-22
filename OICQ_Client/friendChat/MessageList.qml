@@ -4,16 +4,14 @@ import QtQuick.Dialogs
 import QtQuick.Controls
 import "../components" as MyComponent
 import "../comman/NetChat.js" as NetChat
-import NetWorks
-import CustomModels
+import oicqclient
 
 Rectangle {
     id:container
     color: "#f2f2f2"
     property var dataModel : null
     property int listIndex: 0
-    property string headPath: FriendModel.currentHeadpath
-    property string url: "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=24.e242c2f0ea3971c6f72f402ed63b7150.2592000.1717236204.282335-66121946"
+    property string headPath: ""
 
     SendRestriction{
             id: sendrestrict
@@ -36,8 +34,6 @@ Rectangle {
             Text {
                 id:title
                 Layout.leftMargin: 25
-                //TODO
-                text: FriendModel.currentName
                 font.pixelSize: 17
             }
 
@@ -81,21 +77,21 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
             clip: true
-            model: MessageModel
+            model: Controller.getMessageModel(listIndex)
             delegate: MessageDelegate {
                 id: msgDelegate
                 headUrl: container.headPath
-                myheadUrl: FriendModel.myImagePath
+                myheadUrl: Controller.getFriendModel().myImagePath
                 viewWidth: listView.width - 20
                 x: 10
                 onUploadFile1: (filepath, messageIndex) => {
-                    FriendModel.downloadFileRequest(listIndex, messageIndex, filepath)
+                    Controller.downloadFileRequest(listIndex, messageIndex, filepath)
                 }
                 onCancelTransfer1: (messageIndex)=>{
-                    FriendModel.cancelUploadOrDownload(listIndex, messageIndex)  //取消下载或者上传
+                    Controller.cancelUploadOrDownload(listIndex, messageIndex)  //取消下载或者上传
                 }
                 onBrowsePictures: (messageIndex) => {
-                    var res = FriendModel.currentWindowImages(listIndex, messageIndex)
+                    var res = Controller.currentWindowImages(listIndex, messageIndex)
 
                     var imageIndex = res[0]
                     var imagePaths = res.slice(1)
@@ -118,31 +114,31 @@ Rectangle {
             height: 200
             onSend:(text)=>{
                 // 发送消息的逻辑
-                FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.PrivateMessage)
+                Controller.sendMessage(text,listIndex,NetChat.MSG_TYPE.PrivateMessage)
                 //发送的时候也需要更新窗口滚动
             }
             onSendFile: (text)=>{
                 // console.log("将发送",text)
-                FriendModel.sendMessage(text,listIndex,NetChat.MSG_TYPE.FileMessage)
+                Controller.sendMessage(text,listIndex,NetChat.MSG_TYPE.FileMessage)
             }
         }
     }
 
 
-    PostSend{
-        id:postSend
-        //处理post请求,发送给大模型的信息
-        onReplyFinished:(textArg,id)=> {
-            dataModel.get(id).recode.append({
-                date: new Date(),
-                type: 'recv',
-                msg: textArg
-            })
-            if(id === listIndex){
-                listView.positionViewAtEnd()
-            }
-        }
-    }
+    // PostSend{
+    //     id:postSend
+    //     //处理post请求,发送给大模型的信息
+    //     onReplyFinished:(textArg,id)=> {
+    //         dataModel.get(id).recode.append({
+    //             date: new Date(),
+    //             type: 'recv',
+    //             msg: textArg
+    //         })
+    //         if(id === listIndex){
+    //             listView.positionViewAtEnd()
+    //         }
+    //     }
+    // }
 
     // MyComponent.ImageViewer{
     //     id:imageViewer
@@ -162,15 +158,20 @@ Rectangle {
 
     function updateModel(index){
         listIndex = index
-        listView.model = FriendModel.updateMessageModel(listIndex)
+        Controller.updateMessageModel(listIndex)
+        title.text = Controller.getFriendModel().currentName
+        container.headPath = Controller.getFriendModel().currentHeadpath
         listView.positionViewAtEnd()   //窗口滚动到最末尾
     }
 
     Connections{
-        target: FriendModel
+        target: Controller.getFriendModel()
         //初始化完毕之后再给qml model赋值
         function onInitDataFinished(){
-            listView.model = FriendModel.updateMessageModel(listIndex)
+            listView.model = Controller.getMessageModel()
+            Controller.updateMessageModel(listIndex)
+            title.text = Controller.getFriendModel().currentName
+            container.headPath = Controller.getFriendModel().currentHeadpath
         }
         //接收到新的消息
         function onNewMessage(index){

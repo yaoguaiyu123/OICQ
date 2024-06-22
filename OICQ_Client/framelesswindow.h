@@ -4,11 +4,12 @@
 #include <QQuickWindow>
 #include <QQuickView>
 #include <QGuiApplication>
+#include <QtQml/qqmlregistration.h>
 
 class FramelessWindow : public QQuickWindow
 {
     Q_OBJECT
-
+    QML_NAMED_ELEMENT(FramelessWindow)
     Q_PROPERTY(bool movable READ movable WRITE setMovable NOTIFY movableChanged)
     Q_PROPERTY(bool resizable READ resizable WRITE setResizable NOTIFY resizableChanged)
 

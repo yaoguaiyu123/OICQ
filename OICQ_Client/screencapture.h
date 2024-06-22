@@ -5,10 +5,12 @@
 
 #include <QObject>
 #include <QPixmap>
+#include <QtQml/qqmlregistration.h>
 
 class ScreenCapture : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(ScreenCapture)
 public:
     explicit ScreenCapture(QObject *parent = nullptr);
 

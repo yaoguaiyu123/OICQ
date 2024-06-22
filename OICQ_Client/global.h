@@ -7,7 +7,7 @@
 #include <QList>
 #include <QByteArray>
 
-#define IPADDRESS "10.253.14.51"
+#define IPADDRESS "127.0.0.1"
 
 enum MSG_TYPE {
     PrivateMessage,
@@ -76,7 +76,7 @@ struct Recode {
 
 // 可以循环使用的缓冲区
 struct RecvBuf {
-    uchar* buffer;
+    uchar* buffer = nullptr;
     qint32 beginIndex;
     qint32 endIndex;
     qint32 capacity;

@@ -9,9 +9,11 @@
 #include <QTextCursor>
 #include "global.h"
 #include <QCursor>
+#include <QtQml/qqmlregistration.h>
 
 class TextDocumentHandler : public QObject {
     Q_OBJECT
+    QML_NAMED_ELEMENT(TextDocumentHandler)
     Q_PROPERTY_AUTO(QQuickTextDocument*,hideTextDocument)
     Q_PROPERTY_AUTO(QQuickTextDocument*,textDocument)
     Q_PROPERTY_AUTO(int, cursorPosition)  //当前光标位置

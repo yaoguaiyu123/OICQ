@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import "../components" as MyComponent
-import NetWorks
+import oicqclient
 import QtQuick.Layouts
 import "../comman/NetChat.js" as NetChat
 import Qt5Compat.GraphicalEffects
@@ -32,7 +32,7 @@ Popup {
             }
             onClicked: {
                 //添加好友
-                TcpSocket.packingMessage("{" + "\"friendId\":" + searchbox.inputText + "}",NetChat.MSG_TYPE.AddFriend)
+                Controller.packingMessage("{" + "\"friendId\":" + searchbox.inputText + "}",NetChat.MSG_TYPE.AddFriend)
             }
         }
     }
@@ -62,7 +62,7 @@ Popup {
     }
 
     Connections{
-        target: TcpSocket
+        target: Controller.getTcpSocket()
         function onAddFriend(res){
             if(res === NetChat.RETURN.Fail){
                 showText.text = "没有找到该用户"

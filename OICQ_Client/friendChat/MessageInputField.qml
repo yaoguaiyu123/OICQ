@@ -2,9 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import "../components" as MyComponent
-import CustomComponents
 import QtQuick.Dialogs
-import CustomWindows
+import oicqclient
 
 //todo 用Layout优化布局（截图按钮与下拉按钮写在一起）
 Rectangle {

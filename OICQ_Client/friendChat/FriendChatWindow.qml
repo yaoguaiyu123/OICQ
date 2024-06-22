@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import CustomModels
+import oicqclient
 
 //该窗口为好友聊天窗口
 Item {
@@ -44,9 +44,6 @@ Item {
                     id:messageList
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    Component.onCompleted: {
-                        messageList.dataModel = FriendModel
-                    }
                 }
             }
 

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import "./components" as MyComponent
-import NetWorks
+import oicqclient
 import "./comman/NetChat.js" as NetChat
 
 Item{

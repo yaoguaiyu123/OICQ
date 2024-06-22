@@ -27,12 +27,12 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    Q_INVOKABLE MessageModel* updateMessageModel(int index);
-    Q_INVOKABLE void sendMessage(QString,int,int);
-    Q_INVOKABLE void downloadFileRequest(int friendiIndex, int messageIndex,const QString& filepath);
-    Q_INVOKABLE void updateMyHead(QString);
-    Q_INVOKABLE void cancelUploadOrDownload(int friendIndex,int messageIndex);
-    Q_INVOKABLE QList<QString> currentWindowImages(int friendIndex, int messageIndex);
+    MessageModel* updateMessageModel(int index);
+    void sendMessage(QString,int,int);
+    void downloadFileRequest(int friendiIndex, int messageIndex,const QString& filepath);
+    void updateMyHead(QString);
+    void cancelUploadOrDownload(int friendIndex,int messageIndex);
+    QList<QString> currentWindowImages(int friendIndex, int messageIndex);
     void addNewFriend(const QJsonValue& jsonvalue,const QImage& image);
     void addNewFriend(QString username, qint64 userid, QString headpath);
     void addFriends(const QJsonValue &,const QList<QImage> &);
@@ -48,10 +48,10 @@ private slots:
 private:
     Q_DISABLE_COPY(FriendModel)
 
-    FriendData* _allData;
-    MessageModel* _messageModel;
+    FriendData* _allData = nullptr;
+    MessageModel* _messageModel = nullptr;
     QHash<int, QByteArray> m_role; //表头
-    TcpSocket* m_tcpsocket;
+    TcpSocket* m_tcpsocket = nullptr;
     QList<FileClient*> m_fileList;
 };
 

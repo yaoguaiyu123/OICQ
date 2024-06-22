@@ -23,8 +23,8 @@ public:
 public slots:
     void updateHaveSizeAndRecvSize(int index, qint64 haveSize, qint64 totalSize);
 private:
-    QList<Recode>* _currentData;
-    FriendData* _allData;
+    QList<Recode>* _currentData = nullptr;
+    FriendData* _allData = nullptr;
 };
 
 #endif // MESSAGEMODEL_H

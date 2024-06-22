@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../components" as MyComponent
-import CustomModels
+import oicqclient
 
 Rectangle {
     id:container
@@ -53,7 +53,7 @@ Rectangle {
         width: container.width
         height: container.height - topRow.height - 30
         clip: true
-        model: FriendModel
+        model: Controller.getFriendModel()
         delegate:RecentFriendListDelegate{
             backColor: currentId == index ? "#0099ff" : "white"
             bigTextColor: currentId == index ? "white" : "black"
