@@ -11,6 +11,11 @@ MessageModel::MessageModel(QObject* parent)
     ;
 }
 
+MessageModel& MessageModel::singleTon()
+{
+    static MessageModel model;
+    return model;
+}
 
 MessageModel::~MessageModel()
 {
@@ -20,10 +25,16 @@ MessageModel::~MessageModel()
 int MessageModel::rowCount(const QModelIndex& parent) const
 {
     // qDebug() << "messageModel的count" << _currentData->size();
+    if (_currentData == nullptr) {
+        return 0;
+    }
     return _currentData->size();
 }
 
 QVariant MessageModel::data(const QModelIndex& index, int role) const{
+    if (_currentData == nullptr) {
+        return QVariant("");
+    }
     if (!index.isValid() || index.row() >= _currentData->size()) {
         return QVariant("");
     }

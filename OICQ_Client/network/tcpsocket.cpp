@@ -61,7 +61,7 @@ void TcpSocket::packingMessage(QString value, int msgType, QList<QImage> imageLi
 }
 
 // 将信息打包成为一个MESG对象
-void TcpSocket::packingMessageFromJson(QJsonValue value, int msgType, QList<QImage> imageList)
+void TcpSocket::packingMessageFromJson(const QJsonValue &value, int msgType, QList<QImage> imageList)
 {
     QJsonDocument doc(value.toObject());
     if (doc.isNull()) {
@@ -84,7 +84,7 @@ void TcpSocket::packingMessageFromJson(QJsonValue value, int msgType, QList<QIma
             QBuffer qBuffer(&buffer);
             qBuffer.open(QIODevice::WriteOnly);
 
-                   // 将图片以PNG格式转换并存储到buffer中
+            // 将图片以PNG格式转换并存储到buffer中
             if (!image.save(&qBuffer, "PNG")) {
                 qDebug() << "图片转换失败";
                 continue;
@@ -288,14 +288,14 @@ void TcpSocket::parsePackage()
 }
 
 
-void TcpSocket::parsePrivateMessage(QJsonValue& jsonvalue,QList<QImage>& images)
+void TcpSocket::parsePrivateMessage(const QJsonValue& jsonvalue,const QList<QImage>& images)
 {
     // qDebug() << "私发消息!!!!!!!!!!!!!!!!!图片的数量: " << images.count();
     emit privateMessageReturn(jsonvalue,images);
 }
 
 // 处理添加好友请求
-void TcpSocket::parseAddFriend(QJsonValue& jsonvalue)
+void TcpSocket::parseAddFriend(const QJsonValue& jsonvalue)
 {
     if (!jsonvalue.isObject()) {
         return;
@@ -305,27 +305,28 @@ void TcpSocket::parseAddFriend(QJsonValue& jsonvalue)
     emit(addFriend(res));
 }
 
-void TcpSocket::parseLogin(QJsonValue& jsonvalue,QList<QImage>& images)
+// 处理登录的返回
+void TcpSocket::parseLogin(const QJsonValue& jsonvalue,const QList<QImage>& images)
 {
     if (!jsonvalue.isObject()) {
         return;
     }
     QJsonObject object = jsonvalue.toObject();
-    qDebug() << "parseLogin::登录返回 " << object.value("res").toInt();
     if (object.value("res").toInt() == Success) {
         emit loginReturn(images.first()); // 发出信号
+        qDebug() << "登录成功，准备发送信号给FriendModel     ###############################";
         m_userId = object.value("userId").toInteger();
     }
     emit loginReturnToQml(object.value("res").toInt());
 }
 
 // 处理文件消息
-void TcpSocket::perseFileMessage(QJsonValue& jsonvalue)
+void TcpSocket::perseFileMessage(const QJsonValue& jsonvalue)
 {
     emit fileMessage(jsonvalue);
 }
 
-void TcpSocket::parseFriendList(QJsonValue& jsonvalue,QList<QImage>& images)
+void TcpSocket::parseFriendList(const QJsonValue& jsonvalue,const QList<QImage>& images)
 {
     // qDebug() << "接收到好友列表" << jsonvalue;
     if (!jsonvalue.isArray()) {
@@ -335,13 +336,13 @@ void TcpSocket::parseFriendList(QJsonValue& jsonvalue,QList<QImage>& images)
     // packingMessage("{}",MessageList);  //获取聊天的历史记录
 }
 
-void TcpSocket::parseUpdateHead(QList<QImage>& images)
+void TcpSocket::parseUpdateHead(const QList<QImage>& images)
 {
     emit updateHeadReturn(images.at(0));
 }
 
 // 处理添加好友请求
-void TcpSocket::parseAddFriendRequest(QJsonValue& jsonvalue,QList<QImage> & images)
+void TcpSocket::parseAddFriendRequest(const QJsonValue& jsonvalue,const QList<QImage> & images)
 {
     if (!jsonvalue.isObject()) {
         return;
@@ -353,13 +354,13 @@ void TcpSocket::parseAddFriendRequest(QJsonValue& jsonvalue,QList<QImage> & imag
 }
 
 //处理添加好友的结果(添加一个好友)
-void TcpSocket::parseAddFriendRes(QJsonValue& jsonvalue, QList<QImage>& images)
+void TcpSocket::parseAddFriendRes(const QJsonValue& jsonvalue,const QList<QImage>& images)
 {
     emit(addFriendRes(jsonvalue,images));
 }
 
 // 处理添加好友的请求列表
-void TcpSocket::parseFriendRequestList(QJsonValue& jsonvalue, QList<QImage>& images)
+void TcpSocket::parseFriendRequestList(const QJsonValue& jsonvalue,const QList<QImage>& images)
 {
     if (!jsonvalue.isObject()) {
         return;
@@ -373,7 +374,7 @@ void TcpSocket::parseFriendRequestList(QJsonValue& jsonvalue, QList<QImage>& ima
 
 
 // 处理好友消息的返回
-void TcpSocket::parseHistoryMessageList(QJsonValue& jsonvalue)
+void TcpSocket::parseHistoryMessageList(const QJsonValue& jsonvalue)
 {
     if (!jsonvalue.isArray()) {
         return;

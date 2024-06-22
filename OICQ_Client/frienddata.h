@@ -20,7 +20,7 @@ public:
     FriendData(QObject * parent = nullptr);
     ~FriendData();
     static FriendData& singleTon();
-    void addNewFriend(QJsonValue& jsonvalue, QImage& image);
+    void addNewFriend(const QJsonValue& jsonvalue,const QImage& image);
     void addNewFriend(QString username, qint64 userid, QString headpath);
 private:
     void clear();

@@ -15,7 +15,7 @@ FriendRequestModel::FriendRequestModel(QObject* parent)
     QAbstractListModel { parent }
 {
     // 添加好友请求
-    QObject::connect(_tcpSocket, &TcpSocket::addFriendRequest, [this](QString name,qint64 id,QList<QImage> &images) {
+    QObject::connect(_tcpSocket, &TcpSocket::addFriendRequest, [this](QString name,qint64 id,const QList<QImage> &images) {
         qDebug() << "添加好友信息";
         Friend f;
         f.name = name;

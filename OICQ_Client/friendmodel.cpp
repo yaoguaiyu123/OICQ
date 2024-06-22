@@ -24,7 +24,6 @@ QString headCachePath = "/root/.config/OICQ/client/head";
 // 解析将要发送的消息生成imageList
 void processImages(const QString& content, QList<QImage>& imageList)
 {
-
     QRegularExpression regex("<img[^>]*src=\"(file:///[^\">]+)\"");
     QRegularExpressionMatchIterator it = regex.globalMatch(content);
     while (it.hasNext()) {
@@ -56,7 +55,8 @@ QList<QString> getAllImagePaths(const QString& content)
 }
 
 // 解析接收到的消息提取imageList并保存 TODO
-void processReceiveImages(const QString& message,const QList<QImage>& images) {
+void processReceiveImages(const QString& message, const QList<QImage>& images)
+{
     qint32 noCount = 0;
     for (qint32 i = 0; i < message.length(); ++i) {
         if (message.mid(i, 4) == "<img") {
@@ -123,13 +123,14 @@ qint64 generateMessageId()
     int minute = currentTime.time().minute();
     int second = currentTime.time().second();
     qint64 randomPart = QRandomGenerator::global()->generate() % 100000000;
-    qint64 uniqueId = (year % 100) * 10000000000 + month * 100000000 + day * 1000000 + hour * 10000 + minute * 100 + second;
+    qint64 uniqueId = (year % 100) * 10000000000 + month * 100000000 + day * 1000000 + hour * 10000
+                      + minute * 100 + second;
     uniqueId = (uniqueId << 8) | randomPart;
     return uniqueId;
 }
 
 // 提取纯文本
-QString extractPlainTextFromHtml(const QString &html)
+QString extractPlainTextFromHtml(const QString& html)
 {
     QTextDocument doc;
     doc.setHtml(html);
@@ -148,10 +149,10 @@ QString extractPlainTextFromHtml(const QString &html)
 }
 
 FriendModel::FriendModel(QAbstractListModel* parent)
-    :_allData(&FriendData::singleTon()),
-    _messageModel(new MessageModel(this)),
-    m_tcpsocket(&TcpSocket::singleTon()),
-    QAbstractListModel(parent)
+    : _allData(&FriendData::singleTon())
+    , _messageModel(&MessageModel::singleTon())
+    , m_tcpsocket(&TcpSocket::singleTon())
+    , QAbstractListModel(parent)
 {
     //初始化表头
     m_role.insert(Qt::UserRole, "name");
@@ -163,200 +164,196 @@ FriendModel::FriendModel(QAbstractListModel* parent)
     m_currentHeadpath = "";
 
     //好友列表
-    QObject::connect(m_tcpsocket, &TcpSocket::friendListReturn,
-        [this](QJsonValue& value, QList<QImage> imagelist) {
-            addFriends(value ,imagelist);
-            if(!_allData->messages.isEmpty()){
-                _messageModel->setModelData(&_allData->messages[m_currentIndex]); // 设置当前聊天窗口为第一个
-                m_currentName = _allData->friends.at(m_currentIndex).name;
-                m_currentHeadpath = _allData->friends.at(m_currentIndex).headPath;
-                emit currentNameChanged();
-                emit currentHeadpathChanged();   //这里发出的信号不需要主动连接，而是qml自动连接
-                emit initDataFinished();
-            }
-        });
+    QObject::connect(m_tcpsocket,
+                     &TcpSocket::friendListReturn,
+                     [this](const QJsonValue& value, const QList<QImage>& imagelist) {
+                         qDebug() << "初始化好友列表";
+                         addFriends(value, imagelist);
+                         if (!_allData->messages.isEmpty()) {
+                             _messageModel->setModelData(
+                                 &_allData->messages[m_currentIndex]); // 设置当前聊天窗口为第一个
+                             m_currentName = _allData->friends.at(m_currentIndex).name;
+                             m_currentHeadpath = _allData->friends.at(m_currentIndex).headPath;
+                             emit currentNameChanged();
+                             emit
+                             currentHeadpathChanged(); //这里发出的信号不需要主动连接，而是qml自动连接
+                             emit initDataFinished();
+                         }
+                     });
 
     // 接收到普通私发消息
-    QObject::connect(m_tcpsocket, &TcpSocket::privateMessageReturn,
-        [this](QJsonValue& value,QList<QImage>images) {
-            QJsonObject obj;
-            if (value.isObject()) {
-                obj = value.toObject();
-            }
-            qint64 from = obj.value("from").toInteger();
-            QString message = obj.value("message").toString();
-            if (!images.isEmpty()) {
-                message.replace("client/send", "client/recv"); // 转变地址
-                // 给所有收到的图片建立缓存
-                processReceiveImages(message, images);
-            }
-            //刷新qml的回显
-            int j;
-            for (int i = 0; i < _allData->friends.length(); ++i) {
-                if (_allData->friends[i].userid == from) {
-                    if (i != m_currentIndex) {
-                        QModelIndex modelindex = createIndex(i, 0);
-                        emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
-                        _allData->friends[i].unreadMessageNum += 1; //未读消息数量+1
-                        emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
-                    }
-                    QModelIndex modelindex = createIndex(i, 0);
-                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
-                    _messageModel->addMessage(-1, message, "recv", i, 0);
-                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
-                    j = i;
-                    break;
-                }
-            }
-            emit(newMessage(j));
-        });
+    QObject::connect(m_tcpsocket,
+                     &TcpSocket::privateMessageReturn,
+                     [this](const QJsonValue& value, const QList<QImage>& images) {
+                         QJsonObject obj;
+                         if (value.isObject()) {
+                             obj = value.toObject();
+                         }
+                         qint64 from = obj.value("from").toInteger();
+                         QString message = obj.value("message").toString();
+                         if (!images.isEmpty()) {
+                             message.replace("client/send", "client/recv"); // 转变地址
+                             // 给所有收到的图片建立缓存
+                             processReceiveImages(message, images);
+                         }
+                         //刷新qml的回显
+                         int j;
+                         for (int i = 0; i < _allData->friends.length(); ++i) {
+                             if (_allData->friends[i].userid == from) {
+                                 if (i != m_currentIndex) {
+                                     QModelIndex modelindex = createIndex(i, 0);
+                                     emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+                                     _allData->friends[i].unreadMessageNum += 1; //未读消息数量+1
+                                     emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+                                 }
+                                 QModelIndex modelindex = createIndex(i, 0);
+                                 emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
+                                 _messageModel->addMessage(-1, message, "recv", i, 0);
+                                 emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
+                                 j = i;
+                                 break;
+                             }
+                         }
+                         emit(newMessage(j));
+                     });
 
     //登录返回
-    QObject::connect(m_tcpsocket, &TcpSocket::loginReturn,
-        [this](QImage& image) {
-            !image.save(headCachePath + "/myHead.jpg");
-            m_myImagePath =  "file://" + headCachePath + "/myHead.jpg";
-            emit(myImagePathChanged());
-        });
+    QObject::connect(m_tcpsocket, &TcpSocket::loginReturn, this, &FriendModel::onLoginReturn);
 
     //更新头像返回
-    QObject::connect(m_tcpsocket, &TcpSocket::updateHeadReturn,
-        [this](const QImage& image) {
-            !image.save(headCachePath + "/myHead.jpg");
-            m_myImagePath =  "qrc:/image/default_head.png";
+    QObject::connect(m_tcpsocket, &TcpSocket::updateHeadReturn, [this](const QImage& image) {
+        !image.save(headCachePath + "/myHead.jpg");
+        m_myImagePath = "qrc:/image/default_head.png";
+        emit(myImagePathChanged());
+        QTimer::singleShot(100, [this]() {
+            m_myImagePath = "file://" + headCachePath + "/myHead.jpg";
             emit(myImagePathChanged());
-            QTimer::singleShot(100, [this](){
-                m_myImagePath =  "file://" + headCachePath + "/myHead.jpg";
-                emit(myImagePathChanged());
-            });
         });
+    });
 
     // 添加好友结果
-    QObject::connect(m_tcpsocket, &TcpSocket::addFriendRes,
-        [this](QJsonValue jsonvalue, QList<QImage>& images) {
-            beginInsertRows(QModelIndex(), rowCount(), rowCount());
-            addNewFriend(jsonvalue, images.first());
-            endInsertRows();
-        });
+    QObject::connect(m_tcpsocket,
+                     &TcpSocket::addFriendRes,
+                     [this](const QJsonValue& jsonvalue, const QList<QImage>& images) {
+                         beginInsertRows(QModelIndex(), rowCount(), rowCount());
+                         addNewFriend(jsonvalue, images.first());
+                         endInsertRows();
+                     });
 
     // 接收到文件消息
-    QObject::connect(m_tcpsocket, &TcpSocket::fileMessage,
-        [this](QJsonValue jsonvalue) {
-            if (!jsonvalue.isObject()) {
-                return;
-            }
-            QJsonObject recvObj = jsonvalue.toObject();
-            qint64 from = recvObj.value("from").toInteger();
-            qint64 messageId = recvObj.value("messageId").toInteger();
-            QString filename = recvObj.value("filename").toString();
-            QString filesize = recvObj.value("filesize").toString();
-            int j;
-            for (int i = 0; i < _allData->friends.length(); ++i) {
-                if (_allData->friends[i].userid == from) {
-                    if (i != m_currentIndex) {
-                        QModelIndex modelindex = createIndex(i, 0);
-                        emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
-                        _allData->friends[i].unreadMessageNum += 1; //未读消息数量+1
-                        emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
-                    }
+    QObject::connect(m_tcpsocket, &TcpSocket::fileMessage, [this](const QJsonValue& jsonvalue) {
+        if (!jsonvalue.isObject()) {
+            return;
+        }
+        QJsonObject recvObj = jsonvalue.toObject();
+        qint64 from = recvObj.value("from").toInteger();
+        qint64 messageId = recvObj.value("messageId").toInteger();
+        QString filename = recvObj.value("filename").toString();
+        QString filesize = recvObj.value("filesize").toString();
+        int j;
+        for (int i = 0; i < _allData->friends.length(); ++i) {
+            if (_allData->friends[i].userid == from) {
+                if (i != m_currentIndex) {
                     QModelIndex modelindex = createIndex(i, 0);
-                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});   //刷新最近消息
-                    _messageModel->addMessage(messageId, "[文件] " + filename , "recvfile", filename, filesize, i);
-                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
-                    j = i;
-                    break;
+                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+                    _allData->friends[i].unreadMessageNum += 1; //未读消息数量+1
+                    emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
                 }
+                QModelIndex modelindex = createIndex(i, 0);
+                emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2}); //刷新最近消息
+                _messageModel->addMessage(messageId,
+                                          "[文件] " + filename,
+                                          "recvfile",
+                                          filename,
+                                          filesize,
+                                          i);
+                emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
+                j = i;
+                break;
             }
-            emit(newMessage(j));
-        });
+        }
+        emit(newMessage(j));
+    });
 
     // 历史聊天消息 TODO 增加初始化速度
-    QObject::connect(m_tcpsocket, &TcpSocket::historyMessageList,
-        [this](QJsonValue& jsonvalue) {
-            QJsonArray jsonArray = jsonvalue.toArray();
-            qint64 userid = m_tcpsocket->getUserId();
+    QObject::connect(m_tcpsocket, &TcpSocket::historyMessageList, [this](const QJsonValue& jsonvalue) {
+        QJsonArray jsonArray = jsonvalue.toArray();
+        qint64 userid = m_tcpsocket->getUserId();
 
-            QModelIndex modelindex1 = createIndex(0, 0);
-            QModelIndex modelindex2 = createIndex(rowCount() - 1, 0);
-            emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2 ,Qt::UserRole + 3});
+        QModelIndex modelindex1 = createIndex(0, 0);
+        QModelIndex modelindex2 = createIndex(rowCount() - 1, 0);
+        emit dataChanged(modelindex1, modelindex2, {Qt::UserRole + 2, Qt::UserRole + 3});
 
-            for (const QJsonValue& jsonvalue : jsonArray) {
-                QJsonObject jsonobj = jsonvalue.toObject();
-                qint64 senderId = jsonobj.value("senderId").toInteger();
-                qint64 receiverId = jsonobj.value("receiverId").toInteger();
-                qint64 messageId = jsonobj.value("messageId").toInteger(-1);
-                QString message = jsonobj.value("message").toString();
+        for (const QJsonValue& jsonvalue : jsonArray) {
+            QJsonObject jsonobj = jsonvalue.toObject();
+            qint64 senderId = jsonobj.value("senderId").toInteger();
+            qint64 receiverId = jsonobj.value("receiverId").toInteger();
+            qint64 messageId = jsonobj.value("messageId").toInteger(-1);
+            QString message = jsonobj.value("message").toString();
 
-                QString filename = jsonobj.value("filename").toString("");
-                QString filesize = jsonobj.value("filesize").toString("");
-                QString type = jsonobj.value("messageType").toString();
-                int isRead = jsonobj.value("is_read").toInt();
-                if (type == "file") {
-                    // 文件消息
-                    for (int i = 0; i < _allData->friends.size(); ++i) {
-                        if (senderId == userid) {
-                            if (receiverId == _allData->friends[i].userid) {
-                                _messageModel->addMessage(messageId,
-                                                          message,
-                                                          "sendfile",
-                                                          filename,
-                                                          filesize,
-                                                          i);
+            QString filename = jsonobj.value("filename").toString("");
+            QString filesize = jsonobj.value("filesize").toString("");
+            QString type = jsonobj.value("messageType").toString();
+            int isRead = jsonobj.value("is_read").toInt();
+            if (type == "file") {
+                // 文件消息
+                for (int i = 0; i < _allData->friends.size(); ++i) {
+                    if (senderId == userid) {
+                        if (receiverId == _allData->friends[i].userid) {
+                            _messageModel
+                                ->addMessage(messageId, message, "sendfile", filename, filesize, i);
+                        }
+                    } else {
+                        if (senderId == _allData->friends[i].userid) {
+                            if (i != m_currentIndex && isRead == 0) {
+                                _allData->friends[i].unreadMessageNum += 1; // 未读消息 + 1
                             }
-                        } else {
-                            if (senderId == _allData->friends[i].userid) {
-                                if (i != m_currentIndex && isRead == 0) {
-                                    _allData->friends[i].unreadMessageNum += 1; // 未读消息 + 1
-                                }
-                                _messageModel->addMessage(messageId,
-                                                          message,
-                                                          "recvfile",
-                                                          filename,
-                                                          filesize,
-                                                          i);
-                            }
+                            _messageModel
+                                ->addMessage(messageId, message, "recvfile", filename, filesize, i);
                         }
                     }
-                } else {
-                    //普通消息
-                    for (int i = 0; i < _allData->friends.size(); ++i) {
-                        if (senderId == userid) {
-                            if (receiverId == _allData->friends[i].userid) {
-                                _messageModel->addMessage(messageId, message, "send", i);
+                }
+            } else {
+                //普通消息
+                for (int i = 0; i < _allData->friends.size(); ++i) {
+                    if (senderId == userid) {
+                        if (receiverId == _allData->friends[i].userid) {
+                            _messageModel->addMessage(messageId, message, "send", i);
+                        }
+                    } else {
+                        if (senderId == _allData->friends[i].userid) {
+                            if (i != m_currentIndex && isRead == 0) {
+                                _allData->friends[i].unreadMessageNum += 1; // 未读消息 + 1
                             }
-                        } else {
-                            if (senderId == _allData->friends[i].userid) {
-                                if (i != m_currentIndex && isRead == 0) {
-                                    _allData->friends[i].unreadMessageNum += 1; // 未读消息 + 1
-                                }
-                                message.replace("client/send",
-                                                "client/recv"); // 对message转变地址
-                                message = processMessageWithImages(message,
-                                                                   "qrc:/icon/fail_to_load.png");
-                                _messageModel->addMessage(messageId, message, "recv", i);
-                            }
+                            message.replace("client/send",
+                                            "client/recv"); // 对message转变地址
+                            message = processMessageWithImages(message,
+                                                               "qrc:/icon/fail_to_load.png");
+                            _messageModel->addMessage(messageId, message, "recv", i);
                         }
                     }
                 }
             }
-            emit dataChanged(modelindex1, modelindex2, { Qt::UserRole + 2 ,Qt::UserRole + 3});
-            
-            // 设置当前窗口
-            _messageModel->setModelData(&_allData->messages[m_currentIndex]);
-            emit(newMessage(m_currentIndex));   //通知list移动到最底端
+        }
+        emit dataChanged(modelindex1, modelindex2, {Qt::UserRole + 2, Qt::UserRole + 3});
 
-            // 将当前窗口的设为已读通知服务端
-            QJsonObject obj;
-            obj.insert("friendId", _allData->friends[m_currentIndex].userid);
-            m_tcpsocket->packingMessage(JsonObjectToString(obj), UpdateIsRead);
+        // 设置当前窗口
+        _messageModel->setModelData(&_allData->messages[m_currentIndex]);
+        emit(newMessage(m_currentIndex)); //通知list移动到最底端
 
-        });
-
+        // 将当前窗口的设为已读通知服务端
+        QJsonObject obj;
+        obj.insert("friendId", _allData->friends[m_currentIndex].userid);
+        m_tcpsocket->packingMessage(JsonObjectToString(obj), UpdateIsRead);
+    });
 }
 
 //在delegate能获得数据
 QVariant FriendModel::data(const QModelIndex& index, int role) const
 {
+    if(_allData == nullptr){
+        return QVariant("");
+    }
     if (!index.isValid() || index.row() >= _allData->friends.size()) {
         return QVariant("");
     }
@@ -364,7 +361,7 @@ QVariant FriendModel::data(const QModelIndex& index, int role) const
     QList<Recode> recodeList = _allData->messages.at(index.row());
     if (role == Qt::UserRole) {
         return f.name;
-    } else if (role == Qt::UserRole + 1){
+    } else if (role == Qt::UserRole + 1) {
         return f.headPath;
     } else if (role == Qt::UserRole + 2) {
         return extractPlainTextFromHtml(recodeList.last().message);
@@ -378,6 +375,9 @@ QVariant FriendModel::data(const QModelIndex& index, int role) const
 int FriendModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
+    if(_allData == nullptr){
+        return 0;
+    }
     return _allData->friends.size();
 }
 
@@ -392,8 +392,8 @@ FriendModel& FriendModel::singleTon()
     return friendModel;
 }
 
-//返回另一个模型的时候需要以指针的形式返回
-MessageModel* FriendModel::getMessageModel(int index)
+// 更新MessageModel
+MessageModel* FriendModel::updateMessageModel(int index)
 {
     if (index != -1) {
         m_currentIndex = index;
@@ -420,7 +420,7 @@ MessageModel* FriendModel::getMessageModel(int index)
 }
 
 // 初始化好友列表
-void FriendModel::addFriends(QJsonValue& jsonvalue, QList<QImage>& imagelist)
+void FriendModel::addFriends(const QJsonValue& jsonvalue,const QList<QImage>& imagelist)
 {
     QJsonArray array = jsonvalue.toArray();
     if (array.isEmpty()) {
@@ -581,7 +581,7 @@ void FriendModel::updateMyHead(QString surl)
 }
 
 //添加一个新好友
-void FriendModel::addNewFriend(QJsonValue& jsonvalue, QImage& image){
+void FriendModel::addNewFriend(const QJsonValue& jsonvalue,const QImage& image){
     if (!jsonvalue.isObject()) {
         return;
     }
@@ -591,10 +591,10 @@ void FriendModel::addNewFriend(QJsonValue& jsonvalue, QImage& image){
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
     single_messages.append( {-1,now, "tipDate", "" });
     single_messages.append( {-1, now, "tip", jsonvalue.toObject().value("username").toString() +
-            "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
+                                                "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
     _messageModel->addMessageList(single_messages);
     if (_allData->messages.length() == 1) {
-        emit(initDataFinished());   //如果是第一个好友就要初始化
+        emit(initDataFinished());
     }
     endInsertRows();
 }
@@ -607,10 +607,10 @@ void FriendModel::addNewFriend(QString username, qint64 userid, QString headpath
     QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");
     single_messages.append({-1, now, "tipDate","" });
     single_messages.append({-1, now, "tip", username +
-            "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
+                                                "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
     _messageModel->addMessageList(single_messages);
     if (_allData->messages.length() == 1) {
-        emit(initDataFinished());   //如果是第一个好友就要初始化
+        emit(initDataFinished());
     }
     endInsertRows();
 }
@@ -659,5 +659,10 @@ QList<QString> FriendModel::currentWindowImages(int friendIndex, int messageInde
     return strList;
 }
 
-
+void FriendModel::onLoginReturn(const QImage &image){
+    qDebug() << "登录返回.........ddddddddddddddddddddddddddddddddddddddddddddd";
+    !image.save(headCachePath + "/myHead.jpg");
+    m_myImagePath =  "file://" + headCachePath + "/myHead.jpg";
+    emit(myImagePathChanged());
+}
 

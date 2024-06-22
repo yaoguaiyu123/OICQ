@@ -38,6 +38,13 @@ QObject* friendRequestModel_qobject_singletontype_provider(QQmlEngine* engine, Q
     return &FriendRequestModel::singleTon();
 }
 
+QObject* messageModel_qobject_singletontype_provider(QQmlEngine* engine, QJSEngine* scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return &MessageModel::singleTon();
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -61,6 +68,12 @@ int main(int argc, char* argv[])
         friendModel_qobject_singletontype_provider);   //注册C++单例类
     qmlRegisterSingletonType<FriendRequestModel>("CustomModels", 1, 0, "FriendRequestModel",
         friendRequestModel_qobject_singletontype_provider);   //注册C++单例类
+    qmlRegisterSingletonType<MessageModel>(
+        "CustomModels",
+        1,
+        0,
+        "MessageModel",
+        messageModel_qobject_singletontype_provider); //注册C++单例类
     QQmlApplicationEngine engine;
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed,

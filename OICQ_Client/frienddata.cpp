@@ -34,7 +34,7 @@ void FriendData::clear()
     }
 }
 
-void FriendData::addNewFriend(QJsonValue& jsonvalue, QImage& image)
+void FriendData::addNewFriend(const QJsonValue& jsonvalue,const QImage& image)
 {
     QJsonObject obj = jsonvalue.toObject();
     QString username = obj.value("username").toString();

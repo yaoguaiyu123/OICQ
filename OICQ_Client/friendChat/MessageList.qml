@@ -81,7 +81,7 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
             clip: true
-
+            model: MessageModel
             delegate: MessageDelegate {
                 id: msgDelegate
                 headUrl: container.headPath
@@ -159,7 +159,7 @@ Rectangle {
 
     function updateModel(index){
         listIndex = index
-        listView.model = FriendModel.getMessageModel(index)
+        listView.model = FriendModel.updateMessageModel(listIndex)
         listView.positionViewAtEnd()   //窗口滚动到最末尾
     }
 
@@ -167,8 +167,7 @@ Rectangle {
         target: FriendModel
         //初始化完毕之后再给qml model赋值
         function onInitDataFinished(){
-            // qDebug() <<
-            listView.model = FriendModel.getMessageModel()
+            listView.model = FriendModel.updateMessageModel(listIndex)
         }
         //接收到新的消息
         function onNewMessage(index){

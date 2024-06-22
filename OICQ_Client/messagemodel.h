@@ -11,6 +11,7 @@ class MessageModel : public QAbstractListModel {
     Q_OBJECT
 public:
     explicit MessageModel(QObject* parent = nullptr);
+    static MessageModel& singleTon();
     ~MessageModel();
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
