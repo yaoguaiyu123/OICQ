@@ -15,46 +15,50 @@ FramelessWindow {
     y: (Screen.height - height) / 2
 
     Connections{
-        target: loginItem
-
+        target: loginContent
         function onLoginRequest() {
-            loginItem.visible = false
+            loginContent.visible = false
             rootWindow.hide()
             timer.start()
         }
     }
-    // Connections{
-    //     target: loginContent
 
-    //     function onLoginRequest() {
-    //         loginContent.visible = false
-    //         rootWindow.hide()
-    //         timer.start()
-    //     }
-    // }
-
-    // LoginContent{
-    //     id:loginContent
-    //     anchors.fill: parent
-    //     visible: true
-    // }
-
-    // MainViewContent{
-    //     id:mainViewContent
-    //     anchors.fill: parent
-    //     visible: false
-    // }
-    Login{
-        id:loginItem
+    LoginContent{
+        id:loginContent
         anchors.fill: parent
         visible: true
     }
 
-    MainView{
-        id: chatItem
+    MainViewContent{
+        id:mainViewContent
         anchors.fill: parent
         visible: false
     }
+
+    Actions{
+        id:actions
+
+    }
+    // Connections{
+    //     target: loginItem
+
+    //     function onLoginRequest() {
+    //         loginItem.visible = false
+    //         rootWindow.hide()
+    //         timer.start()
+    //     }
+    // }
+    // Login{
+    //     id:loginItem
+    //     anchors.fill: parent
+    //     visible: true
+    // }
+
+    // MainView{
+    //     id: chatItem
+    //     anchors.fill: parent
+    //     visible: false
+    // }
 
     Timer{
         id:timer
@@ -67,7 +71,7 @@ FramelessWindow {
             rootWindow.y = (Screen.height - height) / 2
             rootWindow.minimumHeight = 500
             rootWindow.minimumWidth = 800
-            chatItem.visible = true
+            mainViewContent.visible = true
         }
     }
 

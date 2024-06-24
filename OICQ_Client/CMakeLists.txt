@@ -20,7 +20,6 @@ qt_add_qml_module(
   1.0
   QML_FILES # .qml
   Main.qml
-  MainView.qml
   SideMenuBar.qml
   components/IconButton.qml
   components/BackIconButton.qml
@@ -32,7 +31,6 @@ qt_add_qml_module(
   friendChat/FriendChatWindow.qml
   friendChat/MessageDelegate.qml
   friendChat/MessageInputField.qml
-  Login.qml
   comman/NetChat.js
   components/HeadUpLoadPopup.qml
   components/ImageViewer.qml
@@ -88,8 +86,10 @@ qt_add_qml_module(
   components/ThreeButtons.qml
   QML_FILES
   LoginContent.qml
-  QML_FILES MainViewContent.qml
-  QML_FILES components/PictureViewer.qml)
+  QML_FILES
+  MainViewContent.qml
+  QML_FILES
+  components/PictureViewer.qml)
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 
