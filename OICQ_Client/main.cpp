@@ -23,8 +23,8 @@ int main(int argc, char* argv[])
     //初始化单例类
     // TcpSocket::singleTon();
     // FriendModel::singleTon();
-    // FriendRequestModel::singleTon();
-    // MessageModel::singleTon();
+    FriendRequestModel::singleTon();
+    MessageModel::singleTon();
 
     QGuiApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/icon/appicon.png"));   //设置应用图标

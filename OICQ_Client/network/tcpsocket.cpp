@@ -12,8 +12,6 @@ TcpSocket::TcpSocket(QObject* parent)
     : QTcpSocket { parent } ,
     m_hostAddress(new QHostAddress())
 {
-    qDebug()
-        << "TcpSocket对象被创建000000000000000000000000000000000000000000000000000000000000000";
     connect(this, &TcpSocket::readyRead, this, &TcpSocket::on_ready_read);
     m_hostAddress->setAddress(IPADDRESS);
     m_sendbuf = new uchar[32 * 1024 * 1024];
@@ -361,7 +359,7 @@ void TcpSocket::parseAddFriendRes(const QJsonValue& jsonvalue,const QList<QImage
     emit(addFriendRes(jsonvalue,images));
 }
 
-// 处理添加好友的请求列表
+// 处理添加好友的请求列表(登录时获取)
 void TcpSocket::parseFriendRequestList(const QJsonValue& jsonvalue,const QList<QImage>& images)
 {
     if (!jsonvalue.isObject()) {

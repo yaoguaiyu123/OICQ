@@ -148,6 +148,7 @@ QString extractPlainTextFromHtml(const QString& html)
 
 }
 
+/// 构造函数
 FriendModel::FriendModel(QAbstractListModel* parent)
     : _allData(&FriendData::singleTon())
     , _messageModel(&MessageModel::singleTon())
@@ -167,7 +168,7 @@ FriendModel::FriendModel(QAbstractListModel* parent)
     QObject::connect(m_tcpsocket,
                      &TcpSocket::friendListReturn,
                      [this](const QJsonValue& value, const QList<QImage>& imagelist) {
-                         qDebug() << "初始化好友列表";
+                         // beginResetModel();
                          addFriends(value, imagelist);
                          if (!_allData->messages.isEmpty()) {
                              _messageModel->setModelData(
@@ -175,10 +176,10 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                              m_currentName = _allData->friends.at(m_currentIndex).name;
                              m_currentHeadpath = _allData->friends.at(m_currentIndex).headPath;
                              emit currentNameChanged();
-                             emit
-                             currentHeadpathChanged(); //这里发出的信号不需要主动连接，而是qml自动连接
+                             emit currentHeadpathChanged(); //这里发出的信号不需要主动连接，而是qml自动连接
                              emit initDataFinished();
                          }
+                         // endResetModel();
                      });
 
     // 接收到普通私发消息
@@ -388,7 +389,7 @@ QHash<int, QByteArray> FriendModel::roleNames() const
 
 FriendModel& FriendModel::singleTon()
 {
-    static FriendModel friendModel;
+    static FriendModel friendModel(nullptr);
     return friendModel;
 }
 
@@ -593,9 +594,6 @@ void FriendModel::addNewFriend(const QJsonValue& jsonvalue,const QImage& image){
     single_messages.append( {-1, now, "tip", jsonvalue.toObject().value("username").toString() +
                                                 "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
     _messageModel->addMessageList(single_messages);
-    if (_allData->messages.length() == 1) {
-        emit(initDataFinished());
-    }
     endInsertRows();
 }
 
@@ -609,9 +607,6 @@ void FriendModel::addNewFriend(QString username, qint64 userid, QString headpath
     single_messages.append({-1, now, "tip", username +
                                                 "已经是你的好友了，开始聊天吧" }); // 这边使用列表初始化struct
     _messageModel->addMessageList(single_messages);
-    if (_allData->messages.length() == 1) {
-        emit(initDataFinished());
-    }
     endInsertRows();
 }
 

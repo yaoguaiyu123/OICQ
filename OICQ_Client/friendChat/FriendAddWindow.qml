@@ -6,7 +6,17 @@ import oicqclient
 
 //好友添加的窗口
 Item {
-    id: friendAddWindow
+    property bool buttonClicked: false  // 定义一个属性来记录按钮是否被点击
+    //监听
+    onWidthChanged: {
+    if(width<870){
+        view.visible=false;
+    }else if(buttonClicked==true){
+        view.visible=true;
+    }
+    }
+
+    id:friendAddWindow
     anchors.fill: parent
 
     SplitView {
@@ -123,11 +133,11 @@ Item {
                     anchors.centerIn: parent
                 }
                 Text{
-                       id: title
-                       text:qsTr("好友通知")
-                       font.pixelSize:18
-                       x:30
-                       y:45
+                    id: title
+                    text:qsTr("好友通知")
+                    font.pixelSize:18
+                    x:30
+                    y:45
                  }
                 ListView{
                     id:view
@@ -223,21 +233,24 @@ Item {
                         }
 
                     }
-              }
+                }
             }
         }
 
-
         Component {
-                id: splitHandle
-
-                Rectangle {
-                    implicitWidth: 4
-                    implicitHeight: 4
-                    opacity: 0
-                }
+            id: splitHandle
+            Rectangle {
+                implicitWidth: 4
+                implicitHeight: 4
+                opacity: 0
             }
-
+        }
     }
 
+    function showList(index){
+        if(index === 0){
+            view.visible = true
+            backImage.visible = false
+        }
+    }
 }

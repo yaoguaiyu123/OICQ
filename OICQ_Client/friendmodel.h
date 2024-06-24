@@ -26,7 +26,7 @@ class FriendModel : public QAbstractListModel {
     Q_PROPERTY_RDONLY_AUTO(QString, myImagePath)
     Q_PROPERTY_RDONLY_AUTO(int, currentIndex)   //当前的好友索引
 public:
-    FriendModel(QAbstractListModel* parent = nullptr);
+    FriendModel(QAbstractListModel*);
     static FriendModel& singleTon();
 
     static FriendModel* create(QQmlEngine* qmlengine, QJSEngine*) {
