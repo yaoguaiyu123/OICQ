@@ -345,18 +345,21 @@ QList<QVariantMap> DBManager::queryFriendRequests(qint64 friendId)
         return list;
     }
 
-    if (query.next()) {
+    while (query.next()) {
         QVariantMap result;
         result["id"] = query.value("id");
         result["accountId"] = query.value("accountid");
         result["friendId"] = query.value("friendid");
         list.append(result);
-    } else {
-        qDebug() << "No friend request found for the provided account ID and friend ID";
+    }
+
+    if (list.isEmpty()) {
+        qDebug() << "No friend request found for the provided friend ID";
     }
 
     return list;
 }
+
 
 //插入好友请求
 bool DBManager::insertFriendRequest(qint64 accountId, qint64 friendId) {

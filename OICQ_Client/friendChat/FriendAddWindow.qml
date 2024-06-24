@@ -148,7 +148,7 @@ Item {
                     anchors.top: title.bottom
                     anchors.topMargin:15
                     anchors.bottom:parent.bottom
-                    model: FriendRequestModel
+                    // model: FriendRequestModel
                     spacing: 20
                     delegate: Item{
                         id:item
@@ -250,6 +250,7 @@ Item {
     function showList(index){
         if(index === 0){
             view.visible = true
+            view.model = FriendRequestModel
             backImage.visible = false
         }
     }

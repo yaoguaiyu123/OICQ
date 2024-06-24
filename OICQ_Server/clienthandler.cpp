@@ -440,11 +440,12 @@ void ClientHandler::sendFriendList()
 }
 
 
-//发送获取好友添加请求列表 分多次发送 , TODO 一次发送多个
+//发送获取好友添加请求列表
 void ClientHandler::sendFriendRequestList()
 {
     // qDebug() << "加载离线好友请求";
     QList<QImage> imageList;
+    QJsonArray jsonArray;
     QList<QVariantMap> mapLists = DBManager::singleTon().queryFriendRequests(m_userId);
     for (auto& vmap : mapLists) {
         QJsonObject sendObj;
@@ -458,8 +459,10 @@ void ClientHandler::sendFriendRequestList()
             qDebug() << "error:image.isNull()  path = " << headpath;
         }
         imageList.append(image);
-        packingMessage(sendObj, FriendRequestList , imageList);  //回送到客户端
+        jsonArray.append(sendObj);
     }
+    packingMessage(jsonArray, FriendRequestList , imageList);  //回送到客户端
+
 }
 
 // 发送消息列表

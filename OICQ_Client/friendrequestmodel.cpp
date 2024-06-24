@@ -15,21 +15,36 @@ FriendRequestModel::FriendRequestModel(QObject* parent)
     QAbstractListModel { parent }
 {
     // 添加好友请求
-    QObject::connect(_tcpSocket, &TcpSocket::addFriendRequest, [this](QString name,qint64 id,const QList<QImage> &images) {
-        Friend f;
-        f.name = name;
-        f.userid = id;
-        if (images.empty()) {
-            return;
-        }
-        QImage image = images.first();
-        QString headpath = headCachePath + "/" + generateRandomAlphanumeric(10) + ".jpg";
-        image.save(headpath);
-        f.headPath = "file:///" + headpath;
-        beginResetModel();
-        friends.append(f);
-        endResetModel();
-    });
+    QObject::connect(_tcpSocket,
+                     &TcpSocket::addFriendRequest,
+                     this,
+                     [this](const QJsonValue& jsonvalue, const QList<QImage>& images) {
+                         QJsonArray jsonArray = jsonvalue.toArray();
+
+                         if (jsonArray.size() != images.size()) {
+                             return;
+                         }
+
+                         int i = 0;
+                         beginResetModel();
+                         for (const QJsonValue& jsonValue : jsonArray) {
+                             if (!jsonValue.isObject()) {
+                                 return;
+                             }
+                             QJsonObject obj = jsonValue.toObject();
+                             Friend f;
+                             f.name = obj.value("username").toString();
+                             f.userid = obj.value("userid").toInt(); // 假设 userid 是 int 类型
+                             QImage image = images[i++];
+                             QString headpath = headCachePath + "/" + generateRandomAlphanumeric(10)
+                                                + ".jpg";
+                             image.save(headpath);
+                             f.headPath = "file:///" + headpath;
+
+                             friends.append(f);
+                         }
+                         endResetModel();
+                     });
 }
 
 int FriendRequestModel::rowCount(const QModelIndex& parent) const

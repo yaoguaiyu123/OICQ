@@ -19,7 +19,7 @@ public:
 
     static FriendRequestModel* create(QQmlEngine* qmlengine, QJSEngine*) {
         FriendRequestModel* object = &singleTon();
-        object->m_jsvalue = qmlengine->newSymbol(QString("FriendRequestModel"));
+        object->m_jsvalue = qmlengine->newSymbol(QStringLiteral("FriendRequestModel"));
         return object;
     }
 
