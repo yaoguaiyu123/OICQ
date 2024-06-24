@@ -66,7 +66,7 @@ FramelessWindow {
             rootWindow.y = (Screen.height - height) / 2
             rootWindow.minimumHeight = 500
             rootWindow.minimumWidth = 800
-            // chatItem.visible = true
+            chatItem.visible = true
         }
     }
 

@@ -6,7 +6,7 @@ Controller::Controller(QObject *parent)
 
 Controller &Controller::singleTon()
 {
-    static Controller controller;
+    static Controller controller(nullptr);
     return controller;
 }
 

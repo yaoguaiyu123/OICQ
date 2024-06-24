@@ -43,7 +43,7 @@ Rectangle {
         spacing: 15
         MyComponent.HeadImage{
             id:head
-            headUrl:Controller.getFriendModel().myImagePath
+            headUrl:FriendModel.myImagePath
             width: 36
             height: 36
             imageRadius: 18

@@ -12,11 +12,15 @@ class FriendData;
 class FriendModelPrivate;
 class TcpSocket;
 class QImage;
+#include <QQmlEngine>
 #include "messagemodel.h"
 #include <QQuickTextDocument>
+#include <QtQml/qqmlregistration.h>
 
 class FriendModel : public QAbstractListModel {
     Q_OBJECT
+    QML_SINGLETON
+    QML_NAMED_ELEMENT(FriendModel)
     Q_PROPERTY_RDONLY_AUTO(QString, currentHeadpath)
     Q_PROPERTY_RDONLY_AUTO(QString, currentName)
     Q_PROPERTY_RDONLY_AUTO(QString, myImagePath)
@@ -24,6 +28,13 @@ class FriendModel : public QAbstractListModel {
 public:
     FriendModel(QAbstractListModel* parent = nullptr);
     static FriendModel& singleTon();
+
+    static FriendModel* create(QQmlEngine* qmlengine, QJSEngine*) {
+        FriendModel* object = &singleTon();
+        object->m_jsvalue = qmlengine->newSymbol(QString("FriendModel"));
+        return object;
+    }
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
@@ -47,6 +58,7 @@ private slots:
     void onLoginReturn(const QImage &image);
 private:
     Q_DISABLE_COPY(FriendModel)
+    QJSValue m_jsvalue;
 
     FriendData* _allData = nullptr;
     MessageModel* _messageModel = nullptr;

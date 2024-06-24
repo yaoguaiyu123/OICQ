@@ -13,7 +13,7 @@ MessageModel::MessageModel(QObject* parent)
 
 MessageModel& MessageModel::singleTon()
 {
-    static MessageModel model;
+    static MessageModel model(nullptr);
     return model;
 }
 

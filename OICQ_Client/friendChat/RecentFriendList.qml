@@ -53,7 +53,7 @@ Rectangle {
         width: container.width
         height: container.height - topRow.height - 30
         clip: true
-        model: Controller.getFriendModel()
+        model: FriendModel
         delegate:RecentFriendListDelegate{
             backColor: currentId == index ? "#0099ff" : "white"
             bigTextColor: currentId == index ? "white" : "black"

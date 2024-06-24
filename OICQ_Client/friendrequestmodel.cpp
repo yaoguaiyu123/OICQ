@@ -63,7 +63,7 @@ QHash<int, QByteArray> FriendRequestModel::roleNames() const
 //返回单例对象
 FriendRequestModel& FriendRequestModel::singleTon()
 {
-    static FriendRequestModel frm;
+    static FriendRequestModel frm(nullptr);
     return frm;
 }
 

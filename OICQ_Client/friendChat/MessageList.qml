@@ -81,7 +81,7 @@ Rectangle {
             delegate: MessageDelegate {
                 id: msgDelegate
                 headUrl: container.headPath
-                myheadUrl: Controller.getFriendModel().myImagePath
+                myheadUrl: FriendModel.myImagePath
                 viewWidth: listView.width - 20
                 x: 10
                 onUploadFile1: (filepath, messageIndex) => {
@@ -116,10 +116,12 @@ Rectangle {
                 // 发送消息的逻辑
                 Controller.sendMessage(text,listIndex,NetChat.MSG_TYPE.PrivateMessage)
                 //发送的时候也需要更新窗口滚动
+                listView.positionViewAtIndex(listView.count - 1,ListView.End)
             }
             onSendFile: (text)=>{
                 // console.log("将发送",text)
                 Controller.sendMessage(text,listIndex,NetChat.MSG_TYPE.FileMessage)
+                listView.positionViewAtIndex(listView.count - 1,ListView.End)
             }
         }
     }
@@ -144,6 +146,7 @@ Rectangle {
     //     id:imageViewer
     //     visible: false
     // }
+
     MyComponent.PictureViewer{
         id:imageViewer
         visible: false
@@ -159,19 +162,20 @@ Rectangle {
     function updateModel(index){
         listIndex = index
         Controller.updateMessageModel(listIndex)
-        title.text = Controller.getFriendModel().currentName
-        container.headPath = Controller.getFriendModel().currentHeadpath
+        title.text = FriendModel.currentName
+        container.headPath = FriendModel.currentHeadpath
         listView.positionViewAtEnd()   //窗口滚动到最末尾
     }
 
     Connections{
-        target: Controller.getFriendModel()
+        target: FriendModel
         //初始化完毕之后再给qml model赋值
         function onInitDataFinished(){
-            listView.model = Controller.getMessageModel()
+            listView.model = MessageModel
             Controller.updateMessageModel(listIndex)
-            title.text = Controller.getFriendModel().currentName
-            container.headPath = Controller.getFriendModel().currentHeadpath
+            title.text = FriendModel.currentName
+            container.headPath = FriendModel.currentHeadpath
+            listView.positionViewAtEnd()
         }
         //接收到新的消息
         function onNewMessage(index){

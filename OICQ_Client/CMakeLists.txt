@@ -98,6 +98,8 @@ qt_add_qml_module(
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 
+target_include_directories(appoicqclient PRIVATE . ./network)
+
 set_target_properties(
   appoicqclient
   PROPERTIES AUTORCC TRUE

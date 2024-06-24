@@ -13,6 +13,7 @@ class FramelessWindow : public QQuickWindow
     Q_PROPERTY(bool movable READ movable WRITE setMovable NOTIFY movableChanged)
     Q_PROPERTY(bool resizable READ resizable WRITE setResizable NOTIFY resizableChanged)
 
+
     enum MouseArea {
         TopLeft = 1,
         Top,

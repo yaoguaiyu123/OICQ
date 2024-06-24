@@ -31,7 +31,7 @@ Popup{
 
     Image{
         id:head
-        source: Controller.getFriendModel().myImagePath
+        source: FriendModel.myImagePath
         width: 420
         height: 420
         x: (parent.width - width) / 2
@@ -103,7 +103,7 @@ Popup{
             }
 
             onClicked: {
-                head.source = Controller.getFriendModel().myImagePath
+                head.source = FriendModel.myImagePath
                 popup.close()
             }
             contentItem: Text{

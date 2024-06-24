@@ -3,9 +3,13 @@
 
 #include <QObject>
 #include <QTcpSocket>
-#include "global.h"
+#include "../global.h"
 #include <QJsonValue>
 #include <QImage>
+#include <QQmlEngine>
+#include <QJSEngine>
+#include <QtQml/qqmlregistration.h>
+
 
 class QQmlEngine;
 class QJSEngine;
@@ -13,9 +17,18 @@ struct MESG;
 
 class TcpSocket : public QTcpSocket {
     Q_OBJECT
+    QML_SINGLETON   //注册为单例对象
+    QML_NAMED_ELEMENT(TcpSocket)
 public:
-    explicit TcpSocket(QObject* parent = nullptr);
+    explicit TcpSocket(QObject* parent);
     static TcpSocket& singleTon();
+
+    static TcpSocket* create(QQmlEngine* qmlengine, QJSEngine*) {
+        TcpSocket* object = &singleTon();
+        object->m_jsvalue = qmlengine->newSymbol(QString("TcpSocket"));
+        return object;
+    }
+
     void connectToServer();
     void sendMessage(MESG* send);
     int getUserId();
@@ -27,6 +40,7 @@ private:
     qint64 m_userId = 0; // qq号,用于标识每一个用户
     uchar* m_sendbuf = nullptr; // uchar处理二进制数据
     RecvBuf m_recvbuf;
+    QJSValue m_jsvalue;
 signals:
     void loginReturn(const QImage & image);
     void loginReturnToQml(int);

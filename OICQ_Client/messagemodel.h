@@ -2,6 +2,8 @@
 #define MESSAGEMODEL_H
 
 #include <QAbstractListModel>
+#include <QQmlEngine>
+#include <QtQml/qqmlregistration.h>
 
 // model类，提供接口给qt 为单例类，但是单例的保证由friendModel执行
 class FriendData;
@@ -9,9 +11,17 @@ struct Recode;
 
 class MessageModel : public QAbstractListModel {
     Q_OBJECT
+    QML_SINGLETON
+    QML_NAMED_ELEMENT(MessageModel)
 public:
-    explicit MessageModel(QObject* parent = nullptr);
+    explicit MessageModel(QObject* parent);
     static MessageModel& singleTon();
+    static MessageModel* create(QQmlEngine* qmlengine, QJSEngine*) {
+        MessageModel* object = &singleTon();
+        object->m_jsvalue = qmlengine->newSymbol(QString("MessageModel"));
+        return object;
+    }
+
     ~MessageModel();
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
@@ -23,6 +33,8 @@ public:
 public slots:
     void updateHaveSizeAndRecvSize(int index, qint64 haveSize, qint64 totalSize);
 private:
+    QJSValue m_jsvalue;
+
     QList<Recode>* _currentData = nullptr;
     FriendData* _allData = nullptr;
 };

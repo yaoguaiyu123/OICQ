@@ -62,7 +62,7 @@ Popup {
     }
 
     Connections{
-        target: Controller.getTcpSocket()
+        target: TcpSocket
         function onAddFriend(res){
             if(res === NetChat.RETURN.Fail){
                 showText.text = "没有找到该用户"

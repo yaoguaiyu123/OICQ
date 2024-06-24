@@ -14,8 +14,15 @@ class Controller : public QObject
     QML_SINGLETON   //注册为单例对象
     QML_NAMED_ELEMENT(Controller)
 public:
-    explicit Controller(QObject *parent = nullptr);
+    explicit Controller(QObject *parent);
     static Controller &singleTon();
+
+    static Controller* create(QQmlEngine* qmlengine, QJSEngine*) {
+        Controller* object = &singleTon();
+        object->m_jsvalue = qmlengine->newSymbol(QString("Controller"));
+        return object;
+    }
+
     Q_INVOKABLE FriendModel *getFriendModel();
     Q_INVOKABLE FriendRequestModel *getFriendRequestModel();
     Q_INVOKABLE MessageModel *getMessageModel(int);
@@ -36,4 +43,6 @@ public:
     Q_INVOKABLE void connectToServer();
     Q_INVOKABLE void packingMessage(QString value, int msgType);
 signals:
+private:
+    QJSValue m_jsvalue;
 };

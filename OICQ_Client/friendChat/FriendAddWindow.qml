@@ -138,7 +138,7 @@ Item {
                     anchors.top: title.bottom
                     anchors.topMargin:15
                     anchors.bottom:parent.bottom
-                    model: Controller.getFriendRequestModel()
+                    model: FriendRequestModel
                     spacing: 20
                     delegate: Item{
                         id:item

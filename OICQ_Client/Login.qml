@@ -255,7 +255,7 @@ Item{
 
     //连接单例socket的信号
     Connections{
-        target: Controller.getTcpSocket()
+        target: TcpSocket
         function onConnected() {
             timer.stop()
             connectRes = true
