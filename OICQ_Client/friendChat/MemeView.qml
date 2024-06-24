@@ -126,7 +126,6 @@ Popup {
             width: 32
             // 或者根据需要进行设置
             height: 32
-
             Image {
                 id: image
                 anchors.fill: parent

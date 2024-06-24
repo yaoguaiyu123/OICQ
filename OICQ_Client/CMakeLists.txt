@@ -20,7 +20,6 @@ qt_add_qml_module(
   1.0
   QML_FILES # .qml
   Main.qml
-  MainView.qml
   SideMenuBar.qml
   components/IconButton.qml
   components/BackIconButton.qml
@@ -32,7 +31,6 @@ qt_add_qml_module(
   friendChat/FriendChatWindow.qml
   friendChat/MessageDelegate.qml
   friendChat/MessageInputField.qml
-  # Login.qml
   comman/NetChat.js
   components/HeadUpLoadPopup.qml
   components/ImageViewer.qml
@@ -42,6 +40,18 @@ qt_add_qml_module(
   friendChat/FriendAddWindow.qml
   friendChat/ChatFile.qml
   components/WindowBorder.qml
+  Login.qml
+  components/PictureViewer.qml
+  components/RightPopUpMenu.qml
+  friendChat/MemeView.qml
+  components/RoundCheckBox.qml
+  components/RepeatLogin.qml
+  components/LoginFail.qml
+  friendChat/SendRestriction.qml
+  Dialogs.qml
+  Actions.qml
+  components/ThreeButtons.qml
+  MainView.qml
   SOURCES # .h && .cpp
   main.cpp
   network/postsend.h
@@ -66,35 +76,10 @@ qt_add_qml_module(
   framelesswindow.cpp
   screencapture.h
   screencapture.cpp
-  RESOURCES # .qrc
-  rec.qrc
-  QML_FILES
-  components/RightPopUpMenu.qml
-  QML_FILES
-  friendChat/MemeView.qml
-  QML_FILES
-  components/RoundCheckBox.qml
-  QML_FILES
-  components/RepeatLogin.qml
-  QML_FILES
-  components/LoginFail.qml
-  QML_FILES
-  friendChat/SendRestriction.qml
-  QML_FILES
-  Dialogs.qml
-  QML_FILES
-  Actions.qml
-  QML_FILES
-  components/ThreeButtons.qml
-  QML_FILES
-  Login.qml
-  QML_FILES
-  MainViewContent.qml
-  QML_FILES
-  components/PictureViewer.qml
-  SOURCES
   controller.h
-  controller.cpp)
+  controller.cpp
+  RESOURCES # .qrc
+  rec.qrc)
 
 target_compile_features(appoicqclient PRIVATE cxx_std_20)
 

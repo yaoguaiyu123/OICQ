@@ -6,6 +6,8 @@ import "components" as MyComponent
 
 Rectangle {
     id:mainView
+    property alias headPopup: _headPopup
+    property alias allDialogs: dialogs
     property int currentIndex: 0
     property var components: ["friendChat/FriendChatWindow.qml",
                               "friendChat/FriendAddWindow.qml"]
@@ -39,11 +41,13 @@ Rectangle {
             }
 
             MyComponent.HeadUpLoadPopup{
-                id:headPopup
+                id:_headPopup
                 anchors.centerIn:parent
             }
         }
     }
 
-
+    Dialogs{
+        id:dialogs
+    }
 }

@@ -14,6 +14,7 @@ Popup{
     anchors.centerIn: parent
     modal: true
     closePolicy: Popup.CloseOnEscape  //按下退出键关闭
+    property  alias head: _head
     property string choseHeadpath : ""
     background: Rectangle{
         color: "#1b1b1b"
@@ -30,7 +31,7 @@ Popup{
     }
 
     Image{
-        id:head
+        id:_head
         source: FriendModel.myImagePath
         width: 420
         height: 420
@@ -80,8 +81,8 @@ Popup{
                 border.color: "#aaaaaa"
             }
             onClicked: {
-                fileDialog.open()
-                //rootWindow.content.dialogs.headFileDialog.open()
+                //fileDialog.open()
+                dialogs.headFileDialog.open()
 
             }
             contentItem: Text{
@@ -115,19 +116,19 @@ Popup{
         }
     }
 
-    QQuickDialog.FileDialog {
-        id: fileDialog
-        title: "选择图片"
-        fileMode: QQuickDialog.FileDialog.OpenFile
-        nameFilters: ["图片文件 (*.png *.jpg *.jpeg *.bmp)"]
-        acceptLabel: "打开"
-        rejectLabel: "取消"
-        onAccepted: {
-            choseHeadpath = fileDialog.selectedFile
-            head.source = fileDialog.selectedFile
-            // console.log("ddd ",choseHeadpath)
-        }
-    }
+    // QQuickDialog.FileDialog {
+    //     id: fileDialog
+    //     title: "选择图片"
+    //     fileMode: QQuickDialog.FileDialog.OpenFile
+    //     nameFilters: ["图片文件 (*.png *.jpg *.jpeg *.bmp)"]
+    //     acceptLabel: "打开"
+    //     rejectLabel: "取消"
+    //     onAccepted: {
+    //         choseHeadpath = fileDialog.selectedFile
+    //         head.source = fileDialog.selectedFile
+    //         // console.log("ddd ",choseHeadpath)
+    //     }
+    // }
 
     // function changeImageSource()
     // {

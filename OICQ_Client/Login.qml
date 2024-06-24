@@ -1,11 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
-import "./components" as MyComponent
 import oicqclient
+import "./components" as MyComponent
 import "./comman/NetChat.js" as NetChat
 
 Item{
+    property alias allDialogs: dialogs
+
     signal loginRequest()
     property bool connectRes: false
     Rectangle{
@@ -279,20 +281,15 @@ Item{
             }
         }
     }
-    //Connect Erro
-    MessageDialog{
-        id:messageDialog
-        title: qsTr("连接服务器失败，请检查你的网络")
-        informativeText: "network error"
-        buttons: MessageDialog.Ok
-    }
+
 
     Timer{
         id:timer
         interval: 2000
         onTriggered: {
             if(!connectRes){
-                messageDialog.open()
+                //messageDialog.open()
+                dialogs.erroMessageDialog.open()
             }
         }
     }
@@ -308,5 +305,8 @@ Item{
         visible: false
         anchors.centerIn: parent
     }
+    Dialogs{
+        id:dialogs
 
+    }
 }
