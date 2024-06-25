@@ -9,6 +9,7 @@ import oicqclient
 Rectangle {
     id:container
     color: "#f2f2f2"
+    property alias inputField: _inputField
     property var dataModel : null
     property int listIndex: 0
     property string headPath: ""
@@ -111,6 +112,7 @@ Rectangle {
             height: 1
         }
         MessageInputField{
+            id:_inputField
             height: 200
             onSend:(text)=>{
                 // 发送消息的逻辑
@@ -152,12 +154,12 @@ Rectangle {
         visible: false
     }
 
-    MessageDialog{
-        id: tipDialog
-        title: qsTr("一次最多只能上传5个文件")
-        informativeText: "请重新选择"
-        buttons: MessageDialog.Ok
-    }
+    // MessageDialog{
+    //     id: tipDialog
+    //     title: qsTr("一次最多只能上传5个文件")
+    //     informativeText: "请重新选择"
+    //     buttons: MessageDialog.Ok
+    // }
 
     function updateModel(index){
         listIndex = index
@@ -185,7 +187,7 @@ Rectangle {
         }
         //过多文件
         function onToManyFiles(){
-            tipDialog.open()
+            mainView.allDialogs.tipDialog.open()
         }
     }
 }

@@ -43,10 +43,11 @@ Rectangle {
                          //todo hide window set window visibility equals ispreparePrint
                             rootWindow.visible=false
                         }
-                        screenCapture.printFullScreen()  //获得当前全屏图片
-                        screenPrintWindow.flushBackImage()
-                        screenPrintWindow.show()
-                        screenPrintWindow.visibility = Window.FullScreen  //使其全屏
+                        // screenCapture.printFullScreen()  //获得当前全屏图片
+                        // screenPrintWindow.flushBackImage()
+                        // screenPrintWindow.show()
+                        // screenPrintWindow.visibility = Window.FullScreen  //使其全屏
+                        timeControl.start()
                     }
                     MyComponent.ScreenPrint{
                         id:screenPrintWindow
@@ -69,6 +70,16 @@ Rectangle {
                         }
                     }
 
+                    Timer{
+                        id:timeControl
+                        interval: 250
+                        onTriggered: {
+                            screenCapture.printFullScreen()  //获得当前全屏图片
+                            screenPrintWindow.flushBackImage()
+                            screenPrintWindow.show()
+                            screenPrintWindow.visibility = Window.FullScreen  //使其全屏
+                        }
+                    }
                 }
         MyComponent.IconButton{
                    width: 16
@@ -102,19 +113,22 @@ Rectangle {
             height: 32
             imagePath: "qrc:/icon/wenjian_black.png"
             hoveredImagePath: "qrc:/icon/wenjian_blue.png"
+            // onClicked: {
+            //     fileDialog.open()
+            // }
+            // FileDialog {
+            //     id: fileDialog
+            //     title: "选择文件"
+            //     fileMode: FileDialog.OpenFiles
+            //     acceptLabel: "Open"
+            //     rejectLabel: "Cancel"
+            //     onAccepted: {
+            //         // console.log("用户选择的文件: " + fileDialog.selectedFile)
+            //         sendFile(fileDialog.selectedFiles)
+            //     }
+            // }
             onClicked: {
-                fileDialog.open()
-            }
-            FileDialog {
-                id: fileDialog
-                title: "选择文件"
-                fileMode: FileDialog.OpenFiles
-                acceptLabel: "Open"
-                rejectLabel: "Cancel"
-                onAccepted: {
-                    // console.log("用户选择的文件: " + fileDialog.selectedFile)
-                    sendFile(fileDialog.selectedFiles)
-                }
+                mainView.allDialogs.uploadFileDialog.open()
             }
         }
         MyComponent.IconButton{

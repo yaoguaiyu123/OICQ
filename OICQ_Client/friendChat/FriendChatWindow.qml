@@ -7,7 +7,8 @@ import oicqclient
 Item {
      id:friendChatWindow
      anchors.fill: parent
-
+     property alias rightview: rightView
+     property alias messagelist: messageList
      property var heads
      property int currentIndex: 0
 

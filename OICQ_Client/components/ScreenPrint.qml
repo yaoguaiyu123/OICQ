@@ -166,6 +166,7 @@ Window {
                 onClicked: {
                     initToBegin()
                     screenShotWindow.hide()
+                    isPreparePrint=false
                     // workWindow.show()
                 }
             }
@@ -190,6 +191,7 @@ Window {
                     provideArea(captureArea)
                     initToBegin()
                     screenShotWindow.hide()
+                    isPreparePrint=false
                     // workWindow.show()
                 }
             }
