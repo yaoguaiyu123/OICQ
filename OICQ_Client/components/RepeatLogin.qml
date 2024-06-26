@@ -5,7 +5,7 @@ import QtQuick.Layouts
 //重复登录弹窗
 Popup{
     id:content
-     property string username: "123456"//初始化登录用户的名字
+    property string username: "123456"//初始化登录用户的名字
     background: Rectangle{
         anchors.fill: parent
         color: "white"
