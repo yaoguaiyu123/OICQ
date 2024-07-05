@@ -8,6 +8,7 @@ Rectangle {
     id:mainView
     property alias headPopup: _headPopup
     property alias allDialogs: dialogs
+    property alias windowLoader: windowloader
     property int currentIndex: 0
     property var components: ["friendChat/FriendChatWindow.qml",
                               "friendChat/FriendAddWindow.qml"]
