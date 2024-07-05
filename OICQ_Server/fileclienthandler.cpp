@@ -143,7 +143,6 @@ void FileClientHandler::parseDownloadFile(const QString& filename)
     toDownLoadfile.close();
 }
 
-
 void FileClientHandler::handleBytesWritten(qint64 size)
 {
     haveWritten += size;
