@@ -14,7 +14,7 @@ FriendRequestModel::FriendRequestModel(QObject* parent)
     _friendModel(&FriendModel::singleTon()),
     QAbstractListModel { parent }
 {
-    // 添加好友请求
+    // 添加好友请求列表
     QObject::connect(_tcpSocket,
                      &TcpSocket::addFriendRequest,
                      this,
@@ -34,7 +34,7 @@ FriendRequestModel::FriendRequestModel(QObject* parent)
                              QJsonObject obj = jsonValue.toObject();
                              Friend f;
                              f.name = obj.value("username").toString();
-                             f.userid = obj.value("userid").toInt(); // 假设 userid 是 int 类型
+                             f.userid = obj.value("userid").toInteger();
                              QImage image = images[i++];
                              QString headpath = headCachePath + "/" + generateRandomAlphanumeric(10)
                                                 + ".jpg";
@@ -43,6 +43,35 @@ FriendRequestModel::FriendRequestModel(QObject* parent)
 
                              friends.append(f);
                          }
+                         endResetModel();
+                     });
+
+    QObject::connect(_tcpSocket,
+                     &TcpSocket::addFriendSingleRequest,
+                     this,
+                     [this](const QJsonValue& jsonvalue, const QList<QImage>& images) {
+
+                         QJsonObject jsonObject = jsonvalue.toObject();
+
+                         QString fromname = jsonObject.value("fromname").toString();
+                         qint64 fromid = jsonObject.value("fromid").toInteger();
+
+                         beginResetModel();
+
+                         Friend f;
+                         f.name = fromname;
+                         f.userid = fromid;
+                         if (images.isEmpty()) {
+                             f.headPath = "qrc:/image/default_head.png";
+                         }
+                         QImage image = images.first();
+                         QString headpath = headCachePath + "/" + generateRandomAlphanumeric(10)
+                                            + ".jpg";
+                         image.save(headpath);
+                         if(!image.isNull()){
+                            f.headPath = "file:///" + headpath;
+                         }
+                         friends.append(f);
                          endResetModel();
                      });
 }
@@ -96,9 +125,7 @@ void FriendRequestModel::choseAddFriend(int res, int index)
         sendObj.insert("res", Fail); //拒绝添加
     }else{
         sendObj.insert("res", Success); //同意添加
-        //直接在客户端加入 listView 的列表
         _friendModel->addNewFriend(nowf.name, id, nowf.headPath);
-
     }
     _tcpSocket->packingMessageFromJson(sendObj, AddFriendRes);
 }

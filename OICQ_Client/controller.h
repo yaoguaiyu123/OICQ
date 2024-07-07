@@ -23,11 +23,6 @@ public:
         return object;
     }
 
-    Q_INVOKABLE FriendModel *getFriendModel();
-    Q_INVOKABLE FriendRequestModel *getFriendRequestModel();
-    Q_INVOKABLE MessageModel *getMessageModel(int);
-    Q_INVOKABLE TcpSocket *getTcpSocket();
-
     // friendModel
     Q_INVOKABLE void updateMessageModel(int index);
     Q_INVOKABLE void sendMessage(QString,int,int);
@@ -42,7 +37,7 @@ public:
     // tcpSocket
     Q_INVOKABLE void connectToServer();
     Q_INVOKABLE void loginToServer(qint64 accountId,QString password, int msgType);
-    Q_INVOKABLE void sendAddFriendRequest(QString friendId, int msgType);
+    Q_INVOKABLE void sendAddFriendRequest(qint64 friendId, int msgType);
 signals:
 private:
     QJSValue m_jsvalue;

@@ -78,7 +78,7 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
             clip: true
-            model: Controller.getMessageModel(listIndex)
+            model: MessageModel
             delegate: MessageDelegate {
                 id: msgDelegate
                 headUrl: container.headPath

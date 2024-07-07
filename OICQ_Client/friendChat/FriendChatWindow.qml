@@ -31,6 +31,9 @@ Item {
                     currentIndex = currentId
                     messageList.updateModel(currentIndex)
                 }
+                onCurrentClicked:{
+                    messageList.updateModel(currentIndex)
+                }
             }
 
         }

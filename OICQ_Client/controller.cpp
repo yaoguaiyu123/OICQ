@@ -12,29 +12,7 @@ Controller &Controller::singleTon()
 }
 
 
-FriendModel *Controller::getFriendModel()
-{
-    return &FriendModel::singleTon();
-}
-
-
-FriendRequestModel *Controller::getFriendRequestModel()
-{
-    return &FriendRequestModel::singleTon();
-}
-
-MessageModel *Controller::getMessageModel(int)
-{
-    return &MessageModel::singleTon();
-}
-
-
-TcpSocket *Controller::getTcpSocket(){
-    return &TcpSocket::singleTon();
-}
-
-
-/// FriendModel中的函数
+/// FriendModel
 void Controller::updateMessageModel(int index)
 {
     if (index == -1) {
@@ -45,7 +23,6 @@ void Controller::updateMessageModel(int index)
 
 void Controller::sendMessage(QString message, int index, int type)
 {
-    qDebug() << "发送的对象的index是: " << index;
     if (type == PrivateMessage) {
         FriendModel::singleTon().sendTextMessage(message, index);
     } else {
@@ -73,13 +50,13 @@ QList<QString> Controller::currentWindowImages(int friendIndex, int messageIndex
     return FriendModel::singleTon().currentWindowImages(friendIndex, messageIndex);
 }
 
-/// FriendRequestModel中的函数
+/// FriendRequestModel
 void Controller::choseAddFriend(int res, int index)
 {
     FriendRequestModel::singleTon().choseAddFriend(res, index);
 }
 
-/// TcpSokcet中的函数
+/// TcpSokcet
 void Controller::connectToServer()
 {
     TcpSocket::singleTon().connectToServer();
@@ -93,7 +70,7 @@ void Controller::loginToServer(qint64 accountId,QString password, int msgType)
     TcpSocket::singleTon().packingMessageFromJson(sendObj, msgType);
 }
 
-void Controller::sendAddFriendRequest(QString friendId, int msgType)
+void Controller::sendAddFriendRequest(qint64 friendId, int msgType)
 {
     QJsonObject sendObj;
     sendObj.insert("friendId", friendId);

@@ -49,7 +49,7 @@ signals:
     void updateHeadReturn(const QImage &);
     void addFriend(int);
     void addFriendRequest(const QJsonValue& jsonvalue,const QList<QImage> & images);
-    void addFriendSingleRequest(QString name, qint64 id,const QList<QImage> & images);
+    void addFriendSingleRequest(const QJsonValue& jsonvalue,const QList<QImage> & images);
     void addFriendRes(const QJsonValue &jsonvalue, const QList<QImage>&);
     void fileMessage(const QJsonValue &jsonvalue);
     void historyMessageList(const QJsonValue& jsonvalue);

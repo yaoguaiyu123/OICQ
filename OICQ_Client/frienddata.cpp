@@ -54,7 +54,7 @@ void FriendData::addNewFriend(const QJsonValue& jsonvalue,const QImage& image)
 
 void FriendData::addNewFriend(QString username, qint64 userid, QString headpath)
 {
-    // qDebug() << "添加好友到model";
+    qDebug() << "添加新的好友";
     Friend f;
     f.name = username;
     f.userid = userid;

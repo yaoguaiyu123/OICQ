@@ -339,6 +339,10 @@ void ClientHandler::parseAddFriend(QJsonValue jsonvalue)
         QString username = map1.value("username").toString();
         QString headpath = map1.value("headpath").toString();
         QImage image(headpath);
+        if (image.isNull()) {
+            qDebug() << "加载图片失败......";
+            return;
+        }
         imageList.append(image);
         DBManager::singleTon().insertFriendRequest(m_userId, friendId);  //在请求表中插入数据
         emit(addFriend(friendId,username, m_userId,imageList));

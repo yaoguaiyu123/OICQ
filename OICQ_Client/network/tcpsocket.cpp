@@ -340,19 +340,16 @@ void TcpSocket::parseUpdateHead(const QList<QImage>& images)
     emit updateHeadReturn(images.at(0));
 }
 
-// 处理添加好友请求
+// 处理添加好友请求(添加一个好友)
 void TcpSocket::parseAddFriendRequest(const QJsonValue& jsonvalue,const QList<QImage> & images)
 {
     if (!jsonvalue.isObject()) {
         return;
     }
-    QJsonObject object = jsonvalue.toObject();
-    QString fromname = object.value("fromname").toString();
-    qint64 fromid = object.value("fromid").toInteger();
-    emit(addFriendSingleRequest(fromname,fromid, images));  ///TODO 还没有和FriendRequestModel连接上
+    emit(addFriendSingleRequest(jsonvalue, images));
 }
 
-//处理添加好友的结果(添加一个好友)
+//处理添加好友的结果
 void TcpSocket::parseAddFriendRes(const QJsonValue& jsonvalue,const QList<QImage>& images)
 {
     emit(addFriendRes(jsonvalue,images));

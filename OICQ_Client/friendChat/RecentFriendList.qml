@@ -10,6 +10,7 @@ Rectangle {
     property var heads
 
     property int currentId: 0
+    signal currentClicked()
 
     FriendsGroupMenu{
         id:friendsGroupMenu
@@ -59,7 +60,10 @@ Rectangle {
             bigTextColor: currentId == index ? "white" : "black"
             smallTextColor: currentId == index ? "white" : "#999999"
             onClicked: {
-                currentId = index  //更改颜色(蓝色 or 白色)
+                currentId = index
+                if(FriendModel.rowCount() === 1){
+                    currentClicked()
+                }
             }
         }
     }
