@@ -8,6 +8,7 @@
 class ClientHandler;
 #include <QJsonValue>
 #include <QImage>
+#include "chatmemberdata.h"
 class QThread;
 class TcpServer : public QTcpServer {
     Q_OBJECT
@@ -26,11 +27,9 @@ private slots:
     void on_forwardMessages(QJsonValue,qint64,QList<QImage>);
     void on_addFriend(qint64,QString,qint64,QList<QImage>&);
     void on_addFriendRes(QJsonValue jsonvalue,qint64 friendId, QList<QImage>&);
-
 private:
-
     bool startListen(int port = 1234);
-
+    void initChatMembers();
 private:
     //管理多个socket
     QList<ClientHandler*> socketList;
@@ -41,7 +40,6 @@ private:
 
 protected:
     void incomingConnection(qintptr socketDescriptor);
-
 };
 
 #endif // TCPSERVER_H

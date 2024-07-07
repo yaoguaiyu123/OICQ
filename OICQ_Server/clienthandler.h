@@ -5,6 +5,7 @@
 #include <QJsonValue>
 #include <QImage>
 #include "global.h"
+#include "chatmember.h"
 
 struct MESG;
 

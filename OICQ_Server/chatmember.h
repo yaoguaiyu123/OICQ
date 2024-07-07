@@ -1,29 +1,33 @@
 #pragma once
 
 #include <QObject>
-// 用户类
-
-#pragma once
-
-#include <QObject>
-#include <QList>
+#include <QMap>
 
 // 用户类
 class ChatMember : public QObject
 {
     Q_OBJECT
 public:
-    explicit ChatMember(QObject* parent = nullptr);
-    void addFriend(ChatMember* newFriend);
+    ChatMember(qint64 accountId, QString headpath, QString memberName, QObject* parent = nullptr);
+    void addFriend(ChatMember* newFriend, int unreadCount);
     bool removeFriend(ChatMember* exFriend);
     QList<ChatMember*> getFriends() const;
-    qint64 getUserId();
+    int getUnreadCount(ChatMember* friendMember) const;
+    void setUnreadCount(ChatMember* friendMember, int count);
+    qint64 getAccountId() const;
+
+    void addUnread(ChatMember* friend_);
+    void clearUnread(ChatMember* friend_);
+    int getUnread(ChatMember* friend_);
+
 private:
-    QList<ChatMember*> friends; // 存储好友列表
-    qint64 m_userId;
-signals:
-    void friendAdded(ChatMember* newFriend);
-    void friendRemoved(ChatMember* exFriend);
+    QMap<ChatMember*, int> friends;  // 存储好友列表及其未读消息数
+    qint64 m_accountId = -1;
+    QString m_headpath;
+    QString m_memberName;
+
 };
+
+
 
 

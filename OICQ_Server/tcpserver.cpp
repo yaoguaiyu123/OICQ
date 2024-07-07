@@ -102,13 +102,14 @@ void TcpServer::on_forwardMessages(QJsonValue jsonvalue,qint64 from,QList<QImage
         return;
     }
     QJsonObject object = jsonvalue.toObject();
-    qDebug() << "server接收到转发消息:" + object.value("message").toString();
     qint64 to = object.value("to").toInteger();
     QString msg = object.value("message").toString();
     QString strDateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
 
     // 加入到messages数据库
     DBManager::singleTon().insertNormalMessage(from, to, msg, strDateTime, "normal");
+    // 添加未读消息的数量
+    ChatMemberData::singleTon().addChatMemberUnread(to ,from);
 
     // TODO 优化为Map查找 添加好友判断
     for (auto& userSocket : socketList) {

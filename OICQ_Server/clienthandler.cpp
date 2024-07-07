@@ -11,6 +11,7 @@
 #include "database/dbmanager.h"
 #include <QBuffer>
 #include <QImage>
+#include "chatmemberdata.h"
 
 ClientHandler::ClientHandler(qintptr socketDescriptor, QObject* parent)
     : QObject(parent)
@@ -405,22 +406,23 @@ void ClientHandler::parseAddFriendRes(QJsonValue jsonvalue)
 }
 
 
-// 发送好友列表
+// 发送好友列表 TODO 改为从内存中获取数据
 void ClientHandler::sendFriendList()
 {
     QJsonArray sendObj;
-    QList<QVariantMap> list = DBManager::singleTon().queryDataFriends(m_userId);
-    qDebug() << m_userId << "的好友数量" << list.length();
+    QList<QVariantMap> friendlist = DBManager::singleTon().queryDataFriends(m_userId);
     QList<QImage> imagelist;
-    for (const auto& e : list) {
+    for (const auto& e : friendlist) {
         qint64 fid = e.value("friendid").toLongLong();
         QVariantMap inmap = DBManager::singleTon().queryDataUser(fid);
         QString username = inmap.value("username").toString();
-        // qDebug() << username;
         QString headpath = inmap.value("headpath").toString();
+        int unreadCount = ChatMemberData::singleTon().getChatMemberUnread(m_userId, fid);
+
         QJsonObject obj;
         obj.insert("userId", fid);
         obj.insert("username", username);
+        obj.insert("unreadCount", unreadCount);
         QImage image;
         image.load(headpath);
         if (image.isNull()) {
@@ -514,7 +516,7 @@ void ClientHandler::parseUpdateIsRead(QJsonValue jsonvalue)
     }
     QJsonObject obj = jsonvalue.toObject();
     qint64 friendId = obj.value("friendId").toInteger();
-    DBManager::singleTon().updateIsRead(friendId, m_userId);
+    ChatMemberData::singleTon().clearChatMemberUnread(m_userId, friendId);
 }
 
 

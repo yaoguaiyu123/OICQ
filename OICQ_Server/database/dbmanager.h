@@ -41,8 +41,6 @@ public:
     bool insertNormalMessage(qint64 senderId, qint64 receiverId, const QString& message,
         const QString& messageDate, const QString& messageType);
     QList<QVariantMap> queryMessages(qint64 senderId, qint64 receiverId);
-    bool updateIsRead(qint64 senderId, qint64 receiverId);
-
 
     bool openDatabase(const QString& dbName);
     void closeDatabase();

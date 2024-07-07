@@ -27,8 +27,10 @@ qt_add_executable(
   fileclienthandler.cpp
   fileserver.h
   fileserver.cpp
+  chatmember.cpp
+  chatmember.h
   rec.qrc
-  chatmember.h chatmember.cpp)
+  chatmemberdata.h chatmemberdata.cpp)
 
 target_compile_features(oicqserver PRIVATE cxx_std_20)
 

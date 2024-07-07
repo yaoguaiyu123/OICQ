@@ -215,6 +215,7 @@ QList<QVariantMap> DBManager::queryDataFriends(qint64 id){
         QVariantMap row;
         row["accountid"] = query.value("accountid").toLongLong();
         row["friendid"] = query.value("friendid").toLongLong();
+        row["unreadCount"] = query.value("unreadCount").toLongLong();
         result.append(row);
     }
     return result;
@@ -523,8 +524,7 @@ bool DBManager::createTableMessages() {
         "filename TEXT DEFAULT '', "
         "filesize TEXT DEFAULT '', "
         "messageDate TEXT, "
-        "messageType TEXT, "
-        "is_read INTEGER DEFAULT 0"
+        "messageType TEXT"
         ");"
         );
 
@@ -535,6 +535,7 @@ bool DBManager::createTableMessages() {
 
     return true;
 }
+
 
 
 // 插入文件消息(messages)
@@ -619,27 +620,6 @@ QList<QVariantMap> DBManager::queryMessages(qint64 senderId, qint64 receiverId) 
     }
 
     return result;
-}
-
-// 更新两个人的聊天消息的已读未读的状态(将未读更新为已读)
-bool DBManager::updateIsRead(qint64 senderId, qint64 receiverId) {
-    if (!m_database.isOpen()) {
-        qDebug() << "Error: Database is not opened";
-        return false;
-    }
-
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE messages SET is_read = 1 WHERE senderId = :senderId AND receiverId = :receiverId AND is_read = 0");
-    query.bindValue(":senderId", senderId);
-    query.bindValue(":receiverId", receiverId);
-
-    bool success = query.exec();
-    if (!success) {
-        qDebug() << "Error: Failed to update messages as read:" << query.lastError().text();
-        return false;
-    }
-
-    return true;
 }
 
 /// messages end

@@ -285,7 +285,6 @@ FriendModel::FriendModel(QAbstractListModel* parent)
             QString filename = jsonobj.value("filename").toString("");
             QString filesize = jsonobj.value("filesize").toString("");
             QString type = jsonobj.value("messageType").toString();
-            int isRead = jsonobj.value("is_read").toInt();
             if (type == "file") {
                 // 文件消息
                 for (int i = 0; i < _allData->friends.size(); ++i) {
@@ -296,9 +295,6 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                         }
                     } else {
                         if (senderId == _allData->friends[i].userid) {
-                            if (i != m_currentIndex && isRead == 0) {
-                                _allData->friends[i].unreadMessageNum += 1; // 未读消息 + 1
-                            }
                             _messageModel
                                 ->addMessage(messageId, message, "recvfile", filename, filesize, i);
                         }
@@ -313,9 +309,6 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                         }
                     } else {
                         if (senderId == _allData->friends[i].userid) {
-                            if (i != m_currentIndex && isRead == 0) {
-                                _allData->friends[i].unreadMessageNum += 1; // 未读消息 + 1
-                            }
                             message.replace("client/send",
                                             "client/recv"); // 对message转变地址
                             message = processMessageWithImages(message,
@@ -423,11 +416,13 @@ void FriendModel::addFriends(const QJsonValue& jsonvalue,const QList<QImage>& im
         QJsonObject obj = value.toObject();
         qint64 userid = obj.value("userId").toInteger();
         QString name = obj.value("username").toString();
+        int unreadCount = obj.value("unreadCount").toInt();
         QString headpath = headCachePath + "/" + generateRandomAlphanumeric(10) + ".jpg";
         imagelist.at(i).save(headpath);
         Friend f;
         f.userid = userid;
         f.name = name;
+        f.unreadMessageNum = unreadCount;
         f.headPath = "file://" + headpath;
         QList<Recode> single_messages;
         QString now = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm");

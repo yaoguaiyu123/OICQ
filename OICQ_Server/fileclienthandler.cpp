@@ -23,7 +23,6 @@ FileClientHandler::FileClientHandler()
 }
 
 // 处理 下载文件开头 或者 上传文件 的函数
-// TODO 文件超时删除
 void FileClientHandler::onReadyRead()
 {
     QByteArray byteArray = m_socket->readAll();
