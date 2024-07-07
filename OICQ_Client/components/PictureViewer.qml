@@ -8,7 +8,7 @@ Window {
     width: 720
     height: 640
     visible: true
-    title: qsTr("仿QQ图片浏览器")
+    title: qsTr("OICQ图片浏览器")
     property int currentIndex: 0
     property var imagePaths : []
     property int num: 100 //默认比例数字
@@ -133,7 +133,7 @@ Window {
 
                     background: Rectangle {
                         radius: width / 2
-                        color: parent.hovered ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.4)
+                        color: parent.hovered ? Qt.rgba(30, 30, 30, 0.6) : Qt.rgba(30, 30, 30, 0.3)
                     }
 
                     contentItem: Label {
@@ -141,6 +141,7 @@ Window {
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
                         font.pixelSize: 25
+                        color: "#000000"
                     }
 
                     onPressed: {
@@ -163,7 +164,7 @@ Window {
 
                     background: Rectangle {
                         radius: width / 2
-                        color: parent.hovered ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.4)
+                        color: parent.hovered ? Qt.rgba(30, 30, 30, 0.6) : Qt.rgba(30, 30, 30, 0.3)
                     }
 
                     contentItem: Label {
@@ -171,6 +172,7 @@ Window {
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
                         font.pixelSize: 25
+                        color: "#000000"
                     }
 
                     onPressed: {
@@ -231,36 +233,19 @@ Window {
             }
         }
 
-        //控制器，控制tips提示时间
-        Timer {
-            id: closeTimer
-            interval: 1000  // 设置定时器时间为1000毫秒（1秒）
-            onTriggered: {
-                tips.visible = false
-                tipsMax.visible=false
-                tipsMin.visible=false
-            }
-
-        }
-
         //按钮区域
-        ColumnLayout{
+        Rectangle{
+            id:background
+            color: "black"
+            Layout.preferredHeight: 50
             Layout.fillWidth: true
-            Rectangle{
-                id:background
-                color: "black"
-                Layout.preferredHeight: 50
-                Layout.fillWidth: true
-                Row{
-                    Layout.preferredWidth: parent.width
-                    Layout.preferredHeight: parent.height
-                    anchors.centerIn: parent
-                    padding: 30
-                    //减小图片大小的按钮
-                    IconButton {
+            RowLayout{
+                anchors.centerIn: parent
+                spacing: 30
+                //减小图片大小的按钮
+                IconButton {
                         id:smaller
                         backColor: background.color
-                        width: height
                         imagePath:  "qrc:/icon/详情页放大镜图标减.png"
                         enabled: !isSmallist
                         onClicked: {
@@ -278,61 +263,58 @@ Window {
 
                             closeTimer.start()
                         }
-                        //anchors.left: parent.width / 2
-                        anchors.top:numText.top
-                        anchors.bottom: numText.bottom
-                        //Layout.alignment: Qt.AlignVCenter
-                        anchors.right: numText.left
-                        }
-
-
-                        Text{
-                            id:numText
-                            text:num+" %"
-                            //anchors.centerIn:background
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            color:"white"
-                            font.pixelSize: 25
-                            font.family: "微软雅黑"
-                        }
-
-                      //增加图片大小的按钮
-                        IconButton {
-                            id:bigger
-                            backColor: background.color
-                            width: height
-                            imagePath:  "qrc:/icon/详情页放大镜图标加.png"
-                            enabled: !isBiggest
-                            onClicked: {
-                                imageScale *= 1.2 ;// 增加20%
-                                 num=parseInt(num*1.2);
-                                if(num>=1000){
-                                    isBiggest=true
-                                    tipsMax.visible=true
-                                    num=1000
-                                }else if(num>=10){
-                            isSmallist=false
-                            tips.visible=true
-                                }
-                                closeTimer.start()
-                            }
-                            //anchors.left: parent.left
-                            anchors.top:numText.top
-                            anchors.bottom: numText.bottom
-                            //Layout.alignment: Qt.AlignVCenter
-                            anchors.left: numText.right
-                        }
-
                     }
-            }
+
+                    //显示百分比
+                    Text{
+                        id:numText
+                        text:num+" %"
+                        //anchors.centerIn:background
+                        color:"white"
+                        font.pixelSize: 25
+                        font.family: "微软雅黑"
+                    }
+
+                  //增加图片大小的按钮
+                    IconButton {
+                        id:bigger
+                        backColor: background.color
+                        imagePath:  "qrc:/icon/详情页放大镜图标加.png"
+                        enabled: !isBiggest
+                        onClicked: {
+                            imageScale *= 1.2 ;// 增加20%
+                             num=parseInt(num*1.2);
+                            if(num>=1000){
+                                isBiggest=true
+                                tipsMax.visible=true
+                                num=1000
+                            }else if(num>=10){
+                        isSmallist=false
+                        tips.visible=true
+                            }
+                            closeTimer.start()
+                        }
+                    }
+
+                }
         }
-   }
+    }
+
+    //控制器，控制tips提示时间
+    Timer {
+        id: closeTimer
+        interval: 1000  // 设置定时器时间为1000毫秒（1秒）
+        onTriggered: {
+            tips.visible = false
+            tipsMax.visible=false
+            tipsMin.visible=false
+        }
+
+    }
+
     function loadImages(index, images){
         currentIndex = index
         imagePaths = images
-        // console.log(images)
-        // console.log(imagePaths)
         photoImage.source = (imagePaths === undefined ? "" : imagePaths[currentIndex])
     }
 

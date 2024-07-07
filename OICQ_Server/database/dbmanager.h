@@ -4,10 +4,12 @@
 #include <QList>
 #include <QObject>
 #include <QtSql>
+#include <QTimer>
 
 class DBManager : QObject {
 public:
     explicit DBManager(QObject* parent = nullptr);
+
     ~DBManager();
     //users表
     bool insertDataUsers(qint64 accountId, const QString& username, const QString& password, const QString& headpath);
@@ -48,9 +50,12 @@ public:
     static DBManager& singleTon();
 
     QSqlDatabase m_database;
+private:
+    void startTransaction();
+    void commitTransaction();
 
 private:
-
+    QTimer m_timer;
 };
 
 #endif // DBMANAGER_H

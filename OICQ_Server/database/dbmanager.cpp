@@ -1,13 +1,40 @@
 #include "dbmanager.h"
+#include <QTimer>
 
 DBManager::DBManager(QObject* parent)
     : QObject { parent }
 {
     openDatabase("/root/.config/OICQ/server/database/copyQQ.db");   //open数据库
+    startTransaction();
+    connect(&m_timer, &QTimer::timeout, [this]() {
+        commitTransaction();
+    });
+    m_timer.start(60000);    // 60s提交一次事务
+}
+
+// 开启事务
+void DBManager::startTransaction() {
+    if (!m_database.transaction()) {
+        qDebug() << "Error: failed to start transaction:" << m_database.lastError().text();
+    }
+}
+
+// 提交事务
+void DBManager::commitTransaction() {
+    if (!m_database.commit()) {
+        qDebug() << "Error: failed to commit transaction:" << m_database.lastError().text();
+        if (!m_database.rollback()) {
+            qDebug() << "Error: failed to rollback transaction:" << m_database.lastError().text();
+        }
+        startTransaction(); // 重试开始新的事务
+    } else {
+        startTransaction(); // 成功提交后立即开始新的事务
+    }
 }
 
 DBManager::~DBManager()
 {
+    qDebug() << "进入到数据库的构造函数";
     m_database.close();
 }
 
