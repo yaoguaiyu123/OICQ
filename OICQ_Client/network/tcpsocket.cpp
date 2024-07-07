@@ -333,7 +333,6 @@ void TcpSocket::parseFriendList(const QJsonValue& jsonvalue,const QList<QImage>&
         return;
     }
     emit friendListReturn(jsonvalue ,images);
-    // packingMessage("{}",MessageList);  //获取聊天的历史记录
 }
 
 void TcpSocket::parseUpdateHead(const QList<QImage>& images)

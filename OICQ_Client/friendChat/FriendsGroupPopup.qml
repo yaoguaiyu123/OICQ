@@ -32,7 +32,7 @@ Popup {
             }
             onClicked: {
                 //添加好友
-                Controller.packingMessage("{" + "\"friendId\":" + searchbox.inputText + "}",NetChat.MSG_TYPE.AddFriend)
+                Controller.sendAddFriendRequest(searchbox.inputText ,NetChat.MSG_TYPE.AddFriend)
             }
         }
     }

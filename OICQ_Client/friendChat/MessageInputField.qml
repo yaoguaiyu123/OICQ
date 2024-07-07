@@ -27,8 +27,10 @@ Rectangle {
             height: 32
             imagePath: "qrc:/icon/biaoqing_black.png"
             hoveredImagePath: "qrc:/icon/biaoqing_blue.png"
-            onClicked: memeview.visible = true
-
+            onClicked: {
+                memeview.z = 6
+                memeview.visible = true
+            }
         }
         MyComponent.IconButton{
                     width: 32
@@ -161,6 +163,7 @@ Rectangle {
         id: picture
         source: filePath
     }
+    // 表情
     MemeView {
         id: memeview
         clip: false

@@ -11,8 +11,8 @@ Popup {
     width: 438
     height: 300
     visible: false
-     property string memepath: ""
-     property int currentIndex: 1
+    property string memepath: ""
+    property int currentIndex: 1
     background: Rectangle{
         anchors.fill: parent
         radius: 5
@@ -41,6 +41,7 @@ Popup {
         x:8
         width: 424
         height: 254
+        // 表情展示栏
         GridView {
             id: gridview
             anchors.fill: parent
@@ -54,6 +55,7 @@ Popup {
         }
 
     }
+
     Rectangle{
         id: line
         height: 1
@@ -92,9 +94,7 @@ Popup {
                             gridview.cellHeight = 64
                             gridview.cellWidth = 70
                         }
-                        if(currentIndex === 3){
 
-                        }
                     }
                 }
             }
@@ -112,7 +112,7 @@ Popup {
                 anchors.fill: parent
                 source: model.imageUrl // 绑定到模型的 imageUrl 属性
                 TapHandler{
-                    onTapped: {
+                    onTapped:  {
                         memepath = parent.source
                         emojiInsert(0)
                     }

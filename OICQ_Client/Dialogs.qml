@@ -11,14 +11,7 @@ Item {
      property alias tipDialog: _tipDialog
      anchors.centerIn: parent
 
-    //Connect Erro
-    // MessageDialog{
-    //     id:_erroMessageDialog
-    //     title: qsTr("连接服务器失败，请检查你的网络")
-    //     informativeText: "network error"
-    //     buttons: MessageDialog.Ok
 
-    // }
     Dialog{
         id:_erroMessageDialog
         //title: qsTr("NetWork Error")
@@ -117,12 +110,6 @@ Item {
     }
 
     //提示选择文件上限
-    // MessageDialog{
-    //     id: _tipDialog
-    //     title: qsTr("一次最多只能上传5个文件")
-    //     informativeText: "请重新选择"
-    //     buttons: MessageDialog.Ok
-    // }
     Dialog{
         id:_tipDialog
         //title: qsTr("提示")
@@ -182,7 +169,7 @@ Item {
              }
 
              onClicked:{
-             _tipDialog.close()
+                 _tipDialog.close()
              }
           }
         }

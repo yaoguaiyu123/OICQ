@@ -8,6 +8,7 @@
 // 此类为单例类
 
 class FileClient;
+class Thread;
 class FriendData;
 class FriendModelPrivate;
 class TcpSocket;
@@ -38,8 +39,9 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    MessageModel* updateMessageModel(int index);
-    void sendMessage(QString,int,int);
+    void updateMessageModel(int index);
+    void sendTextMessage(QString,int);
+    void sendFileMessage(QString,int);
     void downloadFileRequest(int friendiIndex, int messageIndex,const QString& filepath);
     void updateMyHead(QString);
     void cancelUploadOrDownload(int friendIndex,int messageIndex);
@@ -57,7 +59,6 @@ signals:
 private slots:
     void onLoginReturn(const QImage &image);
 private:
-    Q_DISABLE_COPY(FriendModel)
     QJSValue m_jsvalue;
 
     FriendData* _allData = nullptr;
@@ -65,6 +66,10 @@ private:
     QHash<int, QByteArray> m_role; //表头
     TcpSocket* m_tcpsocket = nullptr;
     QList<FileClient*> m_fileList;
+
+private:
+    QString formatFileSize(qint64 size);
+    void setupFileClientConnections(FileClient* client, QThread* thread);
 };
 
 #endif // FRIENDMODEL_H

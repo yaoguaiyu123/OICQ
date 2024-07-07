@@ -220,8 +220,6 @@ void ClientHandler::parsePackage()
     case PrivateMessage:
         parsePrivateMessage(byteArrayToJson(msgData), images);
         break;
-    case FileMessage:
-        break;
     case AddFriend:
         parseAddFriend(byteArrayToJson(msgData));
         break;
@@ -255,8 +253,8 @@ void ClientHandler::parseLogin(QJsonValue jsonvalue)
 {
     QJsonObject object = jsonvalue.toObject();
     qint64 userid = object.value("userId").toInteger();
-    qDebug() << "登录的userid:" << userid;
     QString password = object.value("password").toString();
+    qDebug() << "接收到的账号和密码是 : " << userid << "  " << password;
     QJsonObject sendObj;
     QVariantMap vmap = DBManager::singleTon().queryDataUser(userid);
     if (!vmap.isEmpty()) {

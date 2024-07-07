@@ -47,7 +47,6 @@ qt_add_qml_module(
   components/LoginFail.qml
   friendChat/SendRestriction.qml
   Dialogs.qml
-  Actions.qml
   components/ThreeButtons.qml
   MainView.qml
   SOURCES # .h && .cpp

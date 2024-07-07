@@ -18,12 +18,6 @@ Item {
     signal updateListView()
     signal browsePictures(var index)
 
-    TapHandler{
-        onDoubleTapped: {
-            browsePictures(index)
-        }
-    }
-
 
     Text{
         id:tiptext
@@ -43,6 +37,11 @@ Item {
         anchors.right: type === "send" || type === "sendfile" ? parent.right : undefined
         layoutDirection: type === "send" || type === "sendfile" ? Qt.RightToLeft : Qt.LeftToRight
 
+        TapHandler{
+            onDoubleTapped: {
+                browsePictures(index)
+            }
+        }
 
         MyComponent.HeadImage {
             id:avatar

@@ -34,10 +34,6 @@ FramelessWindow {
         visible: false
     }
 
-    Actions{
-        id:actions
-
-    }
 
     Timer{
         id:timer

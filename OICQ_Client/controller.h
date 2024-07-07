@@ -28,7 +28,7 @@ public:
     Q_INVOKABLE MessageModel *getMessageModel(int);
     Q_INVOKABLE TcpSocket *getTcpSocket();
 
-    // friendModel中的函数
+    // friendModel
     Q_INVOKABLE void updateMessageModel(int index);
     Q_INVOKABLE void sendMessage(QString,int,int);
     Q_INVOKABLE void downloadFileRequest(int friendiIndex, int messageIndex,const QString& filepath);
@@ -36,12 +36,13 @@ public:
     Q_INVOKABLE void cancelUploadOrDownload(int friendIndex,int messageIndex);
     Q_INVOKABLE QList<QString> currentWindowImages(int friendIndex, int messageIndex);
 
-    // friendRequestModel中的函数
+    // friendRequestModel
     Q_INVOKABLE void choseAddFriend(int, int);
 
-    // tcpSocket中的函数
+    // tcpSocket
     Q_INVOKABLE void connectToServer();
-    Q_INVOKABLE void packingMessage(QString value, int msgType);
+    Q_INVOKABLE void loginToServer(qint64 accountId,QString password, int msgType);
+    Q_INVOKABLE void sendAddFriendRequest(QString friendId, int msgType);
 signals:
 private:
     QJSValue m_jsvalue;

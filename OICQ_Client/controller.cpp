@@ -1,4 +1,5 @@
 #include "controller.h"
+#include "global.h"
 
 Controller::Controller(QObject *parent)
     : QObject{parent}
@@ -36,12 +37,20 @@ TcpSocket *Controller::getTcpSocket(){
 /// FriendModel中的函数
 void Controller::updateMessageModel(int index)
 {
+    if (index == -1) {
+        return;
+    }
     FriendModel::singleTon().updateMessageModel(index);
 }
 
 void Controller::sendMessage(QString message, int index, int type)
 {
-    FriendModel::singleTon().sendMessage(message, index, type);
+    qDebug() << "发送的对象的index是: " << index;
+    if (type == PrivateMessage) {
+        FriendModel::singleTon().sendTextMessage(message, index);
+    } else {
+        FriendModel::singleTon().sendFileMessage(message, index);
+    }
 }
 
 void Controller::downloadFileRequest(int friendiIndex, int messageIndex, const QString& filepath)
@@ -76,8 +85,18 @@ void Controller::connectToServer()
     TcpSocket::singleTon().connectToServer();
 }
 
-void Controller::packingMessage(QString value,int msgType)
+void Controller::loginToServer(qint64 accountId,QString password, int msgType)
 {
-    TcpSocket::singleTon().packingMessage(value, msgType);
+    QJsonObject sendObj;
+    sendObj.insert("userId", accountId);
+    sendObj.insert("password", password);
+    TcpSocket::singleTon().packingMessageFromJson(sendObj, msgType);
+}
+
+void Controller::sendAddFriendRequest(QString friendId, int msgType)
+{
+    QJsonObject sendObj;
+    sendObj.insert("friendId", friendId);
+    TcpSocket::singleTon().packingMessageFromJson(sendObj, msgType);
 }
 

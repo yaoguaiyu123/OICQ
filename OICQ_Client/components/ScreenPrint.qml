@@ -14,8 +14,8 @@ Window {
     flags: Qt.FramelessWindowHint // 取消默认标题栏
 
     //将截屏窗口的宽和高设置为电脑屏幕宽和高，避免main窗口隐藏后出现的bug
-       width: Screen.width
-       height: Screen.height
+    width: Screen.width
+    height: Screen.height
 
     Image {
         id:backImage

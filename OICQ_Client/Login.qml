@@ -248,8 +248,7 @@ Item{
                     Controller.connectToServer()
                     timer.restart()
                 }else{
-                    Controller.packingMessage("{" + "\"userId\":" + username.text+ ","
-                                             + "\"password\":" + "\"" + password.text + "\"" + "}",NetChat.MSG_TYPE.Login)  //登录
+                    Controller.loginToServer(username.text, password.text, NetChat.MSG_TYPE.Login)  //登录
                 }
             }
         }
@@ -261,8 +260,7 @@ Item{
         function onConnected() {
             timer.stop()
             connectRes = true
-            Controller.packingMessage("{" + "\"userId\":" + username.text+ ","
-                                     + "\"password\":" + "\"" + password.text + "\"" + "}",NetChat.MSG_TYPE.Login)  //登录
+            Controller.loginToServer(username.text, password.text, NetChat.MSG_TYPE.Login)  //登录
         }
         function onLoginReturnToQml(res){
             if(res === NetChat.RETURN.Success){
