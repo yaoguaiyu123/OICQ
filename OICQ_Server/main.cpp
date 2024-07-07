@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
     printLocalIPs();
-    TcpServer &server = TcpServer::singleTon();
+    TcpServer::singleTon();
     FileServer fileserver;
     return a.exec();
 }

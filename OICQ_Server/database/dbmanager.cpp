@@ -496,8 +496,9 @@ bool DBManager::createTableMessages() {
         "filename TEXT DEFAULT '', "
         "filesize TEXT DEFAULT '', "
         "messageDate TEXT, "
-        "messageType TEXT),"
-        "is_read INTEGER"
+        "messageType TEXT, "
+        "is_read INTEGER DEFAULT 0"
+        ");"
         );
 
     if (!success) {
@@ -507,6 +508,7 @@ bool DBManager::createTableMessages() {
 
     return true;
 }
+
 
 // 插入文件消息(messages)
 bool DBManager::insertMessage(qint64 senderId, qint64 receiverId, const QString& message,

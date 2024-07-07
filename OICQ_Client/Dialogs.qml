@@ -1,8 +1,7 @@
 import QtQuick
-import QtQuick.Dialogs
+import QtQuick.Dialogs as QuickDialogs
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs as QQuickDialog
 import "components" as Controller
 
 Item {
@@ -54,7 +53,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 16
             font.family: "微软雅黑"
-            textFormat: Text.Html
+            textFormat: Text.RichText
             text: "连接服务器失败，请检查你的网络\n"+
                   "        NetWork Error\n"
 
@@ -88,10 +87,10 @@ Item {
     }
 
     //头像上传弹窗
-    QQuickDialog.FileDialog {
+    QuickDialogs.FileDialog {
         id: _headFileDialog
         title: "选择图片"
-        fileMode: QQuickDialog.FileDialog.OpenFile
+        fileMode: QuickDialogs.FileDialog.OpenFile
         nameFilters: ["图片文件 (*.png *.jpg *.jpeg *.bmp)"]
         acceptLabel: "打开"
         rejectLabel: "取消"
@@ -103,10 +102,10 @@ Item {
     }
 
     //上传文件
-    FileDialog {
+    QuickDialogs.FileDialog {
         id: _uploadFileDialog
         title: "选择文件"
-        fileMode: FileDialog.OpenFiles
+        fileMode: QuickDialogs.FileDialog.OpenFiles
         acceptLabel: "Open"
         rejectLabel: "Cancel"
         //MessageInputField=>MessageList=>rightView=>frientChatWindow=>mainView

@@ -405,7 +405,7 @@ MessageModel* FriendModel::updateMessageModel(int index)
         if(m_currentIndex < _allData->messages.length()){
             _messageModel->setModelData(&_allData->messages[m_currentIndex]);
         }
-
+        // 如果存在未读消息
         if (_allData->friends[index].unreadMessageNum != 0) {
             QModelIndex modelindex = createIndex(index, 0);
             emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});

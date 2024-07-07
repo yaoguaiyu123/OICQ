@@ -33,13 +33,11 @@ qt_add_qml_module(
   friendChat/MessageInputField.qml
   comman/NetChat.js
   components/HeadUpLoadPopup.qml
-  components/ImageViewer.qml
   components/ScreenPrint.qml
   friendChat/FriendsGroupMenu.qml
   friendChat/FriendsGroupPopup.qml
   friendChat/FriendAddWindow.qml
   friendChat/ChatFile.qml
-  components/WindowBorder.qml
   Login.qml
   components/PictureViewer.qml
   components/RightPopUpMenu.qml
