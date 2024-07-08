@@ -118,28 +118,29 @@ Window {
         border.width: 2
 
         //鼠标区域，控制拖动选择框时位置变化
-        // MouseArea {
-        //     id: dragItem
+        MouseArea {
+            id: dragItem
 
-        //     anchors.fill: parent
-        //     anchors.margins: 12 * 2
-        //     drag.target: parent
-        //     cursorShape: Qt.SizeAllCursor
-        //     onPositionChanged: {
-        //         updateStartPoint()
-        //     }
-        // }
-
-        //MouseArea修改为handler版本
-        DragHandler{
-            target: selectionRect
-            onActiveChanged: {
-                if(Drag.active)
-                {
-                    updateStartPoint()
-                }
+            anchors.fill: parent
+            anchors.margins: 12 * 2
+            drag.target: parent
+            cursorShape: Qt.SizeAllCursor
+            onPositionChanged: {
+                updateStartPoint()
             }
         }
+
+        // handler 导致截图移动时定位失败
+        // DragHandler{
+        //     id:dragItem
+        //     target: selectionRect
+        //     onActiveChanged: {
+        //         if(Drag.active)
+        //         {
+        //             updateStartPoint()
+        //         }
+        //     }
+        // }
 
         Row {
             id: buttonRow

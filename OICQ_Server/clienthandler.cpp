@@ -398,8 +398,8 @@ void ClientHandler::parseAddFriendRes(QJsonValue jsonvalue)
         // 检查是否已经是好友
         ChatMember* myMember = ChatMemberData::singleTon().getSingleMember(m_userId);
         ChatMember* friendMember = ChatMemberData::singleTon().getSingleMember(friendId);
-
         if (myMember && friendMember && !myMember->getFriends().contains(friendMember)) {
+            // 新添加好友
             myMember->addFriend(friendMember, 0);
             friendMember->addFriend(myMember, 0);
             QJsonObject sendObj;
@@ -418,10 +418,6 @@ void ClientHandler::parseAddFriendRes(QJsonValue jsonvalue)
 
     DBManager::singleTon().deleteFriendRequest(friendId, m_userId);
 }
-
-
-
-
 
 // 发送好友列表(从内存中获取数据)
 void ClientHandler::sendFriendList()

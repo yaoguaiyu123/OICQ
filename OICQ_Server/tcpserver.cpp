@@ -98,6 +98,7 @@ void TcpServer::on_disconnected(ClientHandler* handler, bool isLogined)
 // 根据from to发送消息
 void TcpServer::on_forwardMessages(QJsonValue jsonvalue,qint64 from,QList<QImage> images)
 {
+    qDebug() << "转发消息";
     if (!jsonvalue.isObject()) {
         return;
     }
@@ -110,8 +111,6 @@ void TcpServer::on_forwardMessages(QJsonValue jsonvalue,qint64 from,QList<QImage
     DBManager::singleTon().insertNormalMessage(from, to, msg, strDateTime, "normal");
     // 添加未读消息的数量
     ChatMemberData::singleTon().addChatMemberUnread(to ,from);
-
-    // TODO 优化为Map查找 添加好友判断
     for (auto& userSocket : socketList) {
         if (userSocket->userId() == to) {
             QJsonObject sendObj;

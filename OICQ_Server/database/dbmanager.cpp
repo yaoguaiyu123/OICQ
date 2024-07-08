@@ -6,11 +6,11 @@ DBManager::DBManager(QObject* parent)
     : QObject { parent }
 {
     openDatabase("/root/.config/OICQ/server/database/copyQQ.db");   //open数据库
-    startTransaction();
-    connect(&m_timer, &QTimer::timeout, [this]() {
-        commitTransaction();
-    });
-    m_timer.start(60000);    // 60s提交一次事务
+    // startTransaction();
+    // connect(&m_timer, &QTimer::timeout, [this]() {
+    //     commitTransaction();
+    // });
+    // m_timer.start(60000);    // 60s提交一次事务
 }
 
 // 开启事务

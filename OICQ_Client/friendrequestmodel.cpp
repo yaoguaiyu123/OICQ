@@ -19,6 +19,7 @@ FriendRequestModel::FriendRequestModel(QObject* parent)
                      &TcpSocket::addFriendRequest,
                      this,
                      [this](const QJsonValue& jsonvalue, const QList<QImage>& images) {
+                         qDebug() << " 接收到好友请求的列表TTTTT : " << images.length();
                          QJsonArray jsonArray = jsonvalue.toArray();
 
                          if (jsonArray.size() != images.size()) {
@@ -34,7 +35,7 @@ FriendRequestModel::FriendRequestModel(QObject* parent)
                              QJsonObject obj = jsonValue.toObject();
                              Friend f;
                              f.name = obj.value("username").toString();
-                             f.userid = obj.value("userid").toInteger();
+                             f.userid = obj.value("userId").toInteger();
                              QImage image = images[i++];
                              QString headpath = headCachePath + "/" + generateRandomAlphanumeric(10)
                                                 + ".jpg";

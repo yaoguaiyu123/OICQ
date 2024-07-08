@@ -149,7 +149,7 @@ Item {
                     anchors.topMargin:15
                     anchors.bottom:parent.bottom
                     // model: FriendRequestModel
-                    spacing: 20
+                    spacing: 80
                     delegate: Item{
                         id:item
                         width: parent.width

@@ -1,5 +1,6 @@
 #include "chatmemberdata.h"
 #include "database/dbmanager.h"
+#include <QDebug>
 
 ChatMemberData::ChatMemberData(QObject *parent)
     : QObject{parent}
@@ -19,6 +20,9 @@ void ChatMemberData::addChatMemberUnread(qint64 memberId, qint64 friendId)
 {
     ChatMember* chatMember = chatMemberHash.value(memberId);
     ChatMember* friendMember = chatMemberHash.value(friendId);
+    if (chatMember == nullptr || friendMember == nullptr) {
+        qDebug() << "空指针异常ddddddddddddddddddddd  " << memberId << "   " << friendId;
+    }
     chatMember->addUnread(friendMember);
 }
 
