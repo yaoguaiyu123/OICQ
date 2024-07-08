@@ -17,6 +17,7 @@ Control{
     TapHandler{
         onTapped: {
             if(haveRecvAndSendSize === 0 && type === "recvfile"){
+                console.log("点击下载别人发送的文件")
                 uploadDialog.open()  //开始下载
             }else if(haveRecvAndSendSize > 0 && haveRecvAndSendSize < fileTotalSize){
                 cancelTransfer()    //取消传输
