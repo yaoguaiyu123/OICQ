@@ -11,14 +11,11 @@ Item {
      property alias tipDialog: _tipDialog
      anchors.centerIn: parent
 
-
     Dialog{
         id:_erroMessageDialog
-        //title: qsTr("NetWork Error")
         implicitWidth: 280
         implicitHeight: 180
         anchors.centerIn: parent
-        // 自定义背景
         background: Rectangle {
             color: "white"
             radius: 5
@@ -27,55 +24,55 @@ Item {
 
         ColumnLayout{
 
-        Controller.BackIconButton{
-           id:iconButton
-           Layout.alignment: Qt.AlignRight
-           imagePath: "qrc:/icon/close.png"
-           imageHoverPath: "qrc:/icon/close_w.png"
-           backColor: "#00000000"
-           backHoverColor: "#cc4444"
-           onClicked: {
-              _erroMessageDialog.close()
-           }
+            Controller.BackIconButton{
+               id:iconButton
+               Layout.alignment: Qt.AlignRight
+               imagePath: "qrc:/icon/close.png"
+               imageHoverPath: "qrc:/icon/close_w.png"
+               backColor: "#00000000"
+               backHoverColor: "#cc4444"
+               onClicked: {
+                  _erroMessageDialog.close()
+               }
 
-       }
-        //文本内容显示
-        Text{
-            id:tipsText
-            Layout.topMargin: 25
-            Layout.alignment: Qt.AlignCenter
-            font.pixelSize: 16
-            font.family: "微软雅黑"
-            textFormat: Text.RichText
-            text: "连接服务器失败，请检查你的网络\n"+
-                  "        NetWork Error\n"
+            }
+            Text{
+                Layout.topMargin: 15
+                font.pixelSize: 16
+                font.family: "微软雅黑"
+                text: " 连接服务器失败，请检查你的网络\n"
 
-        }
-        //自定义确认按钮
-          Button {
-             id:ok
-             implicitWidth: 60
-             implicitHeight: 24
-             Layout.leftMargin: 200
-             Layout.bottomMargin: 20
-             contentItem: Text{
-                 text: "确认"
-                 color:"white"
-                 font.pixelSize: 16
-                 font.family: "微软雅黑"
-                 verticalAlignment: Text.AlignVCenter
-                 horizontalAlignment: Text.AlignHCenter
-             }
-             background: Rectangle{
-                 anchors.fill: parent
-                 color: ok.hovered ? "#1f3160" : "#0066cc"
-                 radius: 4
-             }
+            }
+            Text{
+                font.pixelSize: 16
+                text: "   network error\n"
+            }
 
-             onClicked:{
-             _erroMessageDialog.close()
-             }
-          }
+            Button {
+               id:ok
+               Layout.preferredWidth: 60
+               Layout.preferredHeight: 24
+               Layout.leftMargin: 200
+              // Layout.topMargin: 10
+               contentItem: Text{
+                  text: "确认"
+                  color:"white"
+                  font.pixelSize: 16
+                  font.family: "微软雅黑"
+                  verticalAlignment: Text.AlignVCenter
+                  horizontalAlignment: Text.AlignHCenter
+               }
+               background: Rectangle{
+                  anchors.fill: parent
+                  color: ok.hovered ? "#1f3160" : "#0066cc"
+                  radius: 4
+               }
+
+               onClicked:{
+                  _erroMessageDialog.close()
+               }
+            }
+
         }
     }
 
@@ -90,7 +87,6 @@ Item {
         onAccepted: {
             mainView.headPopup.choseHeadpath = _headFileDialog.selectedFile
             mainView.headPopup.head.source = _headFileDialog.selectedFile
-            // console.log("ddd ",choseHeadpath)
         }
     }
 
@@ -103,8 +99,6 @@ Item {
         rejectLabel: "Cancel"
         //MessageInputField=>MessageList=>rightView=>frientChatWindow=>mainView
         onAccepted: {
-            // console.log("用户选择的文件: " + fileDialog.selectedFile)
-            //sendFile(_uploadFileDialog.selectedFiles)
             mainView.windowLoader.item.messagelist.inputField.sendFile(_uploadFileDialog.selectedFiles)
         }
     }
@@ -112,11 +106,9 @@ Item {
     //提示选择文件上限
     Dialog{
         id:_tipDialog
-        //title: qsTr("提示")
         implicitWidth: 280
         implicitHeight: 180
         anchors.centerIn: parent
-        // 自定义背景
         background: Rectangle {
             color: "white"
             radius: 5
@@ -124,54 +116,51 @@ Item {
         }
 
         ColumnLayout{
+            Controller.BackIconButton{
+                id:_iconButton
+                Layout.alignment: Qt.AlignRight
+                imagePath: "qrc:/icon/close.png"
+                imageHoverPath: "qrc:/icon/close_w.png"
+                backColor: "#00000000"
+                backHoverColor: "#cc4444"
+                onClicked: {
+                   _tipDialog.close()
+                }
+            }
 
-        Controller.BackIconButton{
-           id:_iconButton
-           Layout.alignment: Qt.AlignRight
-           imagePath: "qrc:/icon/close.png"
-           imageHoverPath: "qrc:/icon/close_w.png"
-           backColor: "#00000000"
-           backHoverColor: "#cc4444"
-           onClicked: {
-              _tipDialog.close()
-           }
+            Text{
+                id:_tipsText
+                Layout.topMargin: 25
+                Layout.alignment: Qt.AlignCenter
+                font.pixelSize: 16
+                font.family: "微软雅黑"
+                text: "一次最多只能上传5个文件\n"+
+                      "        请重新选择!\n"
+            }
+              Button {
+                 id:_ok
+                 implicitWidth: 60
+                 implicitHeight: 24
+                 Layout.leftMargin: 200
+                 Layout.bottomMargin: 20
+                 contentItem: Text{
+                     text: "确认"
+                     color:"white"
+                     font.pixelSize: 16
+                     font.family: "微软雅黑"
+                     verticalAlignment: Text.AlignVCenter
+                     horizontalAlignment: Text.AlignHCenter
+                 }
+                 background: Rectangle{
+                     anchors.fill: parent
+                     color: _ok.hovered ? "#1f3160" : "#0066cc"
+                     radius: 4
+                 }
 
-       }
-        //文本内容显示
-        Text{
-            id:_tipsText
-            Layout.topMargin: 25
-            Layout.alignment: Qt.AlignCenter
-            font.pixelSize: 16
-            font.family: "微软雅黑"
-            text: "一次最多只能上传5个文件\n"+
-                  "        请重新选择!\n"
-        }
-        //自定义确认按钮
-          Button {
-             id:_ok
-             implicitWidth: 60
-             implicitHeight: 24
-             Layout.leftMargin: 200
-             Layout.bottomMargin: 20
-             contentItem: Text{
-                 text: "确认"
-                 color:"white"
-                 font.pixelSize: 16
-                 font.family: "微软雅黑"
-                 verticalAlignment: Text.AlignVCenter
-                 horizontalAlignment: Text.AlignHCenter
-             }
-             background: Rectangle{
-                 anchors.fill: parent
-                 color: _ok.hovered ? "#1f3160" : "#0066cc"
-                 radius: 4
-             }
-
-             onClicked:{
-                 _tipDialog.close()
-             }
-          }
+                 onClicked:{
+                     _tipDialog.close()
+                 }
+              }
         }
     }
 }

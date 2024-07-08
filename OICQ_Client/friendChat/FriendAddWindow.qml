@@ -4,20 +4,18 @@ import QtQuick.Controls
 import "../components" as MyComponent
 import oicqclient
 
-//好友添加的窗口
+//该窗口为联系人列表窗口
 Item {
-    property bool buttonClicked: false  // 定义一个属性来记录按钮是否被点击
-    //监听
-    onWidthChanged: {
-    if(width<870){
-        view.visible=false;
-    }else if(buttonClicked==true){
-        view.visible=true;
-    }
-    }
-
     id:friendAddWindow
     anchors.fill: parent
+    property bool buttonClicked: false  // 定义一个属性来记录按钮是否被点击
+    onWidthChanged: {
+        if(width<870){
+            view.visible=false;
+        }else if(buttonClicked==true){
+            view.visible=true;
+        }
+    }
 
     SplitView {
         id: split1
@@ -49,23 +47,24 @@ Item {
                     y: friendAddWindow.height / 2 - height / 2
                 }
 
-                //行布局
-                Row{
+
+                RowLayout{
                     id:topRow
-                    spacing: 10
-                    x: 15
-                    y: 30
-                    z:2
+                    spacing: 0
                     MyComponent.SearchBox{
-                        width: 250 - (310-leftView.width)
+                        Layout.preferredWidth: 250 - (310-leftView.width)
+                        Layout.topMargin: 30
+                        Layout.leftMargin: 12
                     }
                     MyComponent.IconButton{
                         id:addButton
                         imagePath: "qrc:/icon/jia.png"
                         backColor: "#f2f2f2"
                         hoveredBackColor: "#dcdcdc"
-                        height: 30
-                        width: 30
+                        Layout.leftMargin: 10
+                        Layout.topMargin: 30
+                        Layout.preferredHeight: 30
+                        Layout.preferredWidth: 30
                         onClicked: {
                             friendsGroupMenu.open()
                         }
@@ -119,121 +118,118 @@ Item {
                 color: "#f2f2f2"
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
-                MyComponent.ThreeButtons{
-                    id: tb
-                    anchors.right: parent.right
-                    SplitView.fillWidth: true
-                    SplitView.preferredHeight: 50
-                }
-                Image{
-                    id:backImage
-                    width: 120
-                    height: 120
-                    source: "qrc:/image/back.png"
-                    anchors.centerIn: parent
-                }
-                Text{
-                    id: title
-                    text:qsTr("好友通知")
-                    font.pixelSize:18
-                    x:30
-                    y:45
-                 }
-                ListView{
-                    id:view
-                    visible:false
-                    width:parent.width
-                    boundsBehavior: Flickable.StopAtBounds // 到达边界时listview停止滚动
-                    //anchors.left: leftRectangle.right
-                    anchors.top: title.bottom
-                    anchors.topMargin:15
-                    anchors.bottom:parent.bottom
-                    // model: FriendRequestModel
-                    spacing: 80
-                    delegate: Item{
-                        id:item
-                        width: parent.width
-                        Rectangle{
-                            height: 65
-                            width: 560
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            radius: 8
-                            Row{
-                                x:20
-                                anchors.verticalCenter:parent.verticalCenter
-                                MyComponent.HeadImage{
-                                    id:head
-                                    headUrl:headpath
-                                    width: 45
-                                    height:45
-                                    radius:22.5
-                                 }
-                                Rectangle {
-                                    width:10
-                                    height:5
-                                 }
-                                Text{
-                                    text:name
-                                    color:"#0099ff"
-                                    anchors.verticalCenter:parent.verticalCenter
-                                }
-                                Rectangle {
-                                    width:5
-                                    height:5
-                                 }
-                                Text {
-                                    text: qsTr("请求添加为好友")
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                            }
-                            Button{
-                                id:noButton
-                                width: 40
-                                height: 30
-                                anchors.right: okButton.left
-                                anchors.rightMargin: 20
-                                anchors.verticalCenter: parent.verticalCenter
-                                background: Rectangle{
-                                    radius: 5
-                                    color: "#f2f2f2"
-                                }
-                                contentItem: Text{
-                                    text: "拒绝"
-                                    color: "black"
-                                    font.pixelSize: 15
-                                    font.family: "微软雅黑"
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-                                onClicked: {
-                                    onClicked: Controller.choseAddFriend(0,index)
-                                }
-                            }
-                            Button{
-                                id:okButton
-                                width: 40
-                                height: 30
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.right: parent.right
-                                anchors.rightMargin: 20
-                                background: Rectangle{
-                                    radius: 5
-                                    color: "#0099ff"
-                                }
-                                contentItem: Text{
-                                    text: "同意"
-                                    color: "white"
-                                    font.pixelSize: 15
-                                    font.family: "微软雅黑"
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-                                onClicked: Controller.choseAddFriend(1,index)
-                            }
-                        }
+                ColumnLayout{
+                    width: parent.width
+                    MyComponent.ThreeButtons{
+                        id: tb
+                        Layout.alignment: Qt.AlignRight
 
                     }
+
+                    Text{
+                        id: title
+                        text:qsTr("好友通知")
+                        font.pixelSize:18
+                        Layout.leftMargin: 30
+                        Layout.topMargin: 20
+
+                     }
+                    Image{
+                        id:backImage
+                        Layout.preferredWidth: 120
+                        Layout.preferredHeight: 120
+                        Layout.topMargin: 200
+                        source: "qrc:/image/back.png"
+                        Layout.alignment: Qt.AlignCenter
+
+                    }
+                    ListView{
+                        id:view
+                        visible:false
+                        width:parent.width
+                        boundsBehavior: Flickable.StopAtBounds      // 到达边界时listview停止滚动
+                        Layout.topMargin: 15
+                        Layout.preferredHeight: 600
+                        spacing: 80
+                        delegate: Item{
+                            id:item
+                            width: parent.width
+                            Rectangle{
+                                height: 65
+                                width: 560
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                radius: 8
+                                RowLayout{
+                                    height: parent.height
+                                    Layout.alignment: Qt.AlignVCenter
+                                    MyComponent.HeadImage{
+                                        id:head
+                                        headUrl:headpath
+                                        Layout.leftMargin: 20
+                                        Layout.preferredWidth: 45
+                                        Layout.preferredHeight: 45
+                                        radius:22.5
+                                     }
+                                    Text{
+                                        text:name
+                                        color:"#0099ff"
+                                        Layout.alignment: Qt.AlignVCenter
+                                        Layout.leftMargin: 10
+                                    }
+                                    Text {
+                                        text: qsTr("请求添加为好友")
+                                         Layout.alignment: Qt.AlignVCenter
+                                        Layout.leftMargin: 5
+                                    }
+                                    Button{
+                                        id:noButton
+                                        Layout.preferredWidth: 40
+                                        Layout.preferredHeight: 30
+                                        Layout.leftMargin: 180
+                                        background: Rectangle{
+                                            radius: 5
+                                            color: "#f2f2f2"
+                                        }
+                                        contentItem: Text{
+                                            text: "拒绝"
+                                            color: "black"
+                                            font.pixelSize: 15
+                                            font.family: "微软雅黑"
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                        onClicked: {
+                                            onClicked: Controller.choseAddFriend(0,index)
+                                        }
+                                    }
+                                    Button{
+                                        id:okButton
+                                        Layout.preferredWidth: 40
+                                        Layout.preferredHeight: 30
+                                        Layout.leftMargin: 10
+                                        background: Rectangle{
+                                            radius: 5
+                                            color: "#0099ff"
+                                        }
+                                        contentItem: Text{
+                                            text: "同意"
+                                            color: "white"
+                                            font.pixelSize: 15
+                                            font.family: "微软雅黑"
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                        onClicked: Controller.choseAddFriend(1,index)
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
                 }
+
+
             }
         }
 

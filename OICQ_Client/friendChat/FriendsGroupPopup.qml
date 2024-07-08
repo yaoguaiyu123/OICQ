@@ -6,60 +6,64 @@ import QtQuick.Layouts
 import "../comman/NetChat.js" as NetChat
 import Qt5Compat.GraphicalEffects
 
+//添加好友的弹窗
 Popup {
     id:popup
-    width: 220
-    height: 100
-    Row{
-        MyComponent.SearchBox{
-            id:searchbox
-            implicitWidth: 145
-            onInputTextChanged: {
-                showText.text = ""
-                showIcon.source = ""
+    implicitWidth: 220
+    implicitHeight: 100
+    ColumnLayout{
+        anchors.fill: parent
+        RowLayout{
+            MyComponent.SearchBox{
+                id:searchbox
+                Layout.preferredWidth: 140
+                onInputTextChanged: {
+                    showText.text = ""
+                    showIcon.source = ""
+                }
+            }
+            Button{
+                Layout.preferredWidth: 60
+                Layout.preferredHeight: 28
+                contentItem: Text {
+                    text: qsTr("添加好友")
+                    color: "white"
+                    verticalAlignment: Text.AlignVCenter
+                }
+                background: Rectangle{
+                    color: "#0099ff"
+                }
+                onClicked: {
+                    //添加好友
+                    Controller.sendAddFriendRequest(searchbox.inputText ,NetChat.MSG_TYPE.AddFriend)
+                }
             }
         }
-        Button{
-            width: 60
-            height: 30
-            contentItem: Text {
-                text: qsTr("添加好友")
-                color: "white"
-                verticalAlignment: Text.AlignVCenter
-            }
-            background: Rectangle{
-                color: "#0099ff"
-            }
-            onClicked: {
-                //添加好友
-                Controller.sendAddFriendRequest(searchbox.inputText ,NetChat.MSG_TYPE.AddFriend)
+        Rectangle{   //用来回显的控件
+            Layout.preferredWidth: 190
+            Layout.preferredHeight: 40
+            Layout.leftMargin: popup.width / 2 - width / 2
+            RowLayout{
+                spacing: 5
+                anchors.centerIn: parent
+                Image{
+                    id:showIcon
+                    Layout.preferredWidth: 20
+                    Layout.preferredHeight: 20
+                    source: ""
+                }
+                Text{
+                    id:showText
+                    font.pixelSize: 16
+                    wrapMode: Text.WrapAnywhere
+                    Layout.preferredHeight: showIcon.height
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
         }
+
     }
-    Rectangle{
-        //用来回显的控件
-        width: 190
-        x:parent.width / 2 - width / 2
-        y: 40
-        height: 40
-        Row{
-            spacing: 5
-            anchors.centerIn: parent
-            Image{
-                id:showIcon
-                width: 20
-                height: 20
-                source: ""
-            }
-            Text{
-                id:showText
-                font.pixelSize: 16
-                wrapMode: Text.WrapAnywhere
-                height: showIcon.height
-                verticalAlignment: Text.AlignVCenter
-            }
-        }
-    }
+
 
     Connections{
         target: TcpSocket
@@ -86,7 +90,6 @@ Popup {
 
     background: Rectangle{
         color: "white"
-        //添加背景阴影
         layer.enabled: true
         layer.effect: DropShadow {
             transparentBorder: true
