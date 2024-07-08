@@ -1,4 +1,5 @@
 #include "dbmanager.h"
+#include "../chatmember.h"
 #include <QTimer>
 
 DBManager::DBManager(QObject* parent)
@@ -268,6 +269,64 @@ bool DBManager::createTableFriends(){
 
     return true;
 }
+
+// 实时从内存中更新好友表
+void DBManager::updateFriendsTable(QHash<qint64, ChatMember*> allMembers) {
+    qDebug() << "尝试更新内存中的数据到数据库";
+    if (!m_database.isOpen()) {
+        qDebug() << "Error: Database is not opened";
+        return;
+    }
+
+    QSqlQuery query(m_database);
+    // 遍历所有成员
+    for (auto member : qAsConst(allMembers)) {
+        qint64 accountId = member->getAccountId();
+        QMap<ChatMember*, int> friends = member->getFriends();
+
+        QMapIterator<ChatMember*, int> i(friends);
+        while (i.hasNext()) {
+            i.next();
+            ChatMember* friendMember = i.key();
+            int unreadCount = i.value();
+            qint64 friendId = friendMember->getAccountId();
+
+            // 首先查询当前好友关系是否存在
+            query.prepare("SELECT unreadCount FROM friends WHERE accountid = :accountid AND friendid = :friendid");
+            query.bindValue(":accountid", accountId);
+            query.bindValue(":friendid", friendId);
+            if (!query.exec()) {
+                qDebug() << "Failed to execute query: " << query.lastError();
+                continue;
+            }
+
+            if (query.next()) {
+                int currentUnreadCount = query.value(0).toInt();
+                if (currentUnreadCount != unreadCount) {
+                    // 更新已存在的好友关系的未读计数
+                    query.prepare("UPDATE friends SET unreadCount = :unreadCount WHERE accountid = :accountid AND friendid = :friendid");
+                    query.bindValue(":unreadCount", unreadCount);
+                    query.bindValue(":accountid", accountId);
+                    query.bindValue(":friendid", friendId);
+                    if (!query.exec()) {
+                        qDebug() << "Failed to update friends table: " << query.lastError();
+                    }
+                }
+            } else {
+                // 插入新的好友关系
+                query.prepare("INSERT INTO friends (accountid, friendid, unreadCount) VALUES (:accountid, :friendid, :unreadCount)");
+                query.bindValue(":accountid", accountId);
+                query.bindValue(":friendid", friendId);
+                query.bindValue(":unreadCount", unreadCount);
+                if (!query.exec()) {
+                    qDebug() << "Failed to insert into friends table: " << query.lastError();
+                }
+            }
+        }
+    }
+}
+
+
 
 // 返回单例对象
 DBManager& DBManager::singleTon()

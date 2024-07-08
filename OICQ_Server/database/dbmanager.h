@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QtSql>
 #include <QTimer>
+class ChatMember;
 
 class DBManager : QObject {
 public:
@@ -23,6 +24,7 @@ public:
     QList<QVariantMap> queryDataFriends(qint64 id);
     bool queryDataFriend(qint64 accountId, qint64 friendId);
     bool createTableFriends();
+    void updateFriendsTable(QHash<qint64, ChatMember*> allMembers);
     // friendRequest表
     bool createTableFriendRequests();
     QVariantMap queryFriendRequest(qint64 accountId, qint64 friendId);

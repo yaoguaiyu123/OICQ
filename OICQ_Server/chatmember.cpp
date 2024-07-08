@@ -22,8 +22,9 @@ bool ChatMember::removeFriend(ChatMember* exFriend) {
     return false;
 }
 
-QList<ChatMember*> ChatMember::getFriends() const {
-    return friends.keys();
+QMap<ChatMember*, int>& ChatMember::getFriends()
+{
+    return friends;
 }
 
 int ChatMember::getUnreadCount(ChatMember* friendMember) const {
@@ -34,6 +35,26 @@ void ChatMember::setUnreadCount(ChatMember* friendMember, int count) {
     if (friends.contains(friendMember)) {
         friends[friendMember] = count;
     }
+}
+
+void ChatMember::setHeadPath(QString headpath)
+{
+    m_headpath = headpath;
+}
+
+QString ChatMember::getHeadPath()
+{
+    return m_headpath;
+}
+
+QString ChatMember::getMemberName()
+{
+    return m_memberName;
+}
+
+qint64 ChatMember::getAccountId()
+{
+    return m_accountId;
 }
 
 //添加未读的消息条数
@@ -53,3 +74,9 @@ int ChatMember::getUnread(ChatMember* friend_)
 {
     return friends[friend_];
 }
+
+
+
+
+
+

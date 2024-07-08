@@ -5,6 +5,7 @@ ChatMemberData::ChatMemberData(QObject *parent)
     : QObject{parent}
 {
     initChatMembers();
+    startUpdateTimer();
 }
 
 
@@ -36,6 +37,18 @@ int ChatMemberData::getChatMemberUnread(qint64 memberId, qint64 friendId)
 }
 
 
+QMap<ChatMember*, int>* ChatMemberData::getFriendsMap(qint64 memberId)
+{
+    ChatMember* member = chatMemberHash[memberId];
+    return &member->getFriends();
+}
+
+ChatMember* ChatMemberData::getSingleMember(qint64 memberId)
+{
+    return chatMemberHash[memberId];
+}
+
+
 // 好友表作为经常需要访问的表将其数据读取到内存中
 // 避免对数据库的频繁访问
 void ChatMemberData::initChatMembers(){
@@ -60,4 +73,14 @@ void ChatMemberData::initChatMembers(){
             chatMember->addFriend(friendMember, unreadCount);
         }
     }
+}
+
+// 开启定时更新内存中的数据到数据库
+void ChatMemberData::startUpdateTimer()
+{
+    m_updateTimer = new QTimer(this);
+    connect(m_updateTimer, &QTimer::timeout, [this]() {
+        DBManager::singleTon().updateFriendsTable(chatMemberHash);
+    });
+    m_updateTimer->start(60000);  //60s提交一次更新
 }
