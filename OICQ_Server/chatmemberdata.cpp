@@ -21,7 +21,8 @@ void ChatMemberData::addChatMemberUnread(qint64 memberId, qint64 friendId)
     ChatMember* chatMember = chatMemberHash.value(memberId);
     ChatMember* friendMember = chatMemberHash.value(friendId);
     if (chatMember == nullptr || friendMember == nullptr) {
-        qDebug() << "空指针异常ddddddddddddddddddddd  " << memberId << "   " << friendId;
+        qDebug() << "空指针异常  " << memberId << "   " << friendId;
+        return;
     }
     chatMember->addUnread(friendMember);
 }

@@ -40,7 +40,7 @@ qint64 ClientHandler::userId()
 // 将信息打包成为一个MESG对象
 void ClientHandler::packingMessage(QJsonValue value, int msgType,  QList<QImage> imageList)
 {
-    qDebug() << "打包对象: " << value;
+    // qDebug() << "打包对象: " << value;
     QJsonDocument doc;
     if (value.isObject()) {
         doc = QJsonDocument(value.toObject());
@@ -425,6 +425,7 @@ void ClientHandler::sendFriendList()
     QJsonArray sendObj;
     QList<ChatMember*> friendlist = ChatMemberData::singleTon().getFriendsMap(m_userId)->keys();
     QList<QImage> imagelist;
+    int i = 0;
     for (ChatMember* friend_ : friendlist) {
         qint64 fid = friend_->getAccountId();
         QString username = friend_->getMemberName();
