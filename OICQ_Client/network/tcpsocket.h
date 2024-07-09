@@ -32,9 +32,8 @@ public:
     void connectToServer();
     void sendMessage(MESG* send);
     int getUserId();
-    void packingMessage(QString value, int msgType, QList<QImage>imageList = QList<QImage>());
     void packingMessageFromJson(const QJsonValue &value, int msgType, QList<QImage> imageList = QList<QImage>());private slots:
-    void on_ready_read();
+    void on_readyRead();
 private:
     QHostAddress* m_hostAddress = nullptr;
     qint64 m_userId = 0; // qq号,用于标识每一个用户

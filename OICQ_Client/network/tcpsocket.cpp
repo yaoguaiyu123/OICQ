@@ -12,7 +12,7 @@ TcpSocket::TcpSocket(QObject* parent)
     : QTcpSocket { parent } ,
     m_hostAddress(new QHostAddress())
 {
-    connect(this, &TcpSocket::readyRead, this, &TcpSocket::on_ready_read);
+    connect(this, &TcpSocket::readyRead, this, &TcpSocket::on_readyRead);
     m_hostAddress->setAddress(IPADDRESS);
     m_sendbuf = new uchar[32 * 1024 * 1024];
 }
@@ -22,42 +22,6 @@ TcpSocket& TcpSocket::singleTon()
 {
     static TcpSocket tcpsocket(nullptr);
     return tcpsocket;
-}
-
-// 将信息打包成为一个MESG对象
-void TcpSocket::packingMessage(QString value, int msgType, QList<QImage> imageList)
-{
-    qDebug() << "打包数据" << value;
-    QJsonDocument doc = QJsonDocument::fromJson(value.toUtf8());
-    if (doc.isNull()) {
-        qDebug() << "JSON解析失败";
-        return;
-    }
-
-    QByteArray bytes = doc.toJson();
-    qDebug() << "打包的JSON数据大小:" << bytes.size();
-
-    MESG* message = new MESG();
-    message->msg_type = static_cast<MSG_TYPE>(msgType);
-    message->data = new uchar[bytes.size()];
-    memcpy(message->data, bytes.data(), bytes.size());
-    message->len = bytes.size();
-
-    if (!imageList.isEmpty()) {
-        for (const QImage& image : imageList) {
-            QByteArray buffer;
-            QBuffer qBuffer(&buffer);
-            qBuffer.open(QIODevice::WriteOnly);
-
-            // 将图片以PNG格式转换并存储到buffer中
-            if (!image.save(&qBuffer, "PNG")) {
-                qDebug() << "图片转换失败";
-                continue;
-            }
-            message->imagesData.append(buffer);
-        }
-    }
-    sendMessage(message);
 }
 
 // 将信息打包成为一个MESG对象
@@ -180,7 +144,7 @@ void TcpSocket::sendMessage(MESG* send)
 
 
 // 接收数据的函数
-void TcpSocket::on_ready_read()
+void TcpSocket::on_readyRead()
 {
     qDebug() << "开始读取数据";
     while (bytesAvailable() > 0) {

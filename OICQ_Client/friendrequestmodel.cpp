@@ -113,7 +113,7 @@ FriendRequestModel& FriendRequestModel::singleTon()
 
 // 选择是否添加好友
 // 发送两个学号,结果给服务端
-void FriendRequestModel::choseAddFriend(int res, int index)
+const QJsonValue& FriendRequestModel::choseAddFriend(int res, int index)
 {
     QJsonObject sendObj;
     Friend nowf = friends.at(index);
@@ -128,5 +128,5 @@ void FriendRequestModel::choseAddFriend(int res, int index)
         sendObj.insert("res", Success); //同意添加
         _friendModel->addNewFriend(nowf.name, id, nowf.headPath);
     }
-    _tcpSocket->packingMessageFromJson(sendObj, AddFriendRes);
+    return sendObj;
 }

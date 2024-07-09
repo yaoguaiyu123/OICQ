@@ -196,6 +196,11 @@ FriendModel::FriendModel(QAbstractListModel* parent)
                                      emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
                                      _allData->friends[i].unreadMessageNum += 1; //未读消息数量+1
                                      emit dataChanged(modelindex, modelindex, {Qt::UserRole + 3});
+                                 }else{
+                                     //通知服务端消息已读
+                                     QJsonObject obj;
+                                     obj.insert("friendId", from);
+                                     m_tcpsocket->packingMessageFromJson(obj, UpdateIsRead);
                                  }
                                  QModelIndex modelindex = createIndex(i, 0);
                                  emit dataChanged(modelindex, modelindex, {Qt::UserRole + 2});
