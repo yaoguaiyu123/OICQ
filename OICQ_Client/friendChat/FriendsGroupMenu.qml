@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 
+//点击加号弹出的菜单，添加好友和发起群聊
 Menu{
     implicitWidth: 120
     implicitHeight: 80

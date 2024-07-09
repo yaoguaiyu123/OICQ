@@ -6,6 +6,7 @@ import "../components" as MyComponent
 import "../comman/NetChat.js" as NetChat
 import oicqclient
 
+//好友聊天窗口右边部分
 Rectangle {
     id:container
     color: "#f2f2f2"
@@ -20,7 +21,6 @@ Rectangle {
             z: 1
             anchors.horizontalCenter: parent.horizontalCenter
         }
-    //列布局
     ColumnLayout{
         anchors.fill: parent
         id:layout
@@ -28,7 +28,6 @@ Rectangle {
            // implicitWidth: 50
         }
 
-        //行布局
         RowLayout{
             id:topRow
             width: layout.width
@@ -43,20 +42,21 @@ Rectangle {
             }
 
             Item{
-                width: 90
-                height: 30
+                // width: 90
+                // height: 30
+                Layout.preferredWidth: 90
+                Layout.preferredHeight: 30
                 Layout.alignment: Qt.AlignRight
-                // color: "red"
-                Row{
+                RowLayout{
                     spacing: 10
                     MyComponent.IconButton{
-                        width: 30
-                        height: 30
+                        Layout.preferredWidth: 30
+                        Layout.preferredHeight: 30
                         imagePath: "qrc:/icon/jia1.png"
                     }
                     MyComponent.IconButton{
-                        width: 30
-                        height: 30
+                        Layout.preferredWidth: 30
+                        Layout.preferredHeight: 30
                         imagePath: "qrc:/icon/more.png"
                     }
                 }
@@ -67,10 +67,8 @@ Rectangle {
         Rectangle{
             color: "#dfdfdf"
             Layout.fillWidth: true
-            height: 1
+            Layout.preferredHeight: 1
         }
-
-
 
         ListView {
             id: listView
@@ -84,16 +82,17 @@ Rectangle {
                 headUrl: container.headPath
                 myheadUrl: FriendModel.myImagePath
                 viewWidth: listView.width - 20
-                x: 10
+                x: 10   //组件内部固定位置
                 onUploadFile1: (filepath, messageIndex) => {
                     Controller.downloadFileRequest(listIndex, messageIndex, filepath)
                 }
+
                 onCancelTransfer1: (messageIndex)=>{
                     Controller.cancelUploadOrDownload(listIndex, messageIndex)  //取消下载或者上传
                 }
+
                 onBrowsePictures: (messageIndex) => {
                     var res = Controller.currentWindowImages(listIndex, messageIndex)
-
                     var imageIndex = res[0]
                     var imagePaths = res.slice(1)
                     imageViewer.loadImages(imageIndex,imagePaths)
@@ -103,17 +102,14 @@ Rectangle {
             }
         }
 
-
-
-
-        Rectangle{
+        Rectangle{       //分割线
             color: "#dfdfdf"
             Layout.fillWidth: true
-            height: 1
+            Layout.preferredHeight: 1
         }
         MessageInputField{
             id:_inputField
-            height: 200
+            Layout.preferredHeight: 200
             onSend:(text)=>{
                 // 发送消息的逻辑
                 Controller.sendMessage(text,listIndex,NetChat.MSG_TYPE.PrivateMessage)
@@ -121,7 +117,6 @@ Rectangle {
                 listView.positionViewAtIndex(listView.count - 1,ListView.End)
             }
             onSendFile: (text)=>{
-                // console.log("将发送",text)
                 Controller.sendMessage(text,listIndex,NetChat.MSG_TYPE.FileMessage)
                 listView.positionViewAtIndex(listView.count - 1,ListView.End)
             }
@@ -153,13 +148,6 @@ Rectangle {
         id:imageViewer
         visible: false
     }
-
-    // MessageDialog{
-    //     id: tipDialog
-    //     title: qsTr("一次最多只能上传5个文件")
-    //     informativeText: "请重新选择"
-    //     buttons: MessageDialog.Ok
-    // }
 
     function updateModel(index){
         listIndex = index

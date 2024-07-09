@@ -4,8 +4,7 @@ import QtQuick.Layouts
 import "../components" as MyComponents
 import Qt.labs.folderlistmodel
 
-// 表情组件
-
+//表情组件
 Popup {
     id: popup
     width: 438
@@ -45,7 +44,6 @@ Popup {
         GridView {
             id: gridview
             anchors.fill: parent
-
             model: imageModel1
             clip: true
             height: 200
@@ -64,7 +62,6 @@ Popup {
         color: "#eee"
     }
     Rectangle{
-        //width: parent.width
         id: rect3
         width: 430
         anchors.top: line.bottom
@@ -110,7 +107,7 @@ Popup {
             Image {
                 id: image
                 anchors.fill: parent
-                source: model.imageUrl // 绑定到模型的 imageUrl 属性
+                source: model.imageUrl
                 TapHandler{
                     onTapped:  {
                         memepath = parent.source
@@ -124,12 +121,11 @@ Popup {
         id: imageDelegate2  //默认表情
         Item {
             width: 32
-            // 或者根据需要进行设置
             height: 32
             Image {
                 id: image
                 anchors.fill: parent
-                source: model.imageUrl // 绑定到模型的 imageUrl 属性
+                source: model.imageUrl
                 TapHandler{
                     onTapped: {
                         memepath = parent.source
@@ -157,9 +153,7 @@ Popup {
     //     folderList1.folder =  arguments[0];
     //     console.log("得到的folder路径:" ,folderList1.folder)
     //     gridview.model = null
-
     //     //gridview.model = folderList1;
-
     // }
 
     // ListModel{
@@ -168,7 +162,6 @@ Popup {
     // FolderListModel{
     //     id: folderList1
     //     nameFilters: ["*.jpg"]
-
     //     folder: "memeImages"
     //     showFiles: true
     // }
@@ -176,7 +169,6 @@ Popup {
 
     ListModel {
         id: imageModel1
-        // 假设有一个图片列表的 URL 或路径
         ListElement { imageUrl: "qrc:/memeImages/mimage1.jpg" }
         ListElement { imageUrl: "qrc:/memeImages/mimage2.jpg" }
         ListElement { imageUrl: "qrc:/memeImages/mimage3.jpg" }

@@ -1,22 +1,26 @@
 import QtQuick 2.0
 import QtQuick.Controls
+import QtQuick.Layouts
 
-
-
+//截图时选择是否隐藏当前窗口的小弹窗
 Menu{
-    //判断是否隐藏窗口按钮被触发
+    id:tipsMenu
     property bool checked: false
-    //窗口按钮触发信号
     signal isChecked
     signal noChecked
 
-    id:tipsMenu
+    background: Rectangle{
+        implicitHeight: 30
+        implicitWidth: 180
+        color: "#fff"
+        radius: 5
+        anchors.fill: parent
+    }
     Action{
         text: qsTr("")
         onTriggered: {
-            checked=!checked
-            if(checked===true){
-                //todo
+            checked =! checked
+            if(checked === true){
                 isChecked()
             }else{
                 noChecked()
@@ -26,75 +30,37 @@ Menu{
 
     delegate: MenuItem{
         id:menuItem
-        implicitWidth: 180
-        implicitHeight: 27
-        leftInset: 10
-        topInset: 5
         font.pixelSize: 15
-
-        // contentItem: Text {
-        //             text: menuItem.text
-        //             font: menuItem.font
-        //             opacity: enabled ? 1.0 : 0.3
-        //             horizontalAlignment: Text.AlignHCenter
-        //             verticalAlignment: Text.AlignVCenter
-        //             elide: Text.ElideRight
-        //         }
-
-        contentItem:
-            //一个圆形按钮组件作为内容
-            Rectangle{
-            implicitHeight: 27
-            implicitWidth: 100
-            anchors.centerIn: parent
-
-           Row{
-
-           //圆形按钮
-           Rectangle{
-                id:roundBotton
-                width: 15
-                height: width
-                radius: width/2
-                color: checked?"#0099ff" : "#f2f2f2"
-                anchors.leftMargin: 5
-                //anchors.right:hintText.left
-                anchors.rightMargin: 15
-           }
-
-           //提示文本
-           Rectangle{
-               color:"transparent"
-           Text {
-               id:hintText
-               text: "     隐藏当前窗口截图"
-               font.pixelSize:roundBotton.height
-               color :"#333333"
-
-           }
-
-           }
-           }
-        }
-
-        //菜单项背景
         background: Rectangle{
             anchors.centerIn: parent
-            implicitHeight: 30
-            implicitWidth: 100
-            opacity: enabled ? 1 : 0.3
-            color:menuItem.highlighted?"#e6e6e6" : "white"
-            radius: 5
+            implicitHeight: 26
+            implicitWidth: 168
+            color: menuItem.hovered ? "#e6e6e6" : "white"
         }
-    }
 
-    //菜单背景
-    background: Rectangle{
-        implicitHeight: 30
-        implicitWidth: 180
-        color: "white"
-        radius: 3
-        anchors.fill: parent
+        contentItem: Rectangle{
+            anchors.centerIn: parent
+            color: menuItem.hovered ? "#e6e6e6" : "white"
+            radius: 4
+            RowLayout{
+               Rectangle{    //圆形按钮
+                    id:roundBotton
+                    Layout.preferredWidth: 14
+                    Layout.preferredHeight: 14
+                    radius: 7
+                    color: checked ? "#0099ff" :"#ccc"
+                    Layout.leftMargin: 5
+               }
+
+               Text {
+                   id:hintText
+                   text: "  隐藏当前窗口截图"
+                   font.pixelSize: roundBotton.height
+                   color :"#333333"
+               }
+           }
+        }
+
     }
 
 }

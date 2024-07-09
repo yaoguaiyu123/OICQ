@@ -5,166 +5,121 @@ import "../components" as MyComponent
 import QtQuick.Dialogs
 import oicqclient
 
-//todo 用Layout优化布局（截图按钮与下拉按钮写在一起）
+//好友聊天窗口的输入框
 Rectangle {
     id: container
     height: 200
     Layout.fillWidth: true
     color: "#f2f2f2"
-    signal send(string text)   //自定义信号
-    signal sendFile(string text)   //自定义信号
-    //signal sendPicture(string text)  //发送图片信号
+    signal send(string text)
+    signal sendFile(string text)
     property bool isPreparePrint:false  //是否准备截图
     property bool selectHide: false
     property string filePath: ""
 
-
-    Row{
-        x: 8
+    RowLayout{
         spacing: 8
         MyComponent.IconButton{
-            width: 32
-            height: 32
+            Layout.preferredWidth: 32
+            Layout.preferredHeight: 32
             imagePath: "qrc:/icon/biaoqing_black.png"
             hoveredImagePath: "qrc:/icon/biaoqing_blue.png"
             onClicked: {
-                memeview.z = 6
+                memeview.z = 1
                 memeview.visible = true
             }
         }
-        MyComponent.IconButton{
-                    width: 32
-                    height: 32
-                    imagePath: "qrc:/icon/jiandao_black.png"
-                    hoveredImagePath: "qrc:/icon/jiandao_blue.png"
-                    onClicked: {
-                        isPreparePrint=true
-                        // hidecut()
-                        if(selectHide===true && isPreparePrint===true)
-                        {
-                         //todo hide window set window visibility equals ispreparePrint
-                            rootWindow.visible=false
-                        }
-                        // screenCapture.printFullScreen()  //获得当前全屏图片
-                        // screenPrintWindow.flushBackImage()
-                        // screenPrintWindow.show()
-                        // screenPrintWindow.visibility = Window.FullScreen  //使其全屏
-                        timeControl.start()
-                    }
-                    MyComponent.ScreenPrint{
-                        id:screenPrintWindow
-                        onProvideArea:(area)=>{
-                            rootWindow.visible=true
-                            // 得到截图位置
-                            screenCapture.printScreen(area)
 
-                        }
+        RowLayout{
+            spacing: 2
+            MyComponent.IconButton{
+                Layout.preferredWidth: 32
+                Layout.preferredHeight: 32
+                imagePath: "qrc:/icon/jiandao_black.png"
+                hoveredImagePath: "qrc:/icon/jiandao_blue.png"
+                onClicked: {
+                    isPreparePrint=true
+                    if(selectHide===true && isPreparePrint===true) {
+                        rootWindow.visible=false
                     }
-
-                    // 用于实现捕获屏幕的对象
-                    ScreenCapture {
-                        id: screenCapture
-                        onScreenshotComplete: ()=>{
-                            //图片插入聊天框
-                            documentHandler.insertScreenshot()
-                            //截图选区结束
-                            isPreparePrint=false
-                        }
-                    }
-
-                    Timer{
-                        id:timeControl
-                        interval: 250
-                        onTriggered: {
-                            screenCapture.printFullScreen()  //获得当前全屏图片
-                            screenPrintWindow.flushBackImage()
-                            screenPrintWindow.show()
-                            screenPrintWindow.visibility = Window.FullScreen  //使其全屏
-                        }
+                    timeControl.start()
+                }
+                MyComponent.ScreenPrint{
+                    id:screenPrintWindow
+                    onProvideArea:(area)=>{
+                        rootWindow.visible=true
+                        // 得到截图位置
+                        screenCapture.printScreen(area)
                     }
                 }
-        MyComponent.IconButton{
-                   width: 16
-                   height: 20
-                   imagePath: "qrc:/icon/向下.png"
-                   hoveredImagePath: "qrc:/icon/向下_blue.png"
-                   //anchors.horizontalCenter: parent.horizontalCenter
-                   anchors.verticalCenter: parent.verticalCenter
-                   onClicked: {
-                   //todo打开一个按钮选项菜单
-                   // MyComponent.RoundCheckBox.popup()
-                       checkBox.popup()
-                   }
-                   //todo点击菜单后隐藏qq窗口进行截图
 
-                   MyComponent.RoundCheckBox{
-                        id:checkBox
-                        //按钮选择信号处理
-                        onIsChecked: {
-                            selectHide=true
-                            //hiddenWindow()
-                        }
-                        onNoChecked: {
-                            selectHide=false
-                        }
-                   }
+                // 用于实现捕获屏幕的对象
+                ScreenCapture {
+                    id: screenCapture
+                    onScreenshotComplete: ()=>{
+                        documentHandler.insertScreenshot()
+                        isPreparePrint=false
+                    }
+                }
 
+                Timer{
+                    id:timeControl
+                    interval: 250
+                    onTriggered: {
+                        screenCapture.printFullScreen()  //获得当前全屏图片
+                        screenPrintWindow.flushBackImage()
+                        screenPrintWindow.show()
+                        screenPrintWindow.visibility = Window.FullScreen  //使其全屏
+                    }
+                }
+            }
+            MyComponent.IconButton{
+                Layout.preferredWidth: 16
+                Layout.preferredHeight:20
+               imagePath: "qrc:/icon/向下.png"
+               hoveredImagePath: "qrc:/icon/向下_blue.png"
+               onClicked: {
+                   checkBox.popup()
                }
+           }
+        }
+
+
         MyComponent.IconButton{
-            width: 32
-            height: 32
+            Layout.preferredWidth: 32
+            Layout.preferredHeight: 32
             imagePath: "qrc:/icon/wenjian_black.png"
             hoveredImagePath: "qrc:/icon/wenjian_blue.png"
-            // onClicked: {
-            //     fileDialog.open()
-            // }
-            // FileDialog {
-            //     id: fileDialog
-            //     title: "选择文件"
-            //     fileMode: FileDialog.OpenFiles
-            //     acceptLabel: "Open"
-            //     rejectLabel: "Cancel"
-            //     onAccepted: {
-            //         // console.log("用户选择的文件: " + fileDialog.selectedFile)
-            //         sendFile(fileDialog.selectedFiles)
-            //     }
-            // }
             onClicked: {
                 mainView.allDialogs.uploadFileDialog.open()
             }
         }
         MyComponent.IconButton{
-            width: 32
-            height: 32
+            Layout.preferredWidth: 32
+            Layout.preferredHeight: 32
             imagePath: "qrc:/icon/tupian_black.png"
             hoveredImagePath: "qrc:/icon/tupian_blue.png"
-            // onClicked: {
-            //     pictureFileDialog.open()
-            // }
-            // FileDialog{
-            //     id:pictureFileDialog
-            //     title:qsTr("选择图片文件")
-            //     fileMode: FileDialog.OpenFile
-            //     nameFilters: [ "Image files (*.png *.jpeg *.jpg)" ]
-            //     acceptLabel: "Open"
-            //     rejectLabel: "Cancel"
-            //     onAccepted: {
-            //         // sendPicture(fileDialog.selectedFiles)
-            //         filePath=fileDialog.selectedFile.toString()
-            //         hiddenArea.text += picture;
-            //         documentHandler.parseHtml()
-            //         hiddenArea.clear()
-            //         area.insert(area.cursorPosition, "<br/>")
-            //     }
-            // }
+
         }
     }
-    Image {
+
+
+    Image {     //截图后图片的路径
         id: picture
         source: filePath
     }
-    // 表情
-    MemeView {
+
+    MyComponent.RoundCheckBox{      //截图时选择是否隐藏当前窗口
+         id:checkBox
+         onIsChecked: {
+             selectHide=true
+         }
+         onNoChecked: {
+             selectHide=false
+         }
+    }
+
+    MemeView {      //表情弹窗
         id: memeview
         clip: false
          x:   8
@@ -274,60 +229,34 @@ Rectangle {
                 send(area.text)    //发出信号
                 area.text = ""
             } else {
-                //错误 仅调试用，消息过多的限制弹窗
                 sendrestrict.timerstart()
             }
         }
 
     }
 
-    //剪切操作处理器
+    //剪切操作
     function handleCut() {
         console.log("Cut signal received!")
-        // 在这里执行剪切操作
         area.cut()
 
     }
 
-    //复制操作处理器
+    //复制操作
     function handleCopy() {
         console.log("Copy signal received!")
-        // 在这里执行复制操作
-        //area.selectedText.copy();
         area.copy();
 
     }
 
-    //粘贴操作处理器
+    //粘贴操作
     function handlePaste() {
         console.log("Paste signal received!")
-        // 在这里执行粘贴操作
-        //area.paste()
         hiddenArea.paste()
         documentHandler.parseHtml()
         hiddenArea.clear()
         area.insert(area.cursorPosition, "<br/>")
     }
 
-    //设置窗口隐藏操作处理器
-    //判断是否点击截图且已勾选隐藏qq窗口
-    // function hiddenWindow(){
-    //     console.log("Hidden the QQ window before cutScreen！")
-    //     //todo将qq窗口隐藏
-    //     if(selectHide===true&&isPreparePrint===true)
-    //     {
-    //      //todo hide window set window visibility equals ispreparePrint
-    //         rootWindow.visible=false
-    //     }else{
-    //         rootWindow.visible=true
-    //     }
-    // }
-
-    // function setFilesModel(){
-    //     for(var i=0;i<arguments[0].length;i++)
-    //     {
-    //         var data={"filePath":arguments[0][i]}
-    //     }
-    // }
 }
 
