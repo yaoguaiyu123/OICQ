@@ -1,0 +1,11 @@
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../5SSUPNRDSB/moc_fileclient.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../5SSUPNRDSB/moc_postsend.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../5SSUPNRDSB/moc_tcpsocket.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../EWIEGA46WW/moc_controller.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../EWIEGA46WW/moc_framelesswindow.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../EWIEGA46WW/moc_frienddata.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../EWIEGA46WW/moc_friendmodel.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../EWIEGA46WW/moc_friendrequestmodel.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../EWIEGA46WW/moc_messagemodel.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../EWIEGA46WW/moc_screencapture.cpp.json
+/run/media/root/study/Qt6_xuexiao/practical_training/OICQ/build/Qt_6_7_1-Release/OICQ_Client/appoicqclient_autogen/include/../EWIEGA46WW/moc_textdocumenthandler.cpp.json

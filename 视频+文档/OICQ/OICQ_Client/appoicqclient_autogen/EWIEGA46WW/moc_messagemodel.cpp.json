@@ -1,0 +1,48 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Singleton",
+                    "value": "true"
+                },
+                {
+                    "name": "QML.Element",
+                    "value": "MessageModel"
+                }
+            ],
+            "className": "MessageModel",
+            "object": true,
+            "qualifiedClassName": "MessageModel",
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "index",
+                            "type": "int"
+                        },
+                        {
+                            "name": "haveSize",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "totalSize",
+                            "type": "qint64"
+                        }
+                    ],
+                    "name": "updateHaveSizeAndRecvSize",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "messagemodel.h",
+    "outputRevision": 68
+}

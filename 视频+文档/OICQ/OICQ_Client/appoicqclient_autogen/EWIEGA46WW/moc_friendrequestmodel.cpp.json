@@ -1,0 +1,27 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Singleton",
+                    "value": "true"
+                },
+                {
+                    "name": "QML.Element",
+                    "value": "FriendRequestModel"
+                }
+            ],
+            "className": "FriendRequestModel",
+            "object": true,
+            "qualifiedClassName": "FriendRequestModel",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "friendrequestmodel.h",
+    "outputRevision": 68
+}

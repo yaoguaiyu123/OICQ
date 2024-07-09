@@ -1,0 +1,48 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "ScreenCapture"
+                }
+            ],
+            "className": "ScreenCapture",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "area",
+                            "type": "QRect"
+                        }
+                    ],
+                    "name": "printScreen",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "printFullScreen",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "ScreenCapture",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "screenshotComplete",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "screencapture.h",
+    "outputRevision": 68
+}

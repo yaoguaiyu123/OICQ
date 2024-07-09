@@ -1,0 +1,186 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Singleton",
+                    "value": "true"
+                },
+                {
+                    "name": "QML.Element",
+                    "value": "FriendModel"
+                }
+            ],
+            "className": "FriendModel",
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "currentHeadpath",
+                    "notify": "currentHeadpathChanged",
+                    "read": "currentHeadpath",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "currentName",
+                    "notify": "currentNameChanged",
+                    "read": "currentName",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "name": "myImagePath",
+                    "notify": "myImagePathChanged",
+                    "read": "myImagePath",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "name": "currentIndex",
+                    "notify": "currentIndexChanged",
+                    "read": "currentIndex",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "FriendModel",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "currentHeadpathChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "currentNameChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "myImagePathChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "currentIndexChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "initDataFinished",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "int"
+                        }
+                    ],
+                    "name": "newMessage",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "toManyFiles",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "messageId",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "from",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "to",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "filepath",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "sigdownloadFile",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "filePath",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "from",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "to",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "messageId",
+                            "type": "qint64"
+                        }
+                    ],
+                    "name": "siguploadFile",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "image",
+                            "type": "QImage"
+                        }
+                    ],
+                    "name": "onLoginReturn",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "friendmodel.h",
+    "outputRevision": 68
+}

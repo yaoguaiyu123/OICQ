@@ -1,0 +1,167 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Singleton",
+                    "value": "true"
+                },
+                {
+                    "name": "QML.Element",
+                    "value": "Controller"
+                }
+            ],
+            "className": "Controller",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "index",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "updateMessageModel",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "QString"
+                        },
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "int"
+                        }
+                    ],
+                    "name": "sendMessage",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "friendiIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "messageIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "filepath",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "downloadFileRequest",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "updateMyHead",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "friendIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "messageIndex",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "cancelUploadOrDownload",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "friendIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "messageIndex",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "currentWindowImages",
+                    "returnType": "QList<QString>"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "int"
+                        }
+                    ],
+                    "name": "choseAddFriend",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "connectToServer",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "accountId",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "password",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "msgType",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "loginToServer",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "friendId",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "msgType",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "sendAddFriendRequest",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "Controller",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "controller.h",
+    "outputRevision": 68
+}

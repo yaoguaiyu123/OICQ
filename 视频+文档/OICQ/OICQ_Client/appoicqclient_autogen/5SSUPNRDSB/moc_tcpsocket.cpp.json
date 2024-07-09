@@ -1,0 +1,170 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Singleton",
+                    "value": "true"
+                },
+                {
+                    "name": "QML.Element",
+                    "value": "TcpSocket"
+                }
+            ],
+            "className": "TcpSocket",
+            "object": true,
+            "qualifiedClassName": "TcpSocket",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "image",
+                            "type": "QImage"
+                        }
+                    ],
+                    "name": "loginReturn",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "int"
+                        }
+                    ],
+                    "name": "loginReturnToQml",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "QJsonValue"
+                        },
+                        {
+                            "type": "QList<QImage>"
+                        }
+                    ],
+                    "name": "friendListReturn",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "QJsonValue"
+                        },
+                        {
+                            "name": "images",
+                            "type": "QList<QImage>"
+                        }
+                    ],
+                    "name": "privateMessageReturn",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "QImage"
+                        }
+                    ],
+                    "name": "updateHeadReturn",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "int"
+                        }
+                    ],
+                    "name": "addFriend",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "jsonvalue",
+                            "type": "QJsonValue"
+                        },
+                        {
+                            "name": "images",
+                            "type": "QList<QImage>"
+                        }
+                    ],
+                    "name": "addFriendRequest",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "jsonvalue",
+                            "type": "QJsonValue"
+                        },
+                        {
+                            "name": "images",
+                            "type": "QList<QImage>"
+                        }
+                    ],
+                    "name": "addFriendSingleRequest",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "jsonvalue",
+                            "type": "QJsonValue"
+                        },
+                        {
+                            "type": "QList<QImage>"
+                        }
+                    ],
+                    "name": "addFriendRes",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "jsonvalue",
+                            "type": "QJsonValue"
+                        }
+                    ],
+                    "name": "fileMessage",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "jsonvalue",
+                            "type": "QJsonValue"
+                        }
+                    ],
+                    "name": "historyMessageList",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "private",
+                    "name": "on_readyRead",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QTcpSocket"
+                }
+            ]
+        }
+    ],
+    "inputFile": "tcpsocket.h",
+    "outputRevision": 68
+}

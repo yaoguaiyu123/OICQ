@@ -1,0 +1,132 @@
+{
+    "classes": [
+        {
+            "className": "FileClient",
+            "object": true,
+            "qualifiedClassName": "FileClient",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "complete",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "friendIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "messageIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "have",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "total",
+                            "type": "qint64"
+                        }
+                    ],
+                    "name": "updateFileMessage",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "aboutToCancel",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "size",
+                            "type": "qint64"
+                        }
+                    ],
+                    "name": "handleBytesWritten",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "byteArray",
+                            "type": "QByteArray"
+                        }
+                    ],
+                    "name": "writeByteArray",
+                    "returnType": "qint64"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "filePath",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "from",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "to",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "messageId",
+                            "type": "qint64"
+                        }
+                    ],
+                    "name": "uploadFile",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "messageId",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "from",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "to",
+                            "type": "qint64"
+                        },
+                        {
+                            "name": "filepath",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "downloadFile",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "readDataFromServer",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "name": "handlerTimeout",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "fileclient.h",
+    "outputRevision": 68
+}

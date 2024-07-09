@@ -1,0 +1,17 @@
+{
+    "classes": [
+        {
+            "className": "FriendData",
+            "object": true,
+            "qualifiedClassName": "FriendData",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "frienddata.h",
+    "outputRevision": 68
+}

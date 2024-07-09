@@ -1,0 +1,80 @@
+{
+    "classes": [
+        {
+            "className": "PostSend",
+            "object": true,
+            "qualifiedClassName": "PostSend",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "reply",
+                            "type": "QNetworkReply*"
+                        }
+                    ],
+                    "name": "postRequestCompleted",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "type": "QString"
+                        },
+                        {
+                            "type": "int"
+                        }
+                    ],
+                    "name": "replyFinished",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "url",
+                            "type": "QUrl"
+                        },
+                        {
+                            "name": "ques",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "id",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "sendPostRequest",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "url",
+                            "type": "QUrl"
+                        },
+                        {
+                            "name": "ques",
+                            "type": "QString"
+                        }
+                    ],
+                    "isCloned": true,
+                    "name": "sendPostRequest",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "postsend.h",
+    "outputRevision": 68
+}

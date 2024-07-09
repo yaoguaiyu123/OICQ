@@ -1,0 +1,34 @@
+module oicqclient
+typeinfo appoicqclient.qmltypes
+prefer :/oicqclient/
+Main 1.0 Main.qml
+SideMenuBar 1.0 SideMenuBar.qml
+IconButton 1.0 components/IconButton.qml
+BackIconButton 1.0 components/BackIconButton.qml
+HeadImage 1.0 components/HeadImage.qml
+RecentFriendList 1.0 friendChat/RecentFriendList.qml
+MessageList 1.0 friendChat/MessageList.qml
+SearchBox 1.0 components/SearchBox.qml
+RecentFriendListDelegate 1.0 friendChat/RecentFriendListDelegate.qml
+FriendChatWindow 1.0 friendChat/FriendChatWindow.qml
+MessageDelegate 1.0 friendChat/MessageDelegate.qml
+MessageInputField 1.0 friendChat/MessageInputField.qml
+NetChat 1.0 comman/NetChat.js
+HeadUpLoadPopup 1.0 components/HeadUpLoadPopup.qml
+ScreenPrint 1.0 components/ScreenPrint.qml
+FriendsGroupMenu 1.0 friendChat/FriendsGroupMenu.qml
+FriendsGroupPopup 1.0 friendChat/FriendsGroupPopup.qml
+FriendAddWindow 1.0 friendChat/FriendAddWindow.qml
+ChatFile 1.0 friendChat/ChatFile.qml
+Login 1.0 Login.qml
+PictureViewer 1.0 components/PictureViewer.qml
+RightPopUpMenu 1.0 components/RightPopUpMenu.qml
+MemeView 1.0 friendChat/MemeView.qml
+RoundCheckBox 1.0 components/RoundCheckBox.qml
+RepeatLogin 1.0 components/RepeatLogin.qml
+LoginFail 1.0 components/LoginFail.qml
+SendRestriction 1.0 friendChat/SendRestriction.qml
+Dialogs 1.0 Dialogs.qml
+ThreeButtons 1.0 components/ThreeButtons.qml
+MainView 1.0 MainView.qml
+

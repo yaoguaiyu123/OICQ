@@ -1,0 +1,74 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "FramelessWindow"
+                }
+            ],
+            "className": "FramelessWindow",
+            "methods": [
+                {
+                    "access": "public",
+                    "name": "toggleMaximizeRestore",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "movable",
+                    "notify": "movableChanged",
+                    "read": "movable",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setMovable"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "resizable",
+                    "notify": "resizableChanged",
+                    "read": "resizable",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setResizable"
+                }
+            ],
+            "qualifiedClassName": "FramelessWindow",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "movableChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "resizableChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QQuickWindow"
+                }
+            ]
+        }
+    ],
+    "inputFile": "framelesswindow.h",
+    "outputRevision": 68
+}

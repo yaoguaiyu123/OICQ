@@ -1,0 +1,112 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "TextDocumentHandler"
+                }
+            ],
+            "className": "TextDocumentHandler",
+            "methods": [
+                {
+                    "access": "public",
+                    "name": "insertScreenshot",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "isTextContentEmpty",
+                    "returnType": "bool"
+                },
+                {
+                    "access": "public",
+                    "name": "parseHtml",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "type",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "parseHtmlWithEmoji",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "member": "m_hideTextDocument",
+                    "name": "hideTextDocument",
+                    "notify": "hideTextDocumentChanged",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QQuickTextDocument*",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "member": "m_textDocument",
+                    "name": "textDocument",
+                    "notify": "textDocumentChanged",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QQuickTextDocument*",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "member": "m_cursorPosition",
+                    "name": "cursorPosition",
+                    "notify": "cursorPositionChanged",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "TextDocumentHandler",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "hideTextDocumentChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "textDocumentChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "cursorPositionChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "textdocumenthandler.h",
+    "outputRevision": 68
+}

@@ -1,0 +1,1063 @@
+[
+    {
+        "classes": [
+            {
+                "className": "FileClient",
+                "object": true,
+                "qualifiedClassName": "FileClient",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "complete",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "friendIndex",
+                                "type": "int"
+                            },
+                            {
+                                "name": "messageIndex",
+                                "type": "int"
+                            },
+                            {
+                                "name": "have",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "total",
+                                "type": "qint64"
+                            }
+                        ],
+                        "name": "updateFileMessage",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "aboutToCancel",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "size",
+                                "type": "qint64"
+                            }
+                        ],
+                        "name": "handleBytesWritten",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "byteArray",
+                                "type": "QByteArray"
+                            }
+                        ],
+                        "name": "writeByteArray",
+                        "returnType": "qint64"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "filePath",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "from",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "to",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "messageId",
+                                "type": "qint64"
+                            }
+                        ],
+                        "name": "uploadFile",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "messageId",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "from",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "to",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "filepath",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "downloadFile",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readDataFromServer",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "handlerTimeout",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "fileclient.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "className": "PostSend",
+                "object": true,
+                "qualifiedClassName": "PostSend",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "reply",
+                                "type": "QNetworkReply*"
+                            }
+                        ],
+                        "name": "postRequestCompleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            },
+                            {
+                                "type": "int"
+                            }
+                        ],
+                        "name": "replyFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url",
+                                "type": "QUrl"
+                            },
+                            {
+                                "name": "ques",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "id",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "sendPostRequest",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url",
+                                "type": "QUrl"
+                            },
+                            {
+                                "name": "ques",
+                                "type": "QString"
+                            }
+                        ],
+                        "isCloned": true,
+                        "name": "sendPostRequest",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "postsend.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Singleton",
+                        "value": "true"
+                    },
+                    {
+                        "name": "QML.Element",
+                        "value": "TcpSocket"
+                    }
+                ],
+                "className": "TcpSocket",
+                "object": true,
+                "qualifiedClassName": "TcpSocket",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "image",
+                                "type": "QImage"
+                            }
+                        ],
+                        "name": "loginReturn",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "int"
+                            }
+                        ],
+                        "name": "loginReturnToQml",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QJsonValue"
+                            },
+                            {
+                                "type": "QList<QImage>"
+                            }
+                        ],
+                        "name": "friendListReturn",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QJsonValue"
+                            },
+                            {
+                                "name": "images",
+                                "type": "QList<QImage>"
+                            }
+                        ],
+                        "name": "privateMessageReturn",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QImage"
+                            }
+                        ],
+                        "name": "updateHeadReturn",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "int"
+                            }
+                        ],
+                        "name": "addFriend",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "jsonvalue",
+                                "type": "QJsonValue"
+                            },
+                            {
+                                "name": "images",
+                                "type": "QList<QImage>"
+                            }
+                        ],
+                        "name": "addFriendRequest",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "jsonvalue",
+                                "type": "QJsonValue"
+                            },
+                            {
+                                "name": "images",
+                                "type": "QList<QImage>"
+                            }
+                        ],
+                        "name": "addFriendSingleRequest",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "jsonvalue",
+                                "type": "QJsonValue"
+                            },
+                            {
+                                "type": "QList<QImage>"
+                            }
+                        ],
+                        "name": "addFriendRes",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "jsonvalue",
+                                "type": "QJsonValue"
+                            }
+                        ],
+                        "name": "fileMessage",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "jsonvalue",
+                                "type": "QJsonValue"
+                            }
+                        ],
+                        "name": "historyMessageList",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "name": "on_readyRead",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QTcpSocket"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "tcpsocket.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Singleton",
+                        "value": "true"
+                    },
+                    {
+                        "name": "QML.Element",
+                        "value": "Controller"
+                    }
+                ],
+                "className": "Controller",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "updateMessageModel",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            },
+                            {
+                                "type": "int"
+                            },
+                            {
+                                "type": "int"
+                            }
+                        ],
+                        "name": "sendMessage",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "friendiIndex",
+                                "type": "int"
+                            },
+                            {
+                                "name": "messageIndex",
+                                "type": "int"
+                            },
+                            {
+                                "name": "filepath",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "downloadFileRequest",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "updateMyHead",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "friendIndex",
+                                "type": "int"
+                            },
+                            {
+                                "name": "messageIndex",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "cancelUploadOrDownload",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "friendIndex",
+                                "type": "int"
+                            },
+                            {
+                                "name": "messageIndex",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "currentWindowImages",
+                        "returnType": "QList<QString>"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "int"
+                            },
+                            {
+                                "type": "int"
+                            }
+                        ],
+                        "name": "choseAddFriend",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "connectToServer",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "accountId",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "password",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "msgType",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "loginToServer",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "friendId",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "msgType",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "sendAddFriendRequest",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "Controller",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "controller.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "FramelessWindow"
+                    }
+                ],
+                "className": "FramelessWindow",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "toggleMaximizeRestore",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "name": "movable",
+                        "notify": "movableChanged",
+                        "read": "movable",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setMovable"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "name": "resizable",
+                        "notify": "resizableChanged",
+                        "read": "resizable",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setResizable"
+                    }
+                ],
+                "qualifiedClassName": "FramelessWindow",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "movableChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "resizableChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickWindow"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "framelesswindow.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "className": "FriendData",
+                "object": true,
+                "qualifiedClassName": "FriendData",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "frienddata.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Singleton",
+                        "value": "true"
+                    },
+                    {
+                        "name": "QML.Element",
+                        "value": "FriendModel"
+                    }
+                ],
+                "className": "FriendModel",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "name": "currentHeadpath",
+                        "notify": "currentHeadpathChanged",
+                        "read": "currentHeadpath",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "name": "currentName",
+                        "notify": "currentNameChanged",
+                        "read": "currentName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "name": "myImagePath",
+                        "notify": "myImagePathChanged",
+                        "read": "myImagePath",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "name": "currentIndex",
+                        "notify": "currentIndexChanged",
+                        "read": "currentIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false
+                    }
+                ],
+                "qualifiedClassName": "FriendModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "currentHeadpathChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentNameChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "myImagePathChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "initDataFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "int"
+                            }
+                        ],
+                        "name": "newMessage",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "toManyFiles",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "messageId",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "from",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "to",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "filepath",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "sigdownloadFile",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "filePath",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "from",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "to",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "messageId",
+                                "type": "qint64"
+                            }
+                        ],
+                        "name": "siguploadFile",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "image",
+                                "type": "QImage"
+                            }
+                        ],
+                        "name": "onLoginReturn",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "friendmodel.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Singleton",
+                        "value": "true"
+                    },
+                    {
+                        "name": "QML.Element",
+                        "value": "FriendRequestModel"
+                    }
+                ],
+                "className": "FriendRequestModel",
+                "object": true,
+                "qualifiedClassName": "FriendRequestModel",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "friendrequestmodel.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Singleton",
+                        "value": "true"
+                    },
+                    {
+                        "name": "QML.Element",
+                        "value": "MessageModel"
+                    }
+                ],
+                "className": "MessageModel",
+                "object": true,
+                "qualifiedClassName": "MessageModel",
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            },
+                            {
+                                "name": "haveSize",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "totalSize",
+                                "type": "qint64"
+                            }
+                        ],
+                        "name": "updateHaveSizeAndRecvSize",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "messagemodel.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "ScreenCapture"
+                    }
+                ],
+                "className": "ScreenCapture",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "area",
+                                "type": "QRect"
+                            }
+                        ],
+                        "name": "printScreen",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "printFullScreen",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "ScreenCapture",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "screenshotComplete",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "screencapture.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "TextDocumentHandler"
+                    }
+                ],
+                "className": "TextDocumentHandler",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "insertScreenshot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isTextContentEmpty",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "parseHtml",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "type",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "parseHtmlWithEmoji",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "member": "m_hideTextDocument",
+                        "name": "hideTextDocument",
+                        "notify": "hideTextDocumentChanged",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QQuickTextDocument*",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "member": "m_textDocument",
+                        "name": "textDocument",
+                        "notify": "textDocumentChanged",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QQuickTextDocument*",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "member": "m_cursorPosition",
+                        "name": "cursorPosition",
+                        "notify": "cursorPositionChanged",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false
+                    }
+                ],
+                "qualifiedClassName": "TextDocumentHandler",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "hideTextDocumentChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "textDocumentChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "cursorPositionChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "textdocumenthandler.h",
+        "outputRevision": 68
+    }
+]
