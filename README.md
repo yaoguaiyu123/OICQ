@@ -48,3 +48,11 @@
   - 支持选择隐藏窗口或不隐藏窗口
   
   ![img](./image/image06.png)
+
+
+
+- 部署到应用菜单
+
+  - 就是将desktop文件放到`/usr/share/applications`目录下
+
+    ![img](./image/image07.png)
